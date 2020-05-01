@@ -2,7 +2,7 @@
 Scans Animal Crossing: New Horizon catalog from video of user scrolling through.
 
 This requires Python 3 and [Tesseract-OCR](https://tesseract-ocr.github.io/tessdoc/Home.html) to work.
-The Python library requirements can be installed through the requirements.txt
+On the Python sides, you need OpenCV, Pillow and pyTesseract, which can be installed with `pip install -r requirements.txt`
 
 It can be used by page scrolling through the item catalog in Nook Shopping (by holding down right analog stick),
 and holding the Capture button at the end to record the previous 30s. You can trim the video with the Switch editor
