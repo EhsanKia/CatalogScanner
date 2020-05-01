@@ -1,6 +1,6 @@
 from absl import app
 from PIL import Image
-from typing import Iterator, List, Set
+from typing import Iterable, Iterator, List, Set
 
 import cv2
 import difflib
@@ -23,7 +23,7 @@ def read_frames(filename: str) -> Iterator[numpy.ndarray]:
     cap.release()
 
 
-def extract_rows(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
+def parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
     """Parses an individual frame and extracts item rows from the list."""
     # Detect the dashed lines and iterate over pairs of dashed lines
     lines = (frame[:, 0] < 200).nonzero()[0]
@@ -40,7 +40,7 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
     for i, frame in enumerate(read_frames('catalog.mp4')):
         if i % 3 != 0:
             continue  # Only parse every third frame
-        all_rows.extend(extract_rows(frame))
+        all_rows.extend(parse_frame(frame))
     return all_rows
 
 
@@ -54,9 +54,10 @@ def run_tesseract(item_rows: List[numpy.ndarray]) -> Set[str]:
     return {t.strip().lower() for t in parsed_text.split('\n') if t}
 
 
-def match_items(parsed_items: Set[str], item_db: Set[str]) -> Set[str]:
+def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
+    """Matches a list of names against a database of items, finding best matches."""
     matched_items = set()
-    for item in parsed_items:
+    for item in parsed_names:
         if item in item_db:
             # If item name exists is in the DB, add it as is
             matched_items.add(item)
@@ -72,18 +73,20 @@ def match_items(parsed_items: Set[str], item_db: Set[str]) -> Set[str]:
     return matched_items
 
 
-def get_items(video_file: str) -> str:
+def scan_catalog(video_file: str) -> str:
+    """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file)
     item_names = run_tesseract(item_rows)
 
     item_db = set(json.load(open('items/items_en-US.json')))
     clean_names = match_items(item_names, item_db)
-    return '\n'.join(sorted(clean_names))
+    return sorted(clean_names)
 
 
 def main(argv):
     video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
-    print(get_items(video_file))
+    all_items = scan_catalog(video_file)
+    print('\n'.join(all_items)
 
 
 if __name__ == "__main__":
