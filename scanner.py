@@ -37,7 +37,7 @@ def parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
 def parse_video(filename: str) -> List[numpy.ndarray]:
     """Parses a whole video and returns all the item rows found."""
     all_rows: List[numpy.ndarray] = []
-    for i, frame in enumerate(read_frames('catalog.mp4')):
+    for i, frame in enumerate(read_frames(filename)):
         if i % 3 != 0:
             continue  # Only parse every third frame
         all_rows.extend(parse_frame(frame))
