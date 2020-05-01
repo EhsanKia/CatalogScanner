@@ -73,7 +73,7 @@ def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
     return matched_items
 
 
-def scan_catalog(video_file: str) -> str:
+def scan_catalog(video_file: str) -> List[str]:
     """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file)
     item_names = run_tesseract(item_rows)
@@ -86,7 +86,7 @@ def scan_catalog(video_file: str) -> str:
 def main(argv):
     video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
     all_items = scan_catalog(video_file)
-    print('\n'.join(all_items)
+    print('\n'.join(all_items))
 
 
 if __name__ == "__main__":
