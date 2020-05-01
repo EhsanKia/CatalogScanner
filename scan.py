@@ -1,13 +1,13 @@
+from absl import app
+from PIL import Image
+from typing import Iterator, List, Set
+
 import cv2
 import difflib
 import json
 import logging
 import numpy
 import pytesseract
-
-from absl import app
-from PIL import Image
-from typing import Iterator, List, Set
 
 
 def read_frames(filename: str) -> Iterator[numpy.ndarray]:
@@ -68,18 +68,22 @@ def match_items(parsed_items: Set[str], item_db: Set[str]) -> Set[str]:
             logging.warning('No match found for %r', item)
             continue
         logging.info('Matched %r to %r', item, matches[0])
-        matched_items.add(matches[0])
+        matched_items.add(matches[0])  # type: ignore
     return matched_items
 
 
-def main(argv):
-    video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
+def get_items(video_file: str) -> str:
     item_rows = parse_video(video_file)
     item_names = run_tesseract(item_rows)
 
     item_db = set(json.load(open('items/items_en-US.json')))
     clean_names = match_items(item_names, item_db)
-    print('\n'.join(sorted(clean_names)))
+    return '\n'.join(sorted(clean_names))
+
+
+def main(argv):
+    video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
+    print(get_items(video_file))
 
 
 if __name__ == "__main__":
