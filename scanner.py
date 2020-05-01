@@ -19,17 +19,19 @@ def read_frames(filename: str) -> Iterator[numpy.ndarray]:
             break  # Video is over
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        yield gray[130:630, 635:1050]  # The region containing the items
+        yield gray[150:630, 635:1050]  # The region containing the items
     cap.release()
 
 
 def parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
     """Parses an individual frame and extracts item rows from the list."""
     # Detect the dashed lines and iterate over pairs of dashed lines
-    lines = (frame[:, 0] < 200).nonzero()[0]
+    # Last line has dashes after but first line doesn't have dashes before,
+    # therefore we prepend the list with zero for the starting line.
+    lines = [0] + list((frame[:, 0] < 200).nonzero()[0])
     for y1, y2 in zip(lines, lines[1:]):
-        if y2 - y1 < 20:
-            continue  # skip lines that are too close
+        if not (40 < y2 - y1 < 60):
+            continue  # skip lines that are too close or far
         # Cut slightly below and above the dashed line
         yield frame[y1 + 5:y2 - 5, :]
 
@@ -84,7 +86,7 @@ def scan_catalog(video_file: str) -> List[str]:
 
 
 def main(argv):
-    video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
+    video_file = argv[1] if len(argv) > 1 else 'catalog3.mp4'
     all_items = scan_catalog(video_file)
     print('\n'.join(all_items))
 
