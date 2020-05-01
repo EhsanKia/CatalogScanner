@@ -6,7 +6,7 @@ The Python library requirements can be installed through the requirements.txt
 
 It can be used by page scrolling through the item catalog in Nook Shopping (by holding down right analog stick),
 and holding the Capture button at the end to record the previous 30s. You can trim the video with the Switch editor
-to only get the part where you are scrolling to speed up processing time.
+to only get the part where you are scrolling to speed up processing time. An example video is provided (catalog.mp4).
 
 You can then extract the video with an SD card or through social media. You call this script with the video file name
 and it will output the name of all the items to the console.
