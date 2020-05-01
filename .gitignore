@@ -1,0 +1,5 @@
+.git/
+.mypy_cache/
+.venv/
+.vscode/
+*.code-workspace
