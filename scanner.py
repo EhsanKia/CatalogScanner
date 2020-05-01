@@ -19,6 +19,7 @@ def read_frames(filename: str) -> Iterator[numpy.ndarray]:
             break  # Video is over
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        assert gray.shape == (720, 1280), 'Invalid resolution: %s' % (gray.shape,)
         yield gray[150:630, 635:1050]  # The region containing the items
     cap.release()
 
@@ -48,6 +49,8 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
 
 def run_tesseract(item_rows: List[numpy.ndarray]) -> Set[str]:
     """Runs tesseract on the row images and returns list of unique items found."""
+    assert item_rows, 'No items found, invalid video?'
+
     # Concatenate all rows and send a single image to Tesseract (OCR)
     concat_rows = cv2.vconcat(item_rows)
     parsed_text = pytesseract.image_to_string(Image.fromarray(concat_rows))
@@ -82,11 +85,13 @@ def scan_catalog(video_file: str) -> List[str]:
 
     item_db = set(json.load(open('items/items_en-US.json')))
     clean_names = match_items(item_names, item_db)
+    assert clean_names, 'Did not match any known item names, wrong language?'
+
     return sorted(clean_names)
 
 
 def main(argv):
-    video_file = argv[1] if len(argv) > 1 else 'catalog3.mp4'
+    video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
     all_items = scan_catalog(video_file)
     print('\n'.join(all_items))
 
