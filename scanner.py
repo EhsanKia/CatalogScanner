@@ -83,6 +83,7 @@ def run_tesseract(item_rows: List[numpy.ndarray], lang='eng') -> Set[str]:
 def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
     """Matches a list of names against a database of items, finding best matches."""
     matched_items = set()
+    no_match_count = 0
     for item in parsed_names:
         if item in item_db:
             # If item name exists is in the DB, add it as is
@@ -93,6 +94,9 @@ def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
         matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.8)
         if not matches:
             logging.warning('No match found for %r', item)
+            no_match_count += 1
+            if no_match_count > 10:
+                return set()
             continue
         logging.info('Matched %r to %r', item, matches[0])
         matched_items.add(matches[0])  # type: ignore
@@ -107,7 +111,7 @@ def scan_catalog(video_file: str, lang_code: str = 'en-us') -> List[str]:
     with open('items/%s.json' % lang_code, encoding='utf-8') as fp:
         item_db = set(json.load(fp))
     clean_names = match_items(item_names, item_db)
-    assert clean_names, 'Did not match any known item names, wrong language?'
+    assert clean_names, 'Did not match most item names, wrong language?'
 
     return sorted(clean_names)
 
