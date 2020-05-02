@@ -11,23 +11,23 @@ import numpy
 import pytesseract
 
 LANG_MAP = {
-    'zh-CN': 'chi_sim',
-    'de-EU': 'deu',
-    'en-EU': 'eng',
-    'es-EU': 'spa',
-    'fr-EU': 'fra',
-    'it-EU': 'ita',
-    'nl-EU': 'nld',
-    'ru-EU': 'rus',
-    'ja-JP': 'jpn',
-    'ko-KR': 'kor',
-    'zh-TW': 'chi_tra',
-    'en-US': 'eng',
-    'es-US': 'spa',
-    'fr-US': 'fra',
+    'zh-cn': 'chi_sim',
+    'de-eu': 'deu',
+    'en-eu': 'eng',
+    'es-eu': 'spa',
+    'fr-eu': 'fra',
+    'it-eu': 'ita',
+    'nl-eu': 'nld',
+    'ru-eu': 'rus',
+    'ja-jp': 'jpn',
+    'ko-kr': 'kor',
+    'zh-tw': 'chi_tra',
+    'en-us': 'eng',
+    'es-us': 'spa',
+    'fr-us': 'fra',
 }
 
-flags.DEFINE_enum('lang', 'en-US', LANG_MAP.keys(), 'The language to use for parsing the item names.')
+flags.DEFINE_enum('lang', 'en-us', LANG_MAP.keys(), 'The language to use for parsing the item names.')
 
 
 def read_frames(filename: str) -> Iterator[numpy.ndarray]:
@@ -99,7 +99,7 @@ def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
     return matched_items
 
 
-def scan_catalog(video_file: str, lang_code: str = 'en-US') -> List[str]:
+def scan_catalog(video_file: str, lang_code: str = 'en-us') -> List[str]:
     """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file)
     item_names = run_tesseract(item_rows, lang=LANG_MAP[lang_code])
