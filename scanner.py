@@ -1,4 +1,5 @@
 from absl import app
+from absl import flags
 from PIL import Image
 from typing import Iterable, Iterator, List, Set
 
@@ -8,6 +9,25 @@ import json
 import logging
 import numpy
 import pytesseract
+
+LANG_MAP = {
+    'zh-CN': 'chi_sim',
+    'de-EU': 'deu',
+    'en-EU': 'eng',
+    'es-EU': 'spa',
+    'fr-EU': 'fra',
+    'it-EU': 'ita',
+    'nl-EU': 'nld',
+    'ru-EU': 'rus',
+    'ja-JP': 'jpn',
+    'ko-KR': 'kor',
+    'zh-TW': 'chi_tra',
+    'en-US': 'eng',
+    'es-US': 'spa',
+    'fr-US': 'fra',
+}
+
+flags.DEFINE_enum('lang', 'en-US', LANG_MAP.keys(), 'The language to use for parsing the item names.')
 
 
 def read_frames(filename: str) -> Iterator[numpy.ndarray]:
@@ -47,13 +67,14 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
     return all_rows
 
 
-def run_tesseract(item_rows: List[numpy.ndarray]) -> Set[str]:
+def run_tesseract(item_rows: List[numpy.ndarray], lang='eng') -> Set[str]:
     """Runs tesseract on the row images and returns list of unique items found."""
     assert item_rows, 'No items found, invalid video?'
 
     # Concatenate all rows and send a single image to Tesseract (OCR)
     concat_rows = cv2.vconcat(item_rows)
-    parsed_text = pytesseract.image_to_string(Image.fromarray(concat_rows))
+    parsed_text = pytesseract.image_to_string(
+        Image.fromarray(concat_rows), lang=lang)
 
     # Cleanup results a bit and try matching them again items using string distance
     return {t.strip().lower() for t in parsed_text.split('\n') if t}
@@ -78,12 +99,13 @@ def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
     return matched_items
 
 
-def scan_catalog(video_file: str) -> List[str]:
+def scan_catalog(video_file: str, lang_code: str = 'en-US') -> List[str]:
     """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file)
-    item_names = run_tesseract(item_rows)
+    item_names = run_tesseract(item_rows, lang=LANG_MAP[lang_code])
 
-    item_db = set(json.load(open('items/items_en-US.json')))
+    with open('items/%s.json' % lang_code, encoding='utf-8') as fp:
+        item_db = set(json.load(fp))
     clean_names = match_items(item_names, item_db)
     assert clean_names, 'Did not match any known item names, wrong language?'
 
@@ -92,7 +114,7 @@ def scan_catalog(video_file: str) -> List[str]:
 
 def main(argv):
     video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
-    all_items = scan_catalog(video_file)
+    all_items = scan_catalog(video_file, lang_code=flags.FLAGS.lang)
     print('\n'.join(all_items))
 
 
