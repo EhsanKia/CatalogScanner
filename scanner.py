@@ -54,7 +54,19 @@ def parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
         if not (40 < y2 - y1 < 60):
             continue  # skip lines that are too close or far
         # Cut slightly below and above the dashed line
-        yield frame[y1 + 5:y2 - 5, :]
+        yield frame[y2-40:y2-5, :]
+
+
+def duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
+    """Checks if the new set of rows are the same as the previous seen rows."""
+    if not new_rows or len(all_rows) < len(new_rows):
+        return False
+    
+    # Just check a middle row instead of all
+    row_index = -len(new_rows) // 2
+    diff = cv2.subtract(all_rows[row_index], new_rows[row_index])
+    print(diff.sum())
+    return diff.sum() < 100
 
 
 def parse_video(filename: str) -> List[numpy.ndarray]:
@@ -63,7 +75,10 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
     for i, frame in enumerate(read_frames(filename)):
         if i % 3 != 0:
             continue  # Only parse every third frame
-        all_rows.extend(parse_frame(frame))
+        new_rows = list(parse_frame(frame))
+        if duplicate_rows(all_rows, new_rows):
+            continue  # Skip non-moving frames
+        all_rows.extend(new_rows)
     return all_rows
 
 
