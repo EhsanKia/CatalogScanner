@@ -87,11 +87,16 @@ def run_tesseract(item_rows: List[numpy.ndarray], lang='eng') -> Set[str]:
 
     # Concatenate all rows and send a single image to Tesseract (OCR)
     concat_rows = cv2.vconcat(item_rows)
+
+    # For larger catalogs, shrink size in half. Accuracy still remains as good.
+    if concat_rows.shape[0] > 32000:
+        concat_rows = cv2.resize(concat_rows, None, fx=0.5, fy=0.5)
+
     parsed_text = pytesseract.image_to_string(
         Image.fromarray(concat_rows), lang=lang)
 
     # Cleanup results a bit and try matching them again items using string distance
-    return {t.strip().lower() for t in parsed_text.split('\n') if t}
+    return {t.strip().lower() for t in parsed_text.split('\n') if t.strip()}
 
 
 def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
