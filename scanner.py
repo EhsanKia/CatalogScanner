@@ -122,11 +122,10 @@ def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
         if not matches:
             logging.warning('No match found for %r', item)
             no_match_count += 1
-            if no_match_count > 10:
-                return set()
             continue
         logging.info('Matched %r to %r', item, matches[0])
         matched_items.add(matches[0])  # type: ignore
+    assert no_match_count <= 10, 'Failed to match multiple items, wrong language?'
     return matched_items
 
 
@@ -138,8 +137,6 @@ def scan_catalog(video_file: str, lang_code: str = 'en-us', for_sale: bool = Fal
     with open('items/%s.json' % lang_code, encoding='utf-8') as fp:
         item_db = set(json.load(fp))
     clean_names = match_items(item_names, item_db)
-    assert clean_names, 'Did not match most item names, wrong language?'
-
     return sorted(clean_names)
 
 
