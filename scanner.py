@@ -61,7 +61,7 @@ def parse_frame(frame: numpy.ndarray, for_sale: bool = False) -> Iterator[numpy.
         # Skip items that are not for sale (price region is lighter)
         if for_sale and row[:, 430:].min() > 100:
             continue
-        
+
         yield row[:, :415]  # Return the name region
 
 
@@ -69,7 +69,7 @@ def duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray])
     """Checks if the new set of rows are the same as the previous seen rows."""
     if not new_rows or len(all_rows) < len(new_rows):
         return False
-    
+
     # Just check a middle row instead of all
     row_index = -len(new_rows) // 2
     diff = cv2.subtract(all_rows[row_index], new_rows[row_index])
