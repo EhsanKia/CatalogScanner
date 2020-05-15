@@ -28,6 +28,7 @@ LANG_MAP = {
 }
 
 flags.DEFINE_enum('lang', 'en-us', LANG_MAP.keys(), 'The language to use for parsing the item names.')
+flags.DEFINE_bool('for_sale', False, 'If true, the scanner will filter items that are not for sale.')
 
 
 def read_frames(filename: str) -> Iterator[numpy.ndarray]:
@@ -40,11 +41,11 @@ def read_frames(filename: str) -> Iterator[numpy.ndarray]:
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         assert gray.shape == (720, 1280), 'Invalid resolution: %s' % (gray.shape,)
-        yield gray[150:630, 635:1050]  # The region containing the items
+        yield gray[150:630, 635:1220]  # The region containing the item name and price
     cap.release()
 
 
-def parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
+def parse_frame(frame: numpy.ndarray, for_sale: bool = False) -> Iterator[numpy.ndarray]:
     """Parses an individual frame and extracts item rows from the list."""
     # Detect the dashed lines and iterate over pairs of dashed lines
     # Last line has dashes after but first line doesn't have dashes before,
@@ -53,8 +54,15 @@ def parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
     for y1, y2 in zip(lines, lines[1:]):
         if not (40 < y2 - y1 < 60):
             continue  # skip lines that are too close or far
-        # Cut slightly below and above the dashed line
-        yield frame[y2-40:y2-5, :]
+
+        # Cut row slightly below and above the dashed line
+        row = frame[y2-40:y2-5, :]
+
+        # Skip items that are not for sale (price region is lighter)
+        if for_sale and row[:, 430:].min() > 100:
+            continue
+        
+        yield row[:, :415]  # Return the name region
 
 
 def duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
@@ -68,13 +76,13 @@ def duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray])
     return diff.sum() < 100
 
 
-def parse_video(filename: str) -> List[numpy.ndarray]:
+def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     """Parses a whole video and returns all the item rows found."""
     all_rows: List[numpy.ndarray] = []
     for i, frame in enumerate(read_frames(filename)):
         if i % 3 != 0:
             continue  # Only parse every third frame
-        new_rows = list(parse_frame(frame))
+        new_rows = list(parse_frame(frame, for_sale))
         if duplicate_rows(all_rows, new_rows):
             continue  # Skip non-moving frames
         all_rows.extend(new_rows)
@@ -85,7 +93,7 @@ def run_tesseract(item_rows: List[numpy.ndarray], lang='eng') -> Set[str]:
     """Runs tesseract on the row images and returns list of unique items found."""
     assert item_rows, 'No items found, invalid video?'
 
-    # Concatenate all rows and send a single image to Tesseract (OCR)
+    # Concatenate all rows to send a single image to Tesseract
     concat_rows = cv2.vconcat(item_rows)
 
     # For larger catalogs, shrink size in half. Accuracy still remains as good.
@@ -122,9 +130,9 @@ def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
     return matched_items
 
 
-def scan_catalog(video_file: str, lang_code: str = 'en-us') -> List[str]:
+def scan_catalog(video_file: str, lang_code: str = 'en-us', for_sale: bool = False) -> List[str]:
     """Scans a video of scrolling through a catalog and returns all items found."""
-    item_rows = parse_video(video_file)
+    item_rows = parse_video(video_file, for_sale)
     item_names = run_tesseract(item_rows, lang=LANG_MAP[lang_code])
 
     with open('items/%s.json' % lang_code, encoding='utf-8') as fp:
@@ -137,7 +145,11 @@ def scan_catalog(video_file: str, lang_code: str = 'en-us') -> List[str]:
 
 def main(argv):
     video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
-    all_items = scan_catalog(video_file, lang_code=flags.FLAGS.lang)
+    all_items = scan_catalog(
+        video_file,
+        lang_code=flags.FLAGS.lang,
+        for_sale=flags.FLAGS.for_sale,
+    )
     print('\n'.join(all_items))
 
 
