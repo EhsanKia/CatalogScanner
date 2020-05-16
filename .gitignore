@@ -3,3 +3,4 @@
 .venv/
 .vscode/
 *.code-workspace
+catalog*.mp4
