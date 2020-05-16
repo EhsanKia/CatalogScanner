@@ -104,7 +104,7 @@ def run_tesseract(item_rows: List[numpy.ndarray], lang='eng') -> Set[str]:
         Image.fromarray(concat_rows), lang=lang)
 
     # Cleanup results a bit and try matching them again items using string distance
-    return {t for t in map(str.strip, parsed_text.split('\n')) if t}
+    return {t.lower() for t in map(str.strip, parsed_text.split('\n')) if t}
 
 
 def match_items(parsed_names: Set[str], item_names: Set[str]) -> Set[str]:
@@ -115,7 +115,7 @@ def match_items(parsed_names: Set[str], item_names: Set[str]) -> Set[str]:
     matched_items = set()
     no_match_count = 0
     for item in parsed_names:
-        item_key = item.lower().replace(' ', '')
+        item_key = item.replace(' ', '')
         if item_key in item_db:
             # If item name exists is in the DB, add it as is
             matched_items.add(item_db[item_key])
