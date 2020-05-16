@@ -104,27 +104,35 @@ def run_tesseract(item_rows: List[numpy.ndarray], lang='eng') -> Set[str]:
         Image.fromarray(concat_rows), lang=lang)
 
     # Cleanup results a bit and try matching them again items using string distance
-    return {t.strip().lower() for t in parsed_text.split('\n') if t.strip()}
+    return {t for t in map(str.strip, parsed_text.split('\n')) if t}
 
 
 def match_items(parsed_names: Set[str], item_names: Set[str]) -> Set[str]:
     """Matches a list of names against a database of items, finding best matches."""
+    # Create a whitespace-free mapping
+    item_db = {name.replace(' ', ''): name for name in item_names}
+
     matched_items = set()
     no_match_count = 0
     for item in parsed_names:
-        if item in item_db:
+        item_key = item.lower().replace(' ', '')
+        if item_key in item_db:
             # If item name exists is in the DB, add it as is
-            matched_items.add(item)
+            matched_items.add(item_db[item_key])
             continue
 
         # Otherwise, try to find closest name in the DB witha cutoff
-        matches = difflib.get_close_matches(item, item_db, n=1)
+        matches = difflib.get_close_matches(item_key, item_db, n=1)
         if not matches:
             logging.warning('No match found for %r', item)
             no_match_count += 1
             assert no_match_count < len(parsed_names) // 10, \
                 'Failed to match multiple items, wrong language?'
             continue
+        real_item = item_db[matches[0]]   # type: ignore
+        logging.info('Matched %r to %r', item, real_item)
+        matched_items.add(real_item)
+
     if no_match_count:
         logging.warning('%d items failed to match.', no_match_count)
     return matched_items
