@@ -118,7 +118,7 @@ def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
             continue
 
         # Otherwise, try to find closest name in the DB witha cutoff
-        matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.7)
+        matches = difflib.get_close_matches(item, item_db, n=1)
         if not matches:
             logging.warning('No match found for %r', item)
             no_match_count += 1
