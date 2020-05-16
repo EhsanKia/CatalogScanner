@@ -107,7 +107,7 @@ def run_tesseract(item_rows: List[numpy.ndarray], lang='eng') -> Set[str]:
     return {t.strip().lower() for t in parsed_text.split('\n') if t.strip()}
 
 
-def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
+def match_items(parsed_names: Set[str], item_names: Set[str]) -> Set[str]:
     """Matches a list of names against a database of items, finding best matches."""
     matched_items = set()
     no_match_count = 0
@@ -122,10 +122,11 @@ def match_items(parsed_names: Iterable[str], item_db: Set[str]) -> Set[str]:
         if not matches:
             logging.warning('No match found for %r', item)
             no_match_count += 1
+            assert no_match_count < len(parsed_names) // 10, \
+                'Failed to match multiple items, wrong language?'
             continue
-        logging.info('Matched %r to %r', item, matches[0])
-        matched_items.add(matches[0])  # type: ignore
-    assert no_match_count <= 10, 'Failed to match multiple items, wrong language?'
+    if no_match_count:
+        logging.warning('%d items failed to match.', no_match_count)
     return matched_items
 
 
