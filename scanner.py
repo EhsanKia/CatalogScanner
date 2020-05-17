@@ -1,7 +1,7 @@
 from absl import app
 from absl import flags
 from PIL import Image
-from typing import Iterable, Iterator, List, Set
+from typing import Iterable, Iterator, List, Optional, Set
 
 import cv2
 import difflib
@@ -11,20 +11,20 @@ import numpy
 import pytesseract
 
 LANG_MAP = {
-    'zh-cn': 'chi_sim',
     'de-eu': 'deu',
     'en-eu': 'eng',
+    'en-us': 'eng',
     'es-eu': 'spa',
+    'es-us': 'spa',
     'fr-eu': 'fra',
+    'fr-us': 'fra',
     'it-eu': 'ita',
-    'nl-eu': 'nld',
-    'ru-eu': 'rus',
     'ja-jp': 'jpn',
     'ko-kr': 'kor',
+    'nl-eu': 'nld',
+    'ru-eu': 'rus',
+    'zh-cn': 'chi_sim',
     'zh-tw': 'chi_tra',
-    'en-us': 'eng',
-    'es-us': 'spa',
-    'fr-us': 'fra',
 }
 
 flags.DEFINE_enum('lang', 'en-us', LANG_MAP.keys(), 'The language to use for parsing the item names.')
@@ -89,7 +89,20 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     return all_rows
 
 
-def run_tesseract(item_rows: List[numpy.ndarray], lang='eng') -> Set[str]:
+def get_tesseract_config(lang: Optional[str] = None) -> str:
+    configs = [
+        '-c preserve_interword_spaces=1',  # Fixes spacing between logograms.
+        '-c load_system_dawg=0',
+        '-c load_freq_dawg=0',
+        '-c load_punc_dawg=0',
+        '-c load_number_dawg=0',
+        '-c load_unambig_dawg=0',
+        '-c load_bigram_dawg=0',
+        '-c load_fixed_length_dawgs=0',
+    ]
+    return ' '.join(configs)
+
+def run_tesseract(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
     """Runs tesseract on the row images and returns list of unique items found."""
     assert item_rows, 'No items found, invalid video?'
 
@@ -101,37 +114,32 @@ def run_tesseract(item_rows: List[numpy.ndarray], lang='eng') -> Set[str]:
         concat_rows = cv2.resize(concat_rows, None, fx=0.5, fy=0.5)
 
     parsed_text = pytesseract.image_to_string(
-        Image.fromarray(concat_rows), lang=lang)
+        Image.fromarray(concat_rows), lang=lang, config=get_tesseract_config(lang))
 
-    # Cleanup results a bit and try matching them again items using string distance
-    return {t.lower() for t in map(str.strip, parsed_text.split('\n')) if t}
+    # Split the results and remove empty lines.
+    return set(map(str.strip, parsed_text.split('\n'))) - {''}
 
 
-def match_items(parsed_names: Set[str], item_names: Set[str]) -> Set[str]:
+def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
     """Matches a list of names against a database of items, finding best matches."""
-    # Create a whitespace-free mapping
-    item_db = {name.replace(' ', ''): name for name in item_names}
-
-    matched_items = set()
     no_match_count = 0
+    matched_items = set()
     for item in parsed_names:
-        item_key = item.replace(' ', '')
-        if item_key in item_db:
+        if item in item_db:
             # If item name exists is in the DB, add it as is
-            matched_items.add(item_db[item_key])
+            matched_items.add(item)
             continue
 
         # Otherwise, try to find closest name in the DB witha cutoff
-        matches = difflib.get_close_matches(item_key, item_db, n=1)
+        matches = difflib.get_close_matches(item, item_db, n=1)
         if not matches:
             logging.warning('No match found for %r', item)
             no_match_count += 1
-            assert no_match_count < len(parsed_names) // 10, \
+            assert no_match_count <= 20, \
                 'Failed to match multiple items, wrong language?'
             continue
-        real_item = item_db[matches[0]]   # type: ignore
-        logging.info('Matched %r to %r', item, real_item)
-        matched_items.add(real_item)
+        logging.info('Matched %r to %r', item, matches[0])
+        matched_items.add(matches[0])  # type: ignore
 
     if no_match_count:
         logging.warning('%d items failed to match.', no_match_count)
