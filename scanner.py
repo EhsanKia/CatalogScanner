@@ -92,13 +92,6 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
 def get_tesseract_config(lang: Optional[str] = None) -> str:
     configs = [
         '-c preserve_interword_spaces=1',  # Fixes spacing between logograms.
-        '-c load_system_dawg=0',
-        '-c load_freq_dawg=0',
-        '-c load_punc_dawg=0',
-        '-c load_number_dawg=0',
-        '-c load_unambig_dawg=0',
-        '-c load_bigram_dawg=0',
-        '-c load_fixed_length_dawgs=0',
     ]
     return ' '.join(configs)
 
