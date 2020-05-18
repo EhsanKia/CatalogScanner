@@ -78,13 +78,21 @@ def duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray])
 
 def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     """Parses a whole video and returns all the item rows found."""
+    unfinished_page = False
     all_rows: List[numpy.ndarray] = []
     for i, frame in enumerate(read_frames(filename)):
-        if i % 3 != 0:
-            continue  # Only parse every third frame
+        if not unfinished_page and i % 3 != 0:
+            continue  # Only parse every third frame (3 frames per page)
         new_rows = list(parse_frame(frame, for_sale))
         if duplicate_rows(all_rows, new_rows):
             continue  # Skip non-moving frames
+
+        # There's an issue in Switch's font rendering where it struggles to
+        # keep up with page scrolling, leading to bottom rows sometimes being empty.
+        # Since we parse every third frame, this can lead to items getting missed.
+        # The fix is to search for empty rows and force a scan of the next frame.
+        unfinished_page = any(r.min() > 150 for r in new_rows)
+
         all_rows.extend(new_rows)
     return all_rows
 
