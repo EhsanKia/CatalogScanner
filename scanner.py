@@ -89,10 +89,16 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     return all_rows
 
 
-def get_tesseract_config(lang: Optional[str] = None) -> str:
+def get_tesseract_config(lang: str) -> str:
     configs = [
         '-c preserve_interword_spaces=1',  # Fixes spacing between logograms.
     ]
+    if LANG_MAP.get(lang, lang) == 'jpn':
+        configs.extend([
+            '-c language_model_ngram_on=0',
+            '-c textord_force_make_prop_words=F',
+            '-c edges_max_children_per_outline=40',
+        ])
     return ' '.join(configs)
 
 def run_tesseract(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
@@ -124,7 +130,7 @@ def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
             continue
 
         # Otherwise, try to find closest name in the DB witha cutoff
-        matches = difflib.get_close_matches(item, item_db, n=1)
+        matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.5)
         if not matches:
             logging.warning('No match found for %r', item)
             no_match_count += 1
