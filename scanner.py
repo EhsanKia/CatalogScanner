@@ -101,7 +101,7 @@ def get_tesseract_config(lang: str) -> str:
     configs = [
         '-c preserve_interword_spaces=1',  # Fixes spacing between logograms.
     ]
-    if LANG_MAP.get(lang, lang) == 'jpn':
+    if LANG_MAP.get(lang, lang) in ['jpn', 'chi_sim', 'chi_tra']:
         configs.extend([
             '-c language_model_ngram_on=0',
             '-c textord_force_make_prop_words=F',
@@ -138,7 +138,7 @@ def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
             continue
 
         # Otherwise, try to find closest name in the DB witha cutoff
-        matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.5)
+        matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.4)
         if not matches:
             logging.warning('No match found for %r', item)
             no_match_count += 1
