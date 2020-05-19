@@ -73,7 +73,7 @@ def duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray])
     # Just check a middle row instead of all
     row_index = -len(new_rows) // 2
     diff = cv2.subtract(all_rows[row_index], new_rows[row_index])
-    return diff.sum() < 100
+    return diff.mean() < 2
 
 
 def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
