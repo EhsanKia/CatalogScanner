@@ -99,7 +99,9 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
 
 def get_tesseract_config(lang: str) -> str:
     configs = [
+        '--psm 6'  # Manually specify that we know orientation / shape.
         '-c preserve_interword_spaces=1',  # Fixes spacing between logograms.
+        '-c tessedit_do_invert=0',  # Speed up skipping invert check.
     ]
     if LANG_MAP.get(lang, lang) in ['jpn', 'chi_sim', 'chi_tra']:
         configs.extend([
@@ -138,7 +140,7 @@ def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
             continue
 
         # Otherwise, try to find closest name in the DB witha cutoff
-        matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.4)
+        matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.6)
         if not matches:
             logging.warning('No match found for %r', item)
             no_match_count += 1
