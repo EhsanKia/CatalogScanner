@@ -2,5 +2,6 @@
 .mypy_cache/
 .venv/
 .vscode/
+__pycache__/
 *.code-workspace
 catalog*.mp4

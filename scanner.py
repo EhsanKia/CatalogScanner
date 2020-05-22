@@ -1,7 +1,7 @@
 from absl import app
 from absl import flags
 from PIL import Image
-from typing import Iterable, Iterator, List, Optional, Set
+from typing import Iterator, List, Set
 
 import cv2
 import difflib
@@ -122,6 +122,7 @@ def get_tesseract_config(lang: str) -> str:
             '-c edges_max_children_per_outline=40',
         ])
     return ' '.join(configs)
+
 
 def run_tesseract(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
     """Runs tesseract on the row images and returns list of unique items found."""
