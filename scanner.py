@@ -77,7 +77,7 @@ def duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray])
 
 def item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
     """Checks whether the video is item scrolling instead of page scrolling."""
-    if not new_rows or len(all_rows) < len(new_rows):
+    if len(all_rows) < 3 or len(new_rows) < 3:
         return False
 
     diff = cv2.subtract(all_rows[-2], new_rows[-3])
