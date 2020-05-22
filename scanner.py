@@ -69,16 +69,23 @@ def duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray])
     """Checks if the new set of rows are the same as the previous seen rows."""
     if not new_rows or len(all_rows) < len(new_rows):
         return False
-
-    # Just check a middle row instead of all
-    row_index = -len(new_rows) // 2
+    row_index = -len(new_rows) // 2  # Just check a middle row instead of all
     diff = cv2.subtract(all_rows[row_index], new_rows[row_index])
+    return diff.mean() < 2
+
+
+def item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
+    """Checks whether the video is item scrolling instead of page scrolling."""
+    if not new_rows or len(all_rows) < len(new_rows):
+        return False
+    diff = cv2.subtract(all_rows[-2], new_rows[-3])
     return diff.mean() < 2
 
 
 def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     """Parses a whole video and returns all the item rows found."""
     unfinished_page = False
+    item_scroll_count = 0
     all_rows: List[numpy.ndarray] = []
     for i, frame in enumerate(read_frames(filename)):
         if not unfinished_page and i % 3 != 0:
@@ -93,6 +100,9 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
         # The fix is to search for empty rows and force a scan of the next frame.
         unfinished_page = any(r.min() > 150 for r in new_rows)
 
+        # Exit if video is not properly page scrolling.
+        item_scroll_count += item_scroll(all_rows, new_rows)
+        assert item_scroll_count < 10, 'Video is not page scrolling.'
         all_rows.extend(new_rows)
     return all_rows
 
@@ -173,7 +183,7 @@ def main(argv):
         lang_code=flags.FLAGS.lang,
         for_sale=flags.FLAGS.for_sale,
     )
-    print('\n'.join(all_items))
+    print(len(all_items))
 
 
 if __name__ == "__main__":
