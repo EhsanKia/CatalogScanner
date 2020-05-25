@@ -40,7 +40,7 @@ def read_frames(filename: str) -> Iterator[numpy.ndarray]:
             break  # Video is over
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        assert gray.shape == (720, 1280), 'Invalid resolution: %s' % (gray.shape,)
+        assert gray.shape == (720, 1280), 'Invalid resolution: {1}x{0}'.format(*gray.shape)
         yield gray[150:630, 635:1220]  # The region containing the item name and price
     cap.release()
 
