@@ -139,14 +139,28 @@ def run_tesseract(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]
         Image.fromarray(concat_rows), lang=lang, config=get_tesseract_config(lang))
 
     # Split the results and remove empty lines.
-    return set(map(str.strip, parsed_text.split('\n'))) - {''}
+    clean_items = {cleanup_name(item, lang) for item in parsed_text.split('\n')}
+    return clean_items - {''}  # Remove empty lines
+
+
+def cleanup_name(item_name: str, lang: str) -> str:
+    """Applies some manual name cleanup to fix OCR issues and improve matching."""
+    item_name = item_name.strip()
+
+    if lang == 'rus':
+        # Fix Russian matching of Nook Inc.
+        item_name = item_name.replace('Моок', 'Nook')
+        item_name = item_name.replace('пс.', 'Inc.')
+        item_name = item_name.replace('тс.', 'Inc.')
+
+    return item_name
 
 
 def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
     """Matches a list of names against a database of items, finding best matches."""
     no_match_count = 0
     matched_items = set()
-    for item in parsed_names:
+    for item in sorted(parsed_names):
         if item in item_db:
             # If item name exists is in the DB, add it as is
             matched_items.add(item)
