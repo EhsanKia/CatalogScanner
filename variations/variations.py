@@ -248,11 +248,10 @@ def main(argv):
     cap = cv2.VideoCapture(device_id)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-
-    # TODO: Figure out close button
+    cv2.namedWindow('frame')
 
     parser = VariationParser()
-    while True:
+    while cv2.getWindowProperty('frame', 0) >= 0:
         ret, frame = cap.read()
         assert ret, 'Video capture ended unexpectedly'
 
