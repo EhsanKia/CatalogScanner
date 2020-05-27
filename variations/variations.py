@@ -12,7 +12,7 @@ from absl import app, flags
 from PIL import Image
 from tesserocr import PSM, PyTessBaseAPI
 
-flags.DEFINE_integer('device_id', 1, 'ID of the capture card device.')
+flags.DEFINE_integer('device_id', None, 'ID of the capture card device.')
 
 FLAGS = flags.FLAGS
 TUTORIAL_LINES = [
@@ -209,18 +209,47 @@ def best_match(needle: Optional[str], haystack: Sequence[str]) -> Optional[str]:
     return matches[0] if matches else None  # type: ignore
 
 
+def pick_device_id() -> int:
+    """Tries to use a library to list video devices"""
+    try:
+        import pymf
+    except ImportError:
+        return 0
+
+    device_list = pymf.get_MF_devices()
+    if not device_list:
+        raise RuntimeError('No video devices found...')
+    elif len(device_list) == 1:
+        return 0  # Only once choice...
+
+    print('Detected devices:')
+    for device_id, device_name in enumerate(device_list):
+        print(f'  {device_id}) {device_name}')
+
+    while True:
+        pick = input('Pick a device number:')
+        if pick.isdigit() and 0 <= int(pick) < len(device_list):
+            break
+        print('Invalid id, pick from the list above')
+    return int(pick)
+
+
 def main(argv):
     # Make sure the script is being run in the right directory.
     script_directory = os.path.dirname(argv[0])
     os.chdir(script_directory)
 
+    # Find the right device ID.
+    device_id = FLAGS.device_id
+    if device_id is None:
+        device_id = pick_device_id()
+
     # Connect to the capture card and adjust video dimensions.
-    cap = cv2.VideoCapture(FLAGS.device_id)
+    cap = cv2.VideoCapture(device_id)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
     # TODO: Figure out close button
-    # TODO: add device picker
 
     parser = VariationParser()
     while True:
