@@ -1,6 +1,8 @@
+# Variations Scanner
+
 This is a manual version of the Catalog Scanner which does support variations.
 
-It requires a capture card to work, and unlike `scanner.py`, it uses [tesserocr](https://github.com/sirfz/tesserocr) instead of pytesseract.
+**It requires a capture card**, and unlike `scanner.py` it uses [tesserocr](https://github.com/sirfz/tesserocr) (not pytesseract).
 It also only works with en-US currently.
 
 On Windows, you can grab the [pre-built version of tesserocr](https://github.com/simonflueckiger/tesserocr-windows_build/releases) and
@@ -11,7 +13,6 @@ You then will hve to navigate to your Nook Shopping catalog to start the process
 At this point, you have to simply scroll through every item one by one, toggling the variations for each item that has them.
 The program will record every item you hover on and show the total count at the bottom of the screen.
 If you switch sections, it will reset the count automatically. You can also toggle "For Sale" filter to only add items that are purchasable.
-
 Once you're done, you can save the items which will create text file in the same directory.
 
 The controls are:
@@ -19,3 +20,5 @@ The controls are:
  - R to reset scanned items
  - S to save scanned items
  - F to toggle for_sale filter
+
+By default, the script tries to access your device on port #1. If that does not work or grabs your webcam's feed, you can try different values (0, 1, 2, 3, etc) using the `--device_id` flag.

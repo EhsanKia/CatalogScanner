@@ -1,15 +1,16 @@
+import datetime
+import difflib
+import json
+import os
+
 from dataclasses import dataclass
-from typing import Sequence, Optional, Set
+from typing import Optional, Sequence, Set
 
 import cv2
-import json
 import numpy
-from absl import app
-from absl import flags
+from absl import app, flags
 from PIL import Image
 from tesserocr import PSM, PyTessBaseAPI
-import difflib
-import datetime
 
 flags.DEFINE_integer('device_id', 1, 'ID of the capture card device.')
 
@@ -209,7 +210,9 @@ def best_match(needle: Optional[str], haystack: Sequence[str]) -> Optional[str]:
 
 
 def main(argv):
-    parser = VariationParser()
+    # Make sure the script is being run in the right directory.
+    script_directory = os.path.dirname(argv[0])
+    os.chdir(script_directory)
 
     # Connect to the capture card and adjust video dimensions.
     cap = cv2.VideoCapture(FLAGS.device_id)
@@ -218,6 +221,8 @@ def main(argv):
 
     # TODO: Figure out close button
     # TODO: add device picker
+
+    parser = VariationParser()
     while True:
         ret, frame = cap.read()
         assert ret, 'Video capture ended unexpectedly'
