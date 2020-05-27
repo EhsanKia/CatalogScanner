@@ -167,14 +167,19 @@ def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
             continue
 
         # Otherwise, try to find closest name in the DB witha cutoff
-        matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.6)
+        matches = difflib.get_close_matches(item, item_db, n=1)
         if not matches:
             logging.warning('No match found for %r', item)
             no_match_count += 1
             assert no_match_count <= 20, \
                 'Failed to match multiple items, wrong language?'
             continue
-        logging.info('Matched %r to %r', item, matches[0])
+
+        # Calculate difference ratio for better logging
+        ratio = difflib.SequenceMatcher(None, item, matches[0]).ratio()
+        log_func = logging.info if ratio < 0.8 else logging.debug
+        log_func('Matched %r to %r (%.2f)', item, matches[0], ratio)
+
         matched_items.add(matches[0])  # type: ignore
 
     if no_match_count:
