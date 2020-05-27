@@ -2,8 +2,7 @@
 
 This is a manual version of the Catalog Scanner which does support variations.
 
-**It requires a capture card and currently only works with enUS.** Also, unlike `scanner.py`, this uses [tesserocr](https://github.com/sirfz/tesserocr) (not pytesseract).
-
+**It requires a capture card and currently only works with enUS.** Also, unlike `scanner.py`, this uses [tesserocr](https://github.com/sirfz/tesserocr) (not pytesseract). That technically means that you don't need to have Tesseract-OCR installed, the library comes with all the required modules, and `eng.traineddata` is included in the directory for simplicity.
 
 On Windows, you can grab the [pre-built version of tesserocr](https://github.com/simonflueckiger/tesserocr-windows_build/releases) and
 install it using `pip install <filename>.whl`. The rest of the libraries can be installed using `pip install -r requirements.txt`.
