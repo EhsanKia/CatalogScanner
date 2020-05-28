@@ -146,6 +146,7 @@ def run_tesseract(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]
 def cleanup_name(item_name: str, lang: str) -> str:
     """Applies some manual name cleanup to fix OCR issues and improve matching."""
     item_name = item_name.strip()
+    item_name = item_name.replace('Ao dai', 'Áo dài')
 
     if lang == 'rus':
         # Fix Russian matching of Nook Inc.
