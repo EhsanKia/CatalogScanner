@@ -5,6 +5,7 @@ from typing import Iterator, List, Set
 
 import cv2
 import difflib
+import functools
 import json
 import logging
 import numpy
@@ -187,13 +188,18 @@ def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
     return matched_items
 
 
+@functools.lru_cache(maxsize=None)
+def _get_item_db(lang_code: str) -> Set[str]:
+    with open('items/%s.json' % lang_code, encoding='utf-8') as fp:
+        return set(json.load(fp))
+
+
 def scan_catalog(video_file: str, lang_code: str = 'en-us', for_sale: bool = False) -> List[str]:
     """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file, for_sale)
     item_names = run_tesseract(item_rows, lang=LANG_MAP[lang_code])
 
-    with open('items/%s.json' % lang_code, encoding='utf-8') as fp:
-        item_db = set(json.load(fp))
+    item_db = _get_item_db(lang_code)
     clean_names = match_items(item_names, item_db)
     return sorted(clean_names)
 
