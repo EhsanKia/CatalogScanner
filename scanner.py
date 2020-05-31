@@ -31,7 +31,7 @@ flags.DEFINE_enum('lang', 'en-us', LANG_MAP.keys(), 'The language to use for par
 flags.DEFINE_bool('for_sale', False, 'If true, the scanner will filter items that are not for sale.')
 
 
-def read_frames(filename: str) -> Iterator[numpy.ndarray]:
+def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region in grayscale."""
     cap = cv2.VideoCapture(filename)
     while True:
@@ -45,7 +45,7 @@ def read_frames(filename: str) -> Iterator[numpy.ndarray]:
     cap.release()
 
 
-def parse_frame(frame: numpy.ndarray, for_sale: bool = False) -> Iterator[numpy.ndarray]:
+def _parse_frame(frame: numpy.ndarray, for_sale: bool = False) -> Iterator[numpy.ndarray]:
     """Parses an individual frame and extracts item rows from the list."""
     # Detect the dashed lines and iterate over pairs of dashed lines
     # Last line has dashes after but first line doesn't have dashes before,
@@ -65,7 +65,7 @@ def parse_frame(frame: numpy.ndarray, for_sale: bool = False) -> Iterator[numpy.
         yield row[:, :415]  # Return the name region
 
 
-def duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
+def _is_duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
     """Checks if the new set of rows are the same as the previous seen rows."""
     if not new_rows or len(all_rows) < len(new_rows):
         return False
@@ -75,7 +75,7 @@ def duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray])
     return diff.mean() < 2
 
 
-def item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
+def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
     """Checks whether the video is item scrolling instead of page scrolling."""
     if len(all_rows) < 3 or len(new_rows) < 3:
         return False
@@ -89,11 +89,11 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     unfinished_page = False
     item_scroll_count = 0
     all_rows: List[numpy.ndarray] = []
-    for i, frame in enumerate(read_frames(filename)):
+    for i, frame in enumerate(_read_frames(filename)):
         if not unfinished_page and i % 3 != 0:
             continue  # Only parse every third frame (3 frames per page)
-        new_rows = list(parse_frame(frame, for_sale))
-        if duplicate_rows(all_rows, new_rows):
+        new_rows = list(_parse_frame(frame, for_sale))
+        if _is_duplicate_rows(all_rows, new_rows):
             continue  # Skip non-moving frames
 
         # There's an issue in Switch's font rendering where it struggles to
@@ -103,13 +103,14 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
         unfinished_page = any(r.min() > 150 for r in new_rows)
 
         # Exit if video is not properly page scrolling.
-        item_scroll_count += item_scroll(all_rows, new_rows)
+        item_scroll_count += _is_item_scroll(all_rows, new_rows)
         assert item_scroll_count < 10, 'Video is not page scrolling.'
         all_rows.extend(new_rows)
     return all_rows
 
 
-def get_tesseract_config(lang: str) -> str:
+def _get_tesseract_config(lang: str) -> str:
+    """Generates Tesseract configurations for the given language."""
     configs = [
         '--psm 6'  # Manually specify that we know orientation / shape.
         '-c preserve_interword_spaces=1',  # Fixes spacing between logograms.
@@ -136,14 +137,14 @@ def run_tesseract(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]
         concat_rows = cv2.resize(concat_rows, None, fx=0.5, fy=0.5)
 
     parsed_text = pytesseract.image_to_string(
-        Image.fromarray(concat_rows), lang=lang, config=get_tesseract_config(lang))
+        Image.fromarray(concat_rows), lang=lang, config=_get_tesseract_config(lang))
 
     # Split the results and remove empty lines.
-    clean_items = {cleanup_name(item, lang) for item in parsed_text.split('\n')}
+    clean_items = {_cleanup_name(item, lang) for item in parsed_text.split('\n')}
     return clean_items - {''}  # Remove empty lines
 
 
-def cleanup_name(item_name: str, lang: str) -> str:
+def _cleanup_name(item_name: str, lang: str) -> str:
     """Applies some manual name cleanup to fix OCR issues and improve matching."""
     item_name = item_name.strip()
     item_name = item_name.replace('Ao dai', 'Áo dài')
