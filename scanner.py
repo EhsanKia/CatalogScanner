@@ -159,7 +159,7 @@ def cleanup_name(item_name: str, lang: str) -> str:
 
 def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
     """Matches a list of names against a database of items, finding best matches."""
-    no_match_count = 0
+    no_match_items = []
     matched_items = set()
     for item in sorted(parsed_names):
         if item in item_db:
@@ -170,10 +170,7 @@ def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
         # Otherwise, try to find closest name in the DB witha cutoff
         matches = difflib.get_close_matches(item, item_db, n=1)
         if not matches:
-            logging.warning('No match found for %r', item)
-            no_match_count += 1
-            assert no_match_count <= 20, \
-                'Failed to match multiple items, wrong language?'
+            no_match_items.append(item)
             continue
 
         # Calculate difference ratio for better logging
@@ -183,8 +180,9 @@ def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
 
         matched_items.add(matches[0])  # type: ignore
 
-    if no_match_count:
-        logging.warning('%d items failed to match.', no_match_count)
+    assert len(no_match_items) <= 20, 'Failed to match multiple items, wrong language?'
+    if no_match_items:
+        logging.warning('No match for %d items: %s', len(no_match_items), no_match_items)
     return matched_items
 
 
