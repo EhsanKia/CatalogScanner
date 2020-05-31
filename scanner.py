@@ -85,8 +85,8 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
     return diff.mean() < 2
 
 
-def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
-    """Parses a whole video and returns all the item rows found."""
+def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
+    """Parses a whole video and returns an image containing all the items found."""
     unfinished_page = False
     item_scroll_count = 0
     all_rows: List[numpy.ndarray] = []
@@ -107,7 +107,10 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
         item_scroll_count += _is_item_scroll(all_rows, new_rows)
         assert item_scroll_count < 10, 'Video is not page scrolling.'
         all_rows.extend(new_rows)
-    return all_rows
+
+    assert all_rows, 'No items found, invalid video?'
+    # Concatenate all rows into a single image.
+    return cv2.vconcat(all_rows)
 
 
 def _get_tesseract_config(lang: str) -> str:
@@ -126,19 +129,14 @@ def _get_tesseract_config(lang: str) -> str:
     return ' '.join(configs)
 
 
-def run_tesseract(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
+def run_tesseract(item_rows: numpy.ndarray, lang: str = 'eng') -> Set[str]:
     """Runs tesseract on the row images and returns list of unique items found."""
-    assert item_rows, 'No items found, invalid video?'
-
-    # Concatenate all rows to send a single image to Tesseract
-    concat_rows = cv2.vconcat(item_rows)
-
     # For larger catalogs, shrink size in half. Accuracy still remains as good.
-    if concat_rows.shape[0] > 32000:
-        concat_rows = cv2.resize(concat_rows, None, fx=0.5, fy=0.5)
+    if item_rows.shape[0] > 32000:
+        item_rows = cv2.resize(item_rows, None, fx=0.5, fy=0.5)
 
     parsed_text = pytesseract.image_to_string(
-        Image.fromarray(concat_rows), lang=lang, config=_get_tesseract_config(lang))
+        Image.fromarray(item_rows), lang=lang, config=_get_tesseract_config(lang))
 
     # Split the results and remove empty lines.
     clean_items = {_cleanup_name(item, lang) for item in parsed_text.split('\n')}
@@ -159,11 +157,11 @@ def _cleanup_name(item_name: str, lang: str) -> str:
     return item_name
 
 
-def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
+def match_items(item_names: Set[str], item_db: Set[str]) -> Set[str]:
     """Matches a list of names against a database of items, finding best matches."""
     no_match_items = []
     matched_items = set()
-    for item in sorted(parsed_names):
+    for item in sorted(item_names):
         if item in item_db:
             # If item name exists is in the DB, add it as is
             matched_items.add(item)
@@ -173,6 +171,8 @@ def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
         matches = difflib.get_close_matches(item, item_db, n=1)
         if not matches:
             no_match_items.append(item)
+            assert len(no_match_items) <= 20, \
+                'Failed to match multiple items, wrong language?'
             continue
 
         # Calculate difference ratio for better logging
@@ -182,9 +182,9 @@ def match_items(parsed_names: Set[str], item_db: Set[str]) -> Set[str]:
 
         matched_items.add(matches[0])  # type: ignore
 
-    assert len(no_match_items) <= 20, 'Failed to match multiple items, wrong language?'
     if no_match_items:
-        logging.warning('No match for %d items: %s', len(no_match_items), no_match_items)
+        logging.warning('No matches found for %d item(s): %s',
+                        len(no_match_items), no_match_items)
     return matched_items
 
 
