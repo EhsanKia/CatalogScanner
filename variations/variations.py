@@ -2,6 +2,7 @@ import datetime
 import difflib
 import json
 import os
+import sys
 
 from dataclasses import dataclass
 from typing import Optional, Sequence, Set
@@ -227,7 +228,7 @@ def pick_device_id() -> int:
         print(f'  {device_id}) {device_name}')
 
     while True:
-        pick = input('Pick a device number:')
+        pick = input('Pick a device number: ')
         if pick.isdigit() and 0 <= int(pick) < len(device_list):
             break
         print('Invalid id, pick from the list above')
@@ -235,9 +236,10 @@ def pick_device_id() -> int:
 
 
 def main(argv):
-    # Make sure the script is being run in the right directory.
-    script_directory = os.path.dirname(argv[0])
-    os.chdir(script_directory)
+    # Handle working inside PyInstaller
+    script_dir = os.path.dirname(argv[0])
+    data_dir = getattr(sys, '_MEIPASS', script_dir)
+    os.chdir(data_dir)
 
     # Find the right device ID.
     device_id = FLAGS.device_id

@@ -3,5 +3,7 @@
 .venv/
 .vscode/
 __pycache__/
+build/
+dist/
 *.code-workspace
 catalog*.mp4
