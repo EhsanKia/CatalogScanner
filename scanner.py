@@ -11,7 +11,8 @@ import logging
 import numpy
 import pytesseract
 
-LANG_MAP: Dict[str, str] = {
+# Mapping supported AC:NH locales to tesseract languages.
+LOCALE_MAP: Dict[str, str] = {
     'auto': 'auto',  # Automatic detection
     'de-eu': 'deu',
     'en-eu': 'eng',
@@ -29,6 +30,7 @@ LANG_MAP: Dict[str, str] = {
     'zh-tw': 'chi_tra',
 }
 
+# Mapping of Tesseract scripts to possible locales.
 SCRIPT_MAP: Dict[str, List[str]] = {
     'Japanese': ['ja-jp'],
     'Cyrillic': ['ru-eu'],
@@ -39,7 +41,7 @@ SCRIPT_MAP: Dict[str, List[str]] = {
               'es-eu', 'es-us', 'it-eu', 'nl-eu']
 }
 
-flags.DEFINE_enum('lang', 'auto', LANG_MAP.keys(), 'The language to use for parsing the item names.')
+flags.DEFINE_enum('locale', 'auto', LOCALE_MAP.keys(), 'The language to use for parsing the item names.')
 flags.DEFINE_bool('for_sale', False, 'If true, the scanner will filter items that are not for sale.')
 
 
@@ -131,7 +133,7 @@ def _get_tesseract_config(lang: str) -> str:
         '-c preserve_interword_spaces=1',  # Fixes spacing between logograms.
         '-c tessedit_do_invert=0',  # Speed up skipping invert check.
     ]
-    if LANG_MAP.get(lang, lang) in ['jpn', 'chi_sim', 'chi_tra']:
+    if lang in ['jpn', 'chi_sim', 'chi_tra']:
         configs.extend([
             '-c language_model_ngram_on=0',
             '-c textord_force_make_prop_words=F',
@@ -169,17 +171,17 @@ def _cleanup_name(item_name: str, lang: str) -> str:
 
 
 @functools.lru_cache(maxsize=None)
-def _get_item_db(lang_code: str) -> Set[str]:
+def _get_item_db(locale: str) -> Set[str]:
     """Fetches the item database for a given locale, with caching."""
-    with open('items/%s.json' % lang_code, encoding='utf-8') as fp:
+    with open('items/%s.json' % locale, encoding='utf-8') as fp:
         return set(json.load(fp))
 
 
-def match_items(item_names: Set[str], lang_code: str = 'en-us') -> List[str]:
+def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
     """Matches a list of names against a database of items, finding best matches."""
     no_match_items = []
     matched_items = set()
-    item_db = _get_item_db(lang_code)
+    item_db = _get_item_db(locale)
     for item in sorted(item_names):
         if item in item_db:
             # If item name exists is in the DB, add it as is
@@ -207,47 +209,47 @@ def match_items(item_names: Set[str], lang_code: str = 'en-us') -> List[str]:
     return sorted(matched_items)
 
 
-def _handle_lang_detection(item_rows: numpy.ndarray, lang_code: str) -> str:
+def _handle_lang_detection(item_rows: numpy.ndarray, locale: str) -> str:
     """Detects the right locale for the given items if required."""
-    if lang_code != 'auto':
-        # If lang_code is already specified, return as is.
-        return lang_code
+    if locale != 'auto':
+        # If locale is already specified, return as is.
+        return locale
 
     # Handle automatic langauge detection.
     osd_data = pytesseract.image_to_osd(
         Image.fromarray(item_rows), output_type=pytesseract.Output.DICT)
 
-    lang_codes = SCRIPT_MAP.get(osd_data['script'])
-    assert lang_codes, 'Failed to automatically detect language.'
+    possible_locales = SCRIPT_MAP.get(osd_data['script'])
+    assert possible_locales, 'Failed to automatically detect language.'
 
     # If we can uniquely guess the language from the script, use that.
-    if len(lang_codes) == 1:
-        return lang_codes[0]
+    if len(possible_locales) == 1:
+        return possible_locales[0]
 
     # Otherwise, run OCR on the first few items and try to find the best matching locale.
     item_names = run_ocr(item_rows[:30 * 35, :], lang='script/Latin')
 
-    def match_score_func(lang_code):
+    def match_score_func(locale):
         """Computes how many items match for a given locale."""
-        item_db = _get_item_db(lang_code)
+        item_db = _get_item_db(locale)
         return sum(name in item_db for name in item_names)
 
-    return max(lang_codes, key=match_score_func)
+    return max(possible_locales, key=match_score_func)
 
 
-def scan_catalog(video_file: str, lang_code: str = 'en-us', for_sale: bool = False) -> List[str]:
+def scan_catalog(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> List[str]:
     """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file, for_sale)
-    lang_code = _handle_lang_detection(item_rows, lang_code)
-    item_names = run_ocr(item_rows, lang=LANG_MAP[lang_code])
-    return match_items(item_names, lang_code)
+    locale = _handle_lang_detection(item_rows, locale)
+    item_names = run_ocr(item_rows, lang=LOCALE_MAP[locale])
+    return match_items(item_names, locale)
 
 
 def main(argv):
     video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
     all_items = scan_catalog(
         video_file,
-        lang_code=flags.FLAGS.lang,
+        locale=flags.FLAGS.locale,
         for_sale=flags.FLAGS.for_sale,
     )
     print('\n'.join(all_items))
