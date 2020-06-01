@@ -224,6 +224,7 @@ def _handle_lang_detection(item_rows: numpy.ndarray, locale: str) -> str:
 
     # If we can uniquely guess the language from the script, use that.
     if len(possible_locales) == 1:
+        logging.info('Detected locale: %s', possible_locales[0])
         return possible_locales[0]
 
     # Otherwise, run OCR on the first few items and try to find the best matching locale.
@@ -234,7 +235,9 @@ def _handle_lang_detection(item_rows: numpy.ndarray, locale: str) -> str:
         item_db = _get_item_db(locale)
         return sum(name in item_db for name in item_names)
 
-    return max(possible_locales, key=match_score_func)
+    best_locale = max(possible_locales, key=match_score_func)
+    logging.info('Detected locale: %s', best_locale)
+    return best_locale
 
 
 def scan_catalog(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> List[str]:
