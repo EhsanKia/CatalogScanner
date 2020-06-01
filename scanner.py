@@ -129,8 +129,8 @@ def _get_tesseract_config(lang: str) -> str:
     return ' '.join(configs)
 
 
-def run_tesseract(item_rows: numpy.ndarray, lang: str = 'eng') -> Set[str]:
-    """Runs tesseract on the row images and returns list of unique items found."""
+def run_ocr(item_rows: numpy.ndarray, lang: str = 'eng') -> Set[str]:
+    """Runs tesseract OCR on an image of item names and returns all items found."""
     # For larger catalogs, shrink size in half. Accuracy still remains as good.
     if item_rows.shape[0] > 32000:
         item_rows = cv2.resize(item_rows, None, fx=0.5, fy=0.5)
@@ -157,10 +157,18 @@ def _cleanup_name(item_name: str, lang: str) -> str:
     return item_name
 
 
-def match_items(item_names: Set[str], item_db: Set[str]) -> Set[str]:
+@functools.lru_cache(maxsize=None)
+def _get_item_db(lang_code: str) -> Set[str]:
+    """Fetches the item database for a given locale, with caching."""
+    with open('items/%s.json' % lang_code, encoding='utf-8') as fp:
+        return set(json.load(fp))
+
+
+def match_items(item_names: Set[str], lang_code: str = 'en-us') -> List[str]:
     """Matches a list of names against a database of items, finding best matches."""
     no_match_items = []
     matched_items = set()
+    item_db = _get_item_db(lang_code)
     for item in sorted(item_names):
         if item in item_db:
             # If item name exists is in the DB, add it as is
@@ -185,23 +193,14 @@ def match_items(item_names: Set[str], item_db: Set[str]) -> Set[str]:
     if no_match_items:
         logging.warning('No matches found for %d item(s): %s',
                         len(no_match_items), no_match_items)
-    return matched_items
-
-
-@functools.lru_cache(maxsize=None)
-def _get_item_db(lang_code: str) -> Set[str]:
-    with open('items/%s.json' % lang_code, encoding='utf-8') as fp:
-        return set(json.load(fp))
+    return sorted(matched_items)
 
 
 def scan_catalog(video_file: str, lang_code: str = 'en-us', for_sale: bool = False) -> List[str]:
     """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file, for_sale)
-    item_names = run_tesseract(item_rows, lang=LANG_MAP[lang_code])
-
-    item_db = _get_item_db(lang_code)
-    clean_names = match_items(item_names, item_db)
-    return sorted(clean_names)
+    item_names = run_ocr(item_rows, lang=LANG_MAP[lang_code])
+    return match_items(item_names, lang_code)
 
 
 def main(argv):
