@@ -82,9 +82,9 @@ def _parse_frame(frame: numpy.ndarray, scan_filter: ScanFilter = None) -> Iterat
 
         # Skip items that are not for sale (price region is lighter)
         for_sale = row[:, 430:].min() < 100
-        if scan_filter == ScanFilter.FOR_SALE and for_sale:
+        if scan_filter == ScanFilter.FOR_SALE and not for_sale:
             continue
-        if scan_filter == ScanFilter.NOT_FOR_SALE and not for_sale:
+        if scan_filter == ScanFilter.NOT_FOR_SALE and for_sale:
             continue
 
         yield row[:, :415]  # Return the name region
