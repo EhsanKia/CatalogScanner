@@ -133,8 +133,16 @@ def parse_video(filename: str, scan_filter: ScanFilter = None) -> numpy.ndarray:
         all_rows.extend(new_rows)
 
     assert all_rows, 'No items found, invalid video?'
+
     # Concatenate all rows into a single image.
-    return cv2.vconcat(all_rows)
+    concat_rows = cv2.vconcat(all_rows)
+
+    # For larger catalogs, shrink size in half to avoid Tesseract's 32k limit.
+    # Accuracy still remains good for more scripts.
+    if concat_rows.shape[0] > 32000:
+        concat_rows = cv2.resize(concat_rows, None, fx=0.5, fy=0.5)
+
+    return concat_rows
 
 
 def _get_tesseract_config(lang: str) -> str:
@@ -156,10 +164,6 @@ def _get_tesseract_config(lang: str) -> str:
 
 def run_ocr(item_rows: numpy.ndarray, lang: str = 'eng') -> Set[str]:
     """Runs tesseract OCR on an image of item names and returns all items found."""
-    # For larger catalogs, shrink size in half. Accuracy still remains as good.
-    if item_rows.shape[0] > 32000:
-        item_rows = cv2.resize(item_rows, None, fx=0.5, fy=0.5)
-
     parsed_text = pytesseract.image_to_string(
         Image.fromarray(item_rows), lang=lang, config=_get_tesseract_config(lang))
 
