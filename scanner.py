@@ -60,7 +60,6 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         ret, frame = cap.read()
         if not ret:
             break  # Video is over
-
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         assert gray.shape == (720, 1280), 'Invalid resolution: {1}x{0}'.format(*gray.shape)
         yield gray[150:630, 635:1220]  # The region containing the item name and price
@@ -105,6 +104,7 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
     if len(all_rows) < 3 or len(new_rows) < 3:
         return False
 
+    # Items move by only one position when item scrolling.
     diff = cv2.subtract(all_rows[-2], new_rows[-3])
     return diff.mean() < 2
 
@@ -145,6 +145,7 @@ def _get_tesseract_config(lang: str) -> str:
         '-c tessedit_do_invert=0',  # Speed up skipping invert check.
     ]
     if lang in ['jpn', 'chi_sim', 'chi_tra']:
+        # Parameters specific to parsing logograms.
         configs.extend([
             '-c language_model_ngram_on=0',
             '-c textord_force_make_prop_words=F',
@@ -220,7 +221,7 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
     return sorted(matched_items)
 
 
-def _handle_lang_detection(item_rows: numpy.ndarray, locale: str) -> str:
+def _handle_language_detection(item_rows: numpy.ndarray, locale: str) -> str:
     """Detects the right locale for the given items if required."""
     if locale != 'auto':
         # If locale is already specified, return as is.
@@ -255,7 +256,7 @@ def scan_catalog(
         video_file: str, locale: str = 'en-us', scan_filter: ScanFilter = None) -> List[str]:
     """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file, scan_filter)
-    locale = _handle_lang_detection(item_rows, locale)
+    locale = _handle_language_detection(item_rows, locale)
     item_names = run_ocr(item_rows, lang=LOCALE_MAP[locale])
     return match_items(item_names, locale)
 
