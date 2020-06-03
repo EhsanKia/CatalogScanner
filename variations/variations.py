@@ -221,7 +221,7 @@ def pick_device_id() -> int:
     if not device_list:
         raise RuntimeError('No video devices found...')
     elif len(device_list) == 1:
-        return 0  # Only once choice...
+        return 0  # Only one choice...
 
     print('Detected devices:')
     for device_id, device_name in enumerate(device_list):
