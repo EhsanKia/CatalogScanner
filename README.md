@@ -42,4 +42,6 @@ By default, the script prints out the name of all the items found in your catalo
 
 ## Credits
 
-The item name data comes from https://github.com/imthe666st/ACNH
+The item name data comes from:
+- https://tinyurl.com/acnh-sheet
+- https://github.com/imthe666st/ACNH
