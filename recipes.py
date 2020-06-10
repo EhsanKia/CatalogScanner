@@ -48,7 +48,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
             break  # Video is over
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
-        yield frame[120:720, 45:730]  # Return relevant region
+        yield frame[110:720, 45:730]  # Return relevant region
     cap.release()
 
 
@@ -73,7 +73,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
         for x1, x2 in x_positions:
             card = frame[y1+36:y1+148, x1:x2]
             # Detects selected cards, which are bigger, and resizes them.
-            if thresh[y1-15:y1-10, x1:x2].mean() < 100:
+            if thresh[y1-10:y1-5, x1:x2].mean() < 100:
                 card = frame[y1+22:y1+152, x1-9:x2+9]
                 card = cv2.resize(card, (112, 112))
             row.append(card)
@@ -130,7 +130,7 @@ def _get_recipe_db() -> Dict[str, List[RecipeCard]]:
 def _guess_card_type(card: numpy.ndarray) -> str:
     """Guessed the recipe type by the card's background color."""
     # Cut a small piece from the corner and calculate the average color.
-    bg_color = card[106:, :6, :].mean(axis=(0, 1))
+    bg_color = card[106:, 60:70, :].mean(axis=(0, 1))
 
     # Find the closest match in the list of known card types.
     distance_func = lambda x: numpy.linalg.norm(numpy.array(x) - bg_color)
