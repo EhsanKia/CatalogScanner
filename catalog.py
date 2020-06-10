@@ -77,7 +77,7 @@ def _parse_frame(frame: numpy.ndarray, scan_filter: ScanFilter = None) -> Iterat
             continue  # skip lines that are too close or far
 
         # Cut row slightly below and above the dashed line
-        row = frame[y2-40:y2-5, :]
+        row = frame[y2 - 40:y2 - 5, :]
 
         # Skip items that are not for sale (price region is lighter)
         for_sale = row[:, 430:].min() < 100
@@ -95,7 +95,7 @@ def _is_duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarr
         return False
 
     row_index = -len(new_rows) // 2  # Just check a middle row instead of all
-    diff = cv2.subtract(all_rows[row_index], new_rows[row_index])
+    diff = cv2.absdiff(all_rows[row_index], new_rows[row_index])
     return diff.mean() < 2
 
 
@@ -105,7 +105,7 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
         return False
 
     # Items move by only one position when item scrolling.
-    diff = cv2.subtract(all_rows[-2], new_rows[-3])
+    diff = cv2.absdiff(all_rows[-2], new_rows[-3])
     return diff.mean() < 2
 
 
