@@ -1,8 +1,3 @@
-from absl import app
-from absl import flags
-from PIL import Image
-from typing import Dict, Iterator, List, Set
-
 import cv2
 import difflib
 import functools
@@ -10,6 +5,9 @@ import json
 import logging
 import numpy
 import pytesseract
+
+from PIL import Image
+from typing import Dict, Iterator, List, Set
 
 # Mapping supported AC:NH locales to tesseract languages.
 LOCALE_MAP: Dict[str, str] = {
@@ -40,10 +38,6 @@ SCRIPT_MAP: Dict[str, List[str]] = {
     'Latin': ['en-us', 'en-eu', 'fr-eu', 'fr-us', 'de-eu',
               'es-eu', 'es-us', 'it-eu', 'nl-eu']
 }
-
-FLAGS = flags.FLAGS
-flags.DEFINE_enum('locale', 'auto', LOCALE_MAP.keys(), 'The locale to use for parsing item names.')
-flags.DEFINE_bool('for_sale', None, 'If true, the scanner will skip items that are not for sale.')
 
 
 def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
@@ -252,17 +246,3 @@ def scan_catalog(video_file: str, locale: str = 'en-us', for_sale: bool = False)
     locale = _handle_language_detection(item_rows, locale)
     item_names = run_ocr(item_rows, lang=LOCALE_MAP[locale])
     return match_items(item_names, locale)
-
-
-def main(argv):
-    video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
-    all_items = scan_catalog(
-        video_file,
-        locale=FLAGS.locale,
-        for_sale=FLAGS.for_sale,
-    )
-    print('\n'.join(all_items))
-
-
-if __name__ == "__main__":
-    app.run(main)

@@ -1,13 +1,11 @@
-from absl import app
-from absl import flags
-from typing import Dict, Iterator, List, Tuple
-
 import collections
 import cv2
 import functools
 import json
 import numpy
 import os
+
+from typing import Dict, Iterator, List, Tuple
 
 # Mapping from background colors (in BGR for cv2) to card type.
 CARD_TYPES: Dict[Tuple[int, int, int], str] = {
@@ -26,14 +24,6 @@ CARD_TYPES: Dict[Tuple[int, int, int], str] = {
     (229, 233, 233): 'white',
     (125, 224, 229): 'yellow',
 }
-
-LOCALES: List[str] = [
-    'de-eu', 'en-eu', 'en-us', 'es-eu', 'es-us', 'fr-eu', 'fr-us',
-    'it-eu', 'ja-jp', 'ko-kr', 'nl-eu', 'ru-eu', 'zh-cn', 'zh-tw']
-
-FLAGS = flags.FLAGS
-flags.DEFINE_enum('locale', 'en-us', LOCALES,
-                  'The locale to use for item name output.')
 
 
 class RecipeCard:
@@ -183,7 +173,7 @@ def match_recipes(recipe_cards: List[numpy.ndarray]) -> List[str]:
 
 def translate_names(recipe_names: List[str], locale: str) -> List[str]:
     """Translates a list of recipe names to the given locale."""
-    if locale == 'en-us':
+    if locale in ['auto', 'en-us']:
         return recipe_names
 
     translation_path = os.path.join('diys', 'translations.json')
@@ -197,13 +187,3 @@ def scan_recipes(video_file: str, locale: str = 'en-us') -> List[str]:
     recipe_cards = parse_video(video_file)
     matched_recipes = match_recipes(recipe_cards)
     return translate_names(matched_recipes, locale)
-
-
-def main(argv):
-    video_file = argv[1] if len(argv) > 1 else 'diy.mp4'
-    all_items = scan_recipes(video_file, locale=FLAGS.locale)
-    print('\n'.join(all_items))
-
-
-if __name__ == "__main__":
-    app.run(main)
