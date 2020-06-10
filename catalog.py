@@ -5,7 +5,6 @@ from typing import Dict, Iterator, List, Set
 
 import cv2
 import difflib
-import enum
 import functools
 import json
 import logging
@@ -45,12 +44,6 @@ SCRIPT_MAP: Dict[str, List[str]] = {
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('locale', 'auto', LOCALE_MAP.keys(), 'The locale to use for parsing item names.')
 flags.DEFINE_bool('for_sale', None, 'If true, the scanner will skip items that are not for sale.')
-flags.DEFINE_bool('not_for_sale', None, 'If true, the scanner will skip items that are for sale.')
-
-
-class ScanFilter(enum.Enum):
-    FOR_SALE = 1
-    NOT_FOR_SALE = 2
 
 
 def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
@@ -66,7 +59,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     cap.release()
 
 
-def _parse_frame(frame: numpy.ndarray, scan_filter: ScanFilter = None) -> Iterator[numpy.ndarray]:
+def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray]:
     """Parses an individual frame and extracts item rows from the list."""
     # Detect the dashed lines and iterate over pairs of dashed lines
     # Last line has dashes after but first line doesn't have dashes before,
@@ -80,10 +73,7 @@ def _parse_frame(frame: numpy.ndarray, scan_filter: ScanFilter = None) -> Iterat
         row = frame[y2 - 40:y2 - 5, :]
 
         # Skip items that are not for sale (price region is lighter)
-        for_sale = row[:, 430:].min() < 100
-        if scan_filter == ScanFilter.FOR_SALE and not for_sale:
-            continue
-        if scan_filter == ScanFilter.NOT_FOR_SALE and for_sale:
+        if for_sale and row[:, 430:].min() > 100:
             continue
 
         yield row[:, :415]  # Return the name region
@@ -109,7 +99,7 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
     return diff.mean() < 2
 
 
-def parse_video(filename: str, scan_filter: ScanFilter = None) -> numpy.ndarray:
+def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
     """Parses a whole video and returns an image containing all the items found."""
     unfinished_page = False
     item_scroll_count = 0
@@ -117,7 +107,7 @@ def parse_video(filename: str, scan_filter: ScanFilter = None) -> numpy.ndarray:
     for i, frame in enumerate(_read_frames(filename)):
         if not unfinished_page and i % 3 != 0:
             continue  # Only parse every third frame (3 frames per page)
-        new_rows = list(_parse_frame(frame, scan_filter))
+        new_rows = list(_parse_frame(frame, for_sale))
         if _is_duplicate_rows(all_rows, new_rows):
             continue  # Skip non-moving frames
 
@@ -256,10 +246,9 @@ def _handle_language_detection(item_rows: numpy.ndarray, locale: str) -> str:
     return best_locale
 
 
-def scan_catalog(
-        video_file: str, locale: str = 'en-us', scan_filter: ScanFilter = None) -> List[str]:
+def scan_catalog(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> List[str]:
     """Scans a video of scrolling through a catalog and returns all items found."""
-    item_rows = parse_video(video_file, scan_filter)
+    item_rows = parse_video(video_file, for_sale)
     locale = _handle_language_detection(item_rows, locale)
     item_names = run_ocr(item_rows, lang=LOCALE_MAP[locale])
     return match_items(item_names, locale)
@@ -267,21 +256,13 @@ def scan_catalog(
 
 def main(argv):
     video_file = argv[1] if len(argv) > 1 else 'catalog.mp4'
-
-    scan_filter = None
-    if FLAGS.for_sale:
-        scan_filter = ScanFilter.FOR_SALE
-    elif FLAGS.not_for_sale:
-        scan_filter = ScanFilter.NOT_FOR_SALE
-
     all_items = scan_catalog(
         video_file,
         locale=FLAGS.locale,
-        scan_filter=scan_filter,
+        for_sale=FLAGS.for_sale,
     )
     print('\n'.join(all_items))
 
 
 if __name__ == "__main__":
-    flags.mark_flags_as_mutual_exclusive(['for_sale', 'not_for_sale'])
     app.run(main)
