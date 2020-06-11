@@ -1,3 +1,5 @@
+from common import ScanMode, ScanResult
+
 import collections
 import cv2
 import functools
@@ -42,11 +44,17 @@ class RecipeCard:
         return f'RecipeCard({self.item_name!r}, {self.card_type!r})'
 
 
-def scan_recipes(video_file: str, locale: str = 'en-us') -> List[str]:
+def scan_recipes(video_file: str, locale: str = 'en-us') -> ScanResult:
     """Scans a video of scrolling through DIY list and returns all recipes found."""
     recipe_cards = parse_video(video_file)
-    matched_recipes = match_recipes(recipe_cards)
-    return translate_names(matched_recipes, locale)
+    recipe_names = match_recipes(recipe_cards)
+    results = translate_names(recipe_names, locale)
+
+    return ScanResult(
+        mode=ScanMode.RECIPES,
+        items=results,
+        locale=locale.replace('auto', 'en-us'),
+    )
 
 
 def parse_video(filename: str) -> List[numpy.ndarray]:

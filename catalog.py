@@ -1,3 +1,5 @@
+from common import ScanMode, ScanResult
+
 import cv2
 import difflib
 import functools
@@ -43,12 +45,18 @@ SCRIPT_MAP: Dict[str, List[str]] = {
 }
 
 
-def scan_catalog(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> List[str]:
+def scan_catalog(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> ScanResult:
     """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file, for_sale)
-    locale = _handle_language_detection(item_rows, locale)
+    locale = _detect_locale(item_rows, locale)
     item_names = run_ocr(item_rows, lang=LOCALE_MAP[locale])
-    return match_items(item_names, locale)
+    results = match_items(item_names, locale)
+
+    return ScanResult(
+        mode=ScanMode.CATALOG,
+        items=results,
+        locale=locale,
+    )
 
 
 def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
@@ -229,7 +237,7 @@ def _get_item_db(locale: str) -> Set[str]:
         return set(json.load(fp))
 
 
-def _handle_language_detection(item_rows: numpy.ndarray, locale: str) -> str:
+def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
     """Detects the right locale for the given items if required."""
     if locale != 'auto':
         # If locale is already specified, return as is.

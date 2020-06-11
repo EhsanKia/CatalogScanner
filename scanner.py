@@ -1,14 +1,13 @@
-import cv2
-import numpy
-
+from common import ScanResult
 import catalog
 import recipes
+
+import cv2
+import numpy
 
 from absl import app
 from absl import flags
 from absl import logging
-
-from typing import List
 
 
 FLAGS = flags.FLAGS
@@ -22,10 +21,10 @@ flags.DEFINE_enum('mode', 'auto', ['auto', 'catalog', 'recipes'],
 
 
 def scan_video(file_name: str, mode: str = 'auto', locale: str = 'auto',
-               for_sale: bool = False) -> List[str]:
+               for_sale: bool = False) -> ScanResult:
     if mode == 'auto':
         mode = _detect_video_type(file_name)
-        logging.info('Detected %s video.', mode)
+        logging.info('Detected video mode: %s', mode)
 
     if mode == 'catalog':
         return catalog.scan_catalog(file_name, locale=locale, for_sale=for_sale)
@@ -63,13 +62,16 @@ def main(argv):
     else:
         video_file = 'catalog.mp4'
 
-    all_items = scan_video(
+    result = scan_video(
         video_file,
         mode=FLAGS.mode,
         locale=FLAGS.locale,
         for_sale=FLAGS.for_sale,
     )
-    print('\n'.join(all_items))
+
+    result_count, result_mode = len(result.items), result.mode.name.lower()
+    print(f'Found {result_count} items in {result_mode} [{result.locale}]')
+    print('\n'.join(result.items))
 
 
 if __name__ == "__main__":
