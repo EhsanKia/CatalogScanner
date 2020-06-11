@@ -7,6 +7,7 @@ import json
 import logging
 import numpy
 import pytesseract
+import unicodedata
 
 from PIL import Image
 from typing import Dict, Iterator, List, Set
@@ -117,11 +118,12 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
             matched_items.add(item)
             continue
 
-        # Otherwise, try to find closest name in the DB witha cutoff
-        matches = difflib.get_close_matches(item, item_db, n=1)
+        # Otherwise, try to find closest name in the DB with a cutoff.
+        matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.5)
         if not matches:
             no_match_items.append(item)
-            assert len(no_match_items) <= 20, \
+            logging.warning('No matches found for %r', item)
+            assert len(no_match_items) <= 25, \
                 'Failed to match multiple items, wrong language?'
             continue
 
@@ -132,9 +134,6 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
 
         matched_items.add(matches[0])  # type: ignore
 
-    if no_match_items:
-        logging.warning('No matches found for %d item(s): %s',
-                        len(no_match_items), no_match_items)
     return sorted(matched_items)
 
 
@@ -220,6 +219,9 @@ def _cleanup_name(item_name: str, lang: str) -> str:
     """Applies some manual name cleanup to fix OCR issues and improve matching."""
     item_name = item_name.strip()
     item_name = item_name.replace('Ao dai', 'Áo dài')
+
+    # Normalize unicode characters for better matching.
+    item_name = unicodedata.normalize('NFKC', item_name)
 
     if lang == 'rus':
         # Fix Russian matching of Nook Inc.
