@@ -9,6 +9,9 @@ import pytesseract
 from PIL import Image
 from typing import Dict, Iterator, List, Set
 
+# The expected color for the video background.
+BG_COLOR = numpy.array([181, 253, 253])
+
 # Mapping supported AC:NH locales to tesseract languages.
 LOCALE_MAP: Dict[str, str] = {
     'auto': 'auto',  # Automatic detection
@@ -134,9 +137,17 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         ret, frame = cap.read()
         if not ret:
             break  # Video is over
+
+        assert frame.shape[:2] == (720, 1280), \
+            'Invalid resolution: {1}x{0}'.format(*frame.shape)
+
+        color = frame[300:400, :10].mean(axis=(0, 1))
+        if numpy.linalg.norm(color - BG_COLOR) > 10:
+            continue  # Skip frames that are not showing items.
+
+        # Turn to grayscale and crop the region containing item name and price.
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        assert gray.shape == (720, 1280), 'Invalid resolution: {1}x{0}'.format(*gray.shape)
-        yield gray[150:630, 635:1220]  # The region containing the item name and price
+        yield gray[150:630, 635:1220]
     cap.release()
 
 

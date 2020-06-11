@@ -6,11 +6,10 @@ import recipes
 
 from absl import app
 from absl import flags
+from absl import logging
 
 from typing import List
 
-CATALOG_COLOR = numpy.array([181, 253, 253])
-RECIPES_COLOR = numpy.array([195, 223, 228])
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('locale', 'auto', catalog.LOCALE_MAP.keys(),
@@ -26,6 +25,7 @@ def scan_video(file_name: str, mode: str = 'auto', locale: str = 'auto',
                for_sale: bool = False) -> List[str]:
     if mode == 'auto':
         mode = _detect_video_type(file_name)
+        logging.info('Detected %s video.', mode)
 
     if mode == 'catalog':
         return catalog.scan_catalog(file_name, locale=locale, for_sale=for_sale)
@@ -35,19 +35,22 @@ def scan_video(file_name: str, mode: str = 'auto', locale: str = 'auto',
 
 def _detect_video_type(file_name: str) -> str:
     video_capture = cv2.VideoCapture(file_name)
-    success, frame = video_capture.read()
-    if not success or frame is None:
-        raise AssertionError('Unable to parse video.')
 
-    assert frame.shape[:2] == (720, 1280), \
-        'Invalid resolution: {1}x{0}'.format(*frame.shape)
+    # Check the first ~3s of the video.
+    for _ in range(100):
+        success, frame = video_capture.read()
+        if not success or frame is None:
+            raise AssertionError('Unable to parse video.')
 
-    # Get the average color of the background.
-    color = frame[300:400, :10].mean(axis=(0, 1))
-    if numpy.linalg.norm(color - CATALOG_COLOR) < 10:
-        return 'catalog'
-    elif numpy.linalg.norm(color - RECIPES_COLOR) < 10:
-        return 'recipes'
+        assert frame.shape[:2] == (720, 1280), \
+            'Invalid resolution: {1}x{0}'.format(*frame.shape)
+
+        # Get the average color of the background.
+        color = frame[300:400, :10].mean(axis=(0, 1))
+        if numpy.linalg.norm(color - catalog.BG_COLOR) < 10:
+            return 'catalog'
+        elif numpy.linalg.norm(color - recipes.BG_COLOR) < 10:
+            return 'recipes'
 
     raise AssertionError('Video is not showing catalog or recipes.')
 

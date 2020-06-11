@@ -7,6 +7,9 @@ import os
 
 from typing import Dict, Iterator, List, Tuple
 
+# The expected color for the video background.
+BG_COLOR = numpy.array([195, 223, 228])
+
 # Mapping from background colors (in BGR for cv2) to card type.
 CARD_TYPES: Dict[Tuple[int, int, int], str] = {
     (174, 220, 228): 'beige',
@@ -88,9 +91,16 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         ret, frame = cap.read()
         if not ret:
             break  # Video is over
+
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
-        yield frame[110:720, 45:730]  # Return relevant region
+
+        color = frame[300:400, :10].mean(axis=(0, 1))
+        if numpy.linalg.norm(color - BG_COLOR) > 10:
+            continue  # Skip frames that are not showing recipes.
+
+        # Crop the region containing DIY cards.
+        yield frame[110:720, 45:730]
     cap.release()
 
 
