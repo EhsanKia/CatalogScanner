@@ -40,6 +40,93 @@ SCRIPT_MAP: Dict[str, List[str]] = {
 }
 
 
+def scan_catalog(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> List[str]:
+    """Scans a video of scrolling through a catalog and returns all items found."""
+    item_rows = parse_video(video_file, for_sale)
+    locale = _handle_language_detection(item_rows, locale)
+    item_names = run_ocr(item_rows, lang=LOCALE_MAP[locale])
+    return match_items(item_names, locale)
+
+
+def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
+    """Parses a whole video and returns an image containing all the items found."""
+    unfinished_page = False
+    item_scroll_count = 0
+    all_rows: List[numpy.ndarray] = []
+    for i, frame in enumerate(_read_frames(filename)):
+        if not unfinished_page and i % 3 != 0:
+            continue  # Only parse every third frame (3 frames per page)
+        new_rows = list(_parse_frame(frame, for_sale))
+        if _is_duplicate_rows(all_rows, new_rows):
+            continue  # Skip non-moving frames
+
+        # There's an issue in Switch's font rendering where it struggles to
+        # keep up with page scrolling, leading to bottom rows sometimes being empty.
+        # Since we parse every third frame, this can lead to items getting missed.
+        # The fix is to search for empty rows and force a scan of the next frame.
+        unfinished_page = any(r.min() > 150 for r in new_rows)
+
+        # Exit if video is not properly page scrolling.
+        item_scroll_count += _is_item_scroll(all_rows, new_rows)
+        assert item_scroll_count < 10, 'Video is not page scrolling.'
+        all_rows.extend(new_rows)
+
+    assert all_rows, 'No items found, invalid video?'
+
+    # Concatenate all rows into a single image.
+    concat_rows = cv2.vconcat(all_rows)
+
+    # For larger catalogs, shrink size in half to avoid Tesseract's 32k limit.
+    # Accuracy still remains good for more scripts.
+    if concat_rows.shape[0] > 32000:
+        concat_rows = cv2.resize(concat_rows, None, fx=0.5, fy=0.5)
+
+    return concat_rows
+
+
+def run_ocr(item_rows: numpy.ndarray, lang: str = 'eng') -> Set[str]:
+    """Runs tesseract OCR on an image of item names and returns all items found."""
+    parsed_text = pytesseract.image_to_string(
+        Image.fromarray(item_rows), lang=lang, config=_get_tesseract_config(lang))
+
+    # Split the results and remove empty lines.
+    clean_items = {_cleanup_name(item, lang)
+                   for item in parsed_text.split('\n')}
+    return clean_items - {''}  # Remove empty lines
+
+
+def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
+    """Matches a list of names against a database of items, finding best matches."""
+    no_match_items = []
+    matched_items = set()
+    item_db = _get_item_db(locale)
+    for item in sorted(item_names):
+        if item in item_db:
+            # If item name exists is in the DB, add it as is
+            matched_items.add(item)
+            continue
+
+        # Otherwise, try to find closest name in the DB witha cutoff
+        matches = difflib.get_close_matches(item, item_db, n=1)
+        if not matches:
+            no_match_items.append(item)
+            assert len(no_match_items) <= 20, \
+                'Failed to match multiple items, wrong language?'
+            continue
+
+        # Calculate difference ratio for better logging
+        ratio = difflib.SequenceMatcher(None, item, matches[0]).ratio()
+        log_func = logging.info if ratio < 0.8 else logging.debug
+        log_func('Matched %r to %r (%.2f)', item, matches[0], ratio)
+
+        matched_items.add(matches[0])  # type: ignore
+
+    if no_match_items:
+        logging.warning('No matches found for %d item(s): %s',
+                        len(no_match_items), no_match_items)
+    return sorted(matched_items)
+
+
 def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region in grayscale."""
     cap = cv2.VideoCapture(filename)
@@ -93,42 +180,6 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
     return diff.mean() < 2
 
 
-def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
-    """Parses a whole video and returns an image containing all the items found."""
-    unfinished_page = False
-    item_scroll_count = 0
-    all_rows: List[numpy.ndarray] = []
-    for i, frame in enumerate(_read_frames(filename)):
-        if not unfinished_page and i % 3 != 0:
-            continue  # Only parse every third frame (3 frames per page)
-        new_rows = list(_parse_frame(frame, for_sale))
-        if _is_duplicate_rows(all_rows, new_rows):
-            continue  # Skip non-moving frames
-
-        # There's an issue in Switch's font rendering where it struggles to
-        # keep up with page scrolling, leading to bottom rows sometimes being empty.
-        # Since we parse every third frame, this can lead to items getting missed.
-        # The fix is to search for empty rows and force a scan of the next frame.
-        unfinished_page = any(r.min() > 150 for r in new_rows)
-
-        # Exit if video is not properly page scrolling.
-        item_scroll_count += _is_item_scroll(all_rows, new_rows)
-        assert item_scroll_count < 10, 'Video is not page scrolling.'
-        all_rows.extend(new_rows)
-
-    assert all_rows, 'No items found, invalid video?'
-
-    # Concatenate all rows into a single image.
-    concat_rows = cv2.vconcat(all_rows)
-
-    # For larger catalogs, shrink size in half to avoid Tesseract's 32k limit.
-    # Accuracy still remains good for more scripts.
-    if concat_rows.shape[0] > 32000:
-        concat_rows = cv2.resize(concat_rows, None, fx=0.5, fy=0.5)
-
-    return concat_rows
-
-
 def _get_tesseract_config(lang: str) -> str:
     """Generates Tesseract configurations for the given language."""
     configs = [
@@ -144,16 +195,6 @@ def _get_tesseract_config(lang: str) -> str:
             '-c edges_max_children_per_outline=40',
         ])
     return ' '.join(configs)
-
-
-def run_ocr(item_rows: numpy.ndarray, lang: str = 'eng') -> Set[str]:
-    """Runs tesseract OCR on an image of item names and returns all items found."""
-    parsed_text = pytesseract.image_to_string(
-        Image.fromarray(item_rows), lang=lang, config=_get_tesseract_config(lang))
-
-    # Split the results and remove empty lines.
-    clean_items = {_cleanup_name(item, lang) for item in parsed_text.split('\n')}
-    return clean_items - {''}  # Remove empty lines
 
 
 def _cleanup_name(item_name: str, lang: str) -> str:
@@ -175,38 +216,6 @@ def _get_item_db(locale: str) -> Set[str]:
     """Fetches the item database for a given locale, with caching."""
     with open('items/%s.json' % locale, encoding='utf-8') as fp:
         return set(json.load(fp))
-
-
-def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
-    """Matches a list of names against a database of items, finding best matches."""
-    no_match_items = []
-    matched_items = set()
-    item_db = _get_item_db(locale)
-    for item in sorted(item_names):
-        if item in item_db:
-            # If item name exists is in the DB, add it as is
-            matched_items.add(item)
-            continue
-
-        # Otherwise, try to find closest name in the DB witha cutoff
-        matches = difflib.get_close_matches(item, item_db, n=1)
-        if not matches:
-            no_match_items.append(item)
-            assert len(no_match_items) <= 20, \
-                'Failed to match multiple items, wrong language?'
-            continue
-
-        # Calculate difference ratio for better logging
-        ratio = difflib.SequenceMatcher(None, item, matches[0]).ratio()
-        log_func = logging.info if ratio < 0.8 else logging.debug
-        log_func('Matched %r to %r (%.2f)', item, matches[0], ratio)
-
-        matched_items.add(matches[0])  # type: ignore
-
-    if no_match_items:
-        logging.warning('No matches found for %d item(s): %s',
-                        len(no_match_items), no_match_items)
-    return sorted(matched_items)
 
 
 def _handle_language_detection(item_rows: numpy.ndarray, locale: str) -> str:
@@ -238,11 +247,3 @@ def _handle_language_detection(item_rows: numpy.ndarray, locale: str) -> str:
     best_locale = max(possible_locales, key=match_score_func)
     logging.info('Detected locale: %s', best_locale)
     return best_locale
-
-
-def scan_catalog(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> List[str]:
-    """Scans a video of scrolling through a catalog and returns all items found."""
-    item_rows = parse_video(video_file, for_sale)
-    locale = _handle_language_detection(item_rows, locale)
-    item_names = run_ocr(item_rows, lang=LOCALE_MAP[locale])
-    return match_items(item_names, locale)

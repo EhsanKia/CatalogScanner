@@ -39,6 +39,48 @@ class RecipeCard:
         return f'RecipeCard({self.item_name!r}, {self.card_type!r})'
 
 
+def scan_recipes(video_file: str, locale: str = 'en-us') -> List[str]:
+    """Scans a video of scrolling through DIY list and returns all recipes found."""
+    recipe_cards = parse_video(video_file)
+    matched_recipes = match_recipes(recipe_cards)
+    return translate_names(matched_recipes, locale)
+
+
+def parse_video(filename: str) -> List[numpy.ndarray]:
+    """Parses a whole video and returns images for all recipe cards found."""
+    all_cards: List[numpy.ndarray] = []
+    for i, frame in enumerate(_read_frames(filename)):
+        if i % 4 != 0:
+            continue  # Skip every 4th frame
+        for new_cards in _parse_frame(frame):
+            if _is_duplicate_cards(all_cards, new_cards):
+                continue  # Skip non-moving frames
+            all_cards.extend(new_cards)
+    return all_cards
+
+
+def match_recipes(recipe_cards: List[numpy.ndarray]) -> List[str]:
+    """Matches a list of names against a database of items, finding best matches."""
+    matched_recipes = set()
+    recipe_db = _get_recipe_db()
+    for card in recipe_cards:
+        card_type = _guess_card_type(card)
+        best_match = _find_best_match(card, recipe_db[card_type])
+        matched_recipes.add(best_match.item_name)
+    return list(matched_recipes)
+
+
+def translate_names(recipe_names: List[str], locale: str) -> List[str]:
+    """Translates a list of recipe names to the given locale."""
+    if locale in ['auto', 'en-us']:
+        return recipe_names
+
+    translation_path = os.path.join('diys', 'translations.json')
+    with open(translation_path, encoding='utf-8') as fp:
+        translations = json.load(fp)
+    return [translations[name][locale] for name in recipe_names]
+
+
 def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region."""
     cap = cv2.VideoCapture(filename)
@@ -96,19 +138,6 @@ def _is_duplicate_cards(all_cards: List[numpy.ndarray], new_cards: List[numpy.nd
     return False
 
 
-def parse_video(filename: str) -> List[numpy.ndarray]:
-    """Parses a whole video and returns images for all recipe cards found."""
-    all_cards: List[numpy.ndarray] = []
-    for i, frame in enumerate(_read_frames(filename)):
-        if i % 4 != 0:
-            continue  # Skip every 4th frame
-        for new_cards in _parse_frame(frame):
-            if _is_duplicate_cards(all_cards, new_cards):
-                continue  # Skip non-moving frames
-            all_cards.extend(new_cards)
-    return all_cards
-
-
 @functools.lru_cache()
 def _get_recipe_db() -> Dict[str, List[RecipeCard]]:
     """Fetches the item database for a given locale, with caching."""
@@ -158,32 +187,3 @@ def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCa
 
     similarities = list(map(slow_similarity_metric, recipes))
     return recipes[numpy.argmin(similarities)]
-
-
-def match_recipes(recipe_cards: List[numpy.ndarray]) -> List[str]:
-    """Matches a list of names against a database of items, finding best matches."""
-    matched_recipes = set()
-    recipe_db = _get_recipe_db()
-    for card in recipe_cards:
-        card_type = _guess_card_type(card)
-        best_match = _find_best_match(card, recipe_db[card_type])
-        matched_recipes.add(best_match.item_name)
-    return list(matched_recipes)
-
-
-def translate_names(recipe_names: List[str], locale: str) -> List[str]:
-    """Translates a list of recipe names to the given locale."""
-    if locale in ['auto', 'en-us']:
-        return recipe_names
-
-    translation_path = os.path.join('diys', 'translations.json')
-    with open(translation_path, encoding='utf-8') as fp:
-        translations = json.load(fp)
-    return [translations[name][locale] for name in recipe_names]
-
-
-def scan_recipes(video_file: str, locale: str = 'en-us') -> List[str]:
-    """Scans a video of scrolling through DIY list and returns all recipes found."""
-    recipe_cards = parse_video(video_file)
-    matched_recipes = match_recipes(recipe_cards)
-    return translate_names(matched_recipes, locale)
