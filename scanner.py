@@ -58,9 +58,9 @@ def main(argv):
     if len(argv) > 1:
         video_file = argv[1]
     elif FLAGS.mode == 'recipes':
-        video_file = 'diy.mp4'
+        video_file = 'videos/diy.mp4'
     else:
-        video_file = 'catalog.mp4'
+        video_file = 'videos/catalog.mp4'
 
     result = scan_video(
         video_file,

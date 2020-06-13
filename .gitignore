@@ -4,7 +4,6 @@
 .vscode/
 __pycache__/
 build/
-catalogs/
+videos/extras/
 dist/
 *.code-workspace
-catalog*.mp4
