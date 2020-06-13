@@ -14,20 +14,20 @@ BG_COLOR = numpy.array([195, 223, 228])
 
 # Mapping from background colors (in BGR for cv2) to card type.
 CARD_TYPES: Dict[Tuple[int, int, int], str] = {
-    (174, 220, 228): 'beige',
-    (229, 213, 189): 'blue',
-    (113, 159, 183): 'brick',
-    (65, 106, 143): 'brown',
-    (110, 108, 108): 'dark-gray',
-    (123, 199, 211): 'gold',
-    (128, 225, 156): 'green',
-    (188, 188, 187): 'light-gray',
-    (109, 199, 239): 'orange',
-    (185, 181, 238): 'pink',
-    (87, 76, 204): 'red',
-    (163, 160, 159): 'silver',
-    (229, 233, 233): 'white',
-    (125, 224, 229): 'yellow',
+    (173, 220, 229): 'beige',
+    (232, 215, 188): 'blue',
+    (109, 158, 183): 'brick',
+    (61, 103, 143): 'brown',
+    (109, 107, 106): 'dark-gray',
+    (118, 200, 211): 'gold',
+    (124, 226, 154): 'green',
+    (188, 188, 186): 'light-gray',
+    (108, 196, 242): 'orange',
+    (184, 180, 243): 'pink',
+    (89, 75, 204): 'red',
+    (163, 159, 160): 'silver',
+    (229, 232, 231): 'white',
+    (122, 225, 230): 'yellow',
 }
 
 
@@ -36,7 +36,7 @@ class RecipeCard:
 
     def __init__(self, item_name, card_type):
         img_path = os.path.join('diys', 'generated', item_name + '.png')
-        self.img = cv2.imread(img_path)[28:-28, :, :]
+        self.img = cv2.imread(img_path)
         self.item_name = item_name
         self.card_type = card_type
 
@@ -196,7 +196,7 @@ def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCa
         return recipes[numpy.argmin(similarities)]
 
     # Otherwise, we use a slower matching, which tries various shifts.
-    def slow_similarity_metric(recipe, debug=False):
+    def slow_similarity_metric(recipe):
         diffs = []
         for y in [-2, -1, 0, 1]:
             shifted = numpy.roll(card, y, axis=0)
