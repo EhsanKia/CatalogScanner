@@ -7,6 +7,7 @@ from typing import List
 class ScanMode(enum.Enum):
     CATALOG = 1
     RECIPES = 2
+    STORAGE = 3
 
 
 @dataclasses.dataclass
