@@ -115,7 +115,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
 def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     """Parses an individual frame and extracts cards from the recipe list."""
     # Start/end horizontal position for the 5 DIY cards.
-    x_positions = [(10, 122), (148, 260), (285, 397), (423, 535), (560, 672)]
+    x_positions = [(11, 123), (148, 260), (286, 398), (423, 535), (560, 672)]
 
     # This code finds areas of the image that are beige (background color),
     # then it averages the frame across the Y-axis to find the area rows.
@@ -133,7 +133,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
         for x1, x2 in x_positions:
             card = frame[y1+36:y1+148, x1:x2]
             # Detects selected cards, which are bigger, and resizes them.
-            if thresh[y1-10:y1-5, x1:x2].mean() < 100:
+            if thresh[y1-8:y1-5, x1:x2].mean() < 100:
                 card = frame[y1+22:y1+152, x1-9:x2+9]
                 card = cv2.resize(card, (112, 112))
             row.append(card)
