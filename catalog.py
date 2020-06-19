@@ -245,9 +245,12 @@ def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
         # If locale is already specified, return as is.
         return locale
 
-    # Handle automatic langauge detection.
-    osd_data = pytesseract.image_to_osd(
-        Image.fromarray(item_rows), output_type=pytesseract.Output.DICT)
+    # run script detection.
+    try:
+        osd_data = pytesseract.image_to_osd(
+            Image.fromarray(item_rows), output_type=pytesseract.Output.DICT)
+    except pytesseract.TesseractError:
+        return 'en-us'
 
     possible_locales = SCRIPT_MAP.get(osd_data['script'])
     assert possible_locales, 'Failed to automatically detect language.'
