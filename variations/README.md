@@ -2,13 +2,21 @@
 
 This is a manual version of the Catalog Scanner which does support variations.
 
-**It requires a capture card and currently only works with enUS.** Also, unlike `scanner.py`, this uses [tesserocr](https://github.com/sirfz/tesserocr) (not pytesseract). That technically means that you don't need to have Tesseract-OCR installed, the library comes with all the required modules, and `eng.traineddata` is included in the directory for simplicity.
+**It requires a capture card and currently only works with enUS.** It has also only been tested with my capture card (Elgato HD60 S) on Windows 10.
 
-On Windows, you can grab the [pre-built version of tesserocr](https://github.com/simonflueckiger/tesserocr-windows_build/releases) and
+## Pre-built binary
+
+For windows, there's a binary version under [Releases](https://github.com/EhsanKia/CatalogScanner/releases). It's a single binary with everything included. This has only been tested on my device, run at your own discretion.
+
+## Manual installation
+
+Simply grab the folder, install the dependencies and run `variations.py`. Unlike `scanner.py`, this uses [tesserocr](https://github.com/sirfz/tesserocr) (not pytesseract). That technically means that you don't need to have Tesseract-OCR installed, the library comes with all the required modules, and `eng.traineddata` is included in the directory for simplicity. On Windows, you can grab the [pre-built version of tesserocr](https://github.com/simonflueckiger/tesserocr-windows_build/releases) and
 install it using `pip install <filename>.whl`. The rest of the libraries can be installed using `pip install -r requirements.txt`.
 
+## Usage
+
 Once you launch this program, it will try to connect to your capture card and show you a view of your game.
-You then will hve to navigate to your Nook Shopping catalog to start the process.
+You then will have to navigate to your Nook Shopping catalog to start the process.
 At this point, you have to simply scroll through every item one by one, toggling the variations for each item that has them.
 The program will record every item you hover on and show the total count at the bottom of the screen.
 If you switch sections, it will reset the count automatically. You can also toggle "For Sale" filter to only add items that are purchasable.
