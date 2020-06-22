@@ -80,7 +80,7 @@ def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
 
         # Exit if video is not properly page scrolling.
         item_scroll_count += _is_item_scroll(all_rows, new_rows)
-        assert item_scroll_count < 10, 'Video is not page scrolling.'
+        assert item_scroll_count < 20, 'Video is not page scrolling.'
         all_rows.extend(new_rows)
 
     assert all_rows, 'No items found, invalid video?'
@@ -195,7 +195,7 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
 
     # Items move by only one position when item scrolling.
     diff = cv2.absdiff(all_rows[-2], new_rows[-3])
-    return diff.mean() < 2
+    return diff.mean() < 5
 
 
 def _get_tesseract_config(lang: str) -> str:
