@@ -131,7 +131,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
 
         row = []
         for x1, x2 in x_positions:
-            card = frame[y1+36:y1+148, x1:x2]
+            card = frame[y1+37:y1+149, x1:x2]
             # Detects selected cards, which are bigger, and resizes them.
             if thresh[y1-8:y1-5, x1:x2].mean() < 100:
                 card = frame[y1+22:y1+152, x1-9:x2+9]
@@ -198,7 +198,7 @@ def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCa
     # Otherwise, we use a slower matching, which tries various shifts.
     def slow_similarity_metric(recipe):
         diffs = []
-        for y in [-2, -1, 0, 1]:
+        for y in [-1, 0, 1]:
             shifted = numpy.roll(card, y, axis=0)
             diffs.append(cv2.absdiff(shifted, recipe.img).sum())
         return min(diffs)  # Return lowest diff across shifts.
