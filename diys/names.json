@@ -1,442 +1,7 @@
 [
  [
-  "flimsy axe",
-  "ToolAxeStone.png",
-  "beige"
- ],
- [
-  "stone axe",
-  "ToolAxeStoneNormal.png",
-  "beige"
- ],
- [
-  "axe",
-  "ToolAxe.png",
-  "beige"
- ],
- [
-  "flimsy shovel",
-  "ToolShovelWood.png",
-  "beige"
- ],
- [
-  "shovel",
-  "ToolScoop.png",
-  "beige"
- ],
- [
-  "flimsy fishing rod",
-  "ToolFishingrodWood.png",
-  "beige"
- ],
- [
-  "fishing rod",
-  "ToolAngling.png",
-  "beige"
- ],
- [
-  "flimsy net",
-  "ToolNet.png",
-  "beige"
- ],
- [
-  "net",
-  "ToolNetNormal.png",
-  "beige"
- ],
- [
-  "flimsy watering can",
-  "ToolWateringWood.png",
-  "beige"
- ],
- [
-  "watering can",
-  "ToolWatering.png",
-  "beige"
- ],
- [
-  "slingshot",
-  "ToolSlingshot.png",
-  "beige"
- ],
- [
-  "golden axe",
-  "ToolAxeGold.png",
-  "gold"
- ],
- [
-  "golden shovel",
-  "ToolScoopGold.png",
-  "gold"
- ],
- [
-  "golden rod",
-  "ToolFishingrodGold.png",
-  "gold"
- ],
- [
-  "golden net",
-  "ToolNetGold.png",
-  "gold"
- ],
- [
-  "golden watering can",
-  "ToolWateringGold.png",
-  "gold"
- ],
- [
-  "golden slingshot",
-  "ToolSlingshotGold.png",
-  "gold"
- ],
- [
-  "vaulting pole",
-  "LongWoodenStick.png",
-  "beige"
- ],
- [
-  "ladder",
-  "ToolLadder.png",
-  "beige"
- ],
- [
-  "wand",
-  "ToolStickWood.png",
-  "beige"
- ],
- [
-  "medicine",
-  "ItemMedicine.png",
-  "white"
- ],
- [
-  "fish bait",
-  "FishBait.png",
-  "white"
- ],
- [
-  "ocarina",
-  "ToolOcarina.png",
-  "brick"
- ],
- [
-  "pan flute",
-  "ToolPanpipe.png",
-  "green"
- ],
- [
-  "pitfall seed",
-  "PitfallSeed.png",
-  "green"
- ],
- [
-  "campfire",
-  "FtrBonfire.png",
-  "brown"
- ],
- [
-  "bonfire",
-  "FtrCampfire.png",
-  "brown"
- ],
- [
-  "tiki torch",
-  "FtrTorch.png",
-  "brown"
- ],
- [
-  "clothesline",
-  "FtrClothesline.png",
-  "brown"
- ],
- [
-  "scarecrow",
-  "FtrScarecrow.png",
-  "brown"
- ],
- [
-  "tree branch wreath",
-  "FtrDoorOrnamentWreathBranch.png",
-  "brown"
- ],
- [
-  "tree-branch wand",
-  "ToolStickTree.png",
-  "brown"
- ],
- [
-  "simple DIY workbench",
-  "FtrWorkbenchStump.png",
-  "brown"
- ],
- [
-  "mini DIY workbench",
-  "FtrWorkbenchS.png",
-  "brown"
- ],
- [
-  "DIY workbench",
-  "FtrWorkbench.png",
-  "brown"
- ],
- [
-  "wooden stool",
-  "FtrWoodenStoolS.png",
-  "brown"
- ],
- [
-  "wooden chair",
-  "FtrWoodenChairS.png",
-  "brown"
- ],
- [
-  "wooden mini table",
-  "FtrWoodenTableMini.png",
-  "brown"
- ],
- [
-  "wooden end table",
-  "FtrWoodenTableS.png",
-  "brown"
- ],
- [
-  "wooden low table",
-  "FtrWoodenTableM.png",
-  "brown"
- ],
- [
-  "wooden table",
-  "FtrWoodenTableL.png",
-  "brown"
- ],
- [
-  "wooden wardrobe",
-  "FtrWoodenCloset.png",
-  "brown"
- ],
- [
-  "wooden chest",
-  "FtrWoodenChest.png",
-  "brown"
- ],
- [
-  "wooden simple bed",
-  "FtrWoodenBedS.png",
-  "brown"
- ],
- [
-  "wooden double bed",
-  "FtrWoodenBedW.png",
-  "brown"
- ],
- [
-  "wooden full-length mirror",
-  "FtrWoodenMirror.png",
-  "brown"
- ],
- [
-  "wooden table mirror",
-  "FtrWoodenMirrorS.png",
-  "brown"
- ],
- [
-  "wooden waste bin",
-  "FtrTrashboxWood.png",
-  "brown"
- ],
- [
-  "log stool",
-  "FtrLogStoolS.png",
-  "brown"
- ],
- [
-  "log bench",
-  "FtrLogStoolL.png",
-  "brown"
- ],
- [
-  "wild log bench",
-  "FtrWoodBench.png",
-  "brown"
- ],
- [
-  "log dining table",
-  "FtrLogTableL.png",
-  "brown"
- ],
- [
-  "log round table",
-  "FtrLogTableLRound.png",
-  "brown"
- ],
- [
-  "log garden lounge",
-  "FtrLogBedS.png",
-  "brown"
- ],
- [
-  "log chair",
-  "FtrLogSofaS.png",
-  "brown"
- ],
- [
-  "log extra-long sofa",
-  "FtrLogSofaL.png",
-  "brown"
- ],
- [
-  "log bed",
-  "FtrLogBedW.png",
-  "brown"
- ],
- [
-  "log decorative shelves",
-  "FtrLogShelf.png",
-  "brown"
- ],
- [
-  "log wall-mounted clock",
-  "FtrLogClockWall.png",
-  "brown"
- ],
- [
-  "log stakes",
-  "FtrWoodPile.png",
-  "brown"
- ],
- [
-  "wooden-block toy",
-  "FtrBlockBrick.png",
-  "brown"
- ],
- [
-  "wooden-block stool",
-  "FtrBlockStoolS.png",
-  "brown"
- ],
- [
-  "wooden-block chair",
-  "FtrBlockChairS.png",
-  "brown"
- ],
- [
-  "wooden-block bench",
-  "FtrBlockChairL.png",
-  "brown"
- ],
- [
-  "wooden-block table",
-  "FtrBlockTableL.png",
-  "brown"
- ],
- [
-  "wooden-block chest",
-  "FtrBlockChest.png",
-  "brown"
- ],
- [
-  "wooden-block bed",
-  "FtrBlockBedS.png",
-  "brown"
- ],
- [
-  "wooden-block bookshelf",
-  "FtrBlockShelf.png",
-  "brown"
- ],
- [
-  "wooden-block stereo",
-  "FtrBlockCompo.png",
-  "brown"
- ],
- [
-  "wooden-block wall clock",
-  "FtrBlockClock.png",
-  "brown"
- ],
- [
-  "plain sink",
-  "FtrWashstandBowl.png",
-  "brown"
- ],
- [
-  "plain wooden shop sign",
-  "FtrSignWood.png",
-  "brown"
- ],
- [
-  "natural garden chair",
-  "FtrGardenChairNatural.png",
-  "brown"
- ],
- [
-  "natural square table",
-  "FtrGardenTableSNatural.png",
-  "brown"
- ],
- [
-  "natural garden table",
-  "FtrGardenTableNatural.png",
-  "brown"
- ],
- [
-  "rocking chair",
-  "FtrRockingchair.png",
-  "brown"
- ],
- [
-  "swinging bench",
-  "FtrSwingWood.png",
-  "brown"
- ],
- [
-  "grass standee",
-  "FtrHariboteGrass.png",
-  "brown"
- ],
- [
-  "hedge standee",
-  "FtrHariboteHedge.png",
-  "brown"
- ],
- [
-  "mountain standee",
-  "FtrHariboteMountain.png",
-  "brown"
- ],
- [
-  "tree standee",
-  "FtrHariboteTree.png",
-  "brown"
- ],
- [
-  "tea table",
-  "FtrDiningtableJapan.png",
-  "brown"
- ],
- [
-  "trophy case",
-  "FtrTrophycase.png",
-  "brown"
- ],
- [
-  "clackercart",
-  "FtrKatakatatoy.png",
-  "brown"
- ],
- [
-  "rocking horse",
-  "FtrRockinghorse.png",
-  "brown"
- ],
- [
-  "birdcage",
-  "FtrBirdcage.png",
-  "brown"
- ],
- [
-  "music stand",
-  "FtrMusicstand.png",
+  "acorn pochette",
+  "BagShoulderAcorn0.png",
   "brown"
  ],
  [
@@ -445,999 +10,9 @@
   "brown"
  ],
  [
-  "doghouse",
-  "FtrDoghouse.png",
-  "brown"
- ],
- [
-  "barrel",
-  "FtrPirateBarrel.png",
-  "brown"
- ],
- [
-  "wooden bucket",
-  "FtrBucketWood.png",
-  "brown"
- ],
- [
-  "butter churn",
-  "FtrButtermixer.png",
-  "brown"
- ],
- [
-  "birdhouse",
-  "FtrBirdhouse.png",
-  "brown"
- ],
- [
-  "garden wagon",
-  "FtrGardenwagon.png",
-  "brown"
- ],
- [
-  "bonsai shelf",
-  "FtrBonsaiShelf.png",
-  "brown"
- ],
- [
-  "stall",
-  "FtrFloat.png",
-  "brown"
- ],
- [
-  "signpost",
-  "FtrSignpost.png",
-  "brown"
- ],
- [
   "angled signpost",
   "FtrSignpostTilt.png",
   "brown"
- ],
- [
-  "destinations signpost",
-  "FtrSignpostWorld.png",
-  "brown"
- ],
- [
-  "sleigh",
-  "FtrSled.png",
-  "brown"
- ],
- [
-  "ringtoss",
-  "FtrQuoits.png",
-  "brown"
- ],
- [
-  "matryoshka",
-  "FtrMatryoshka.png",
-  "brown"
- ],
- [
-  "ukulele",
-  "FtrUkulele.png",
-  "brown"
- ],
- [
-  "wooden fish",
-  "FtrMokugyo.png",
-  "brown"
- ],
- [
-  "old-fashioned washtub",
-  "FtrWashtub.png",
-  "brown"
- ],
- [
-  "cutting board",
-  "FtrCuttingboard.png",
-  "brown"
- ],
- [
-  "decoy duck",
-  "FtrDecoy.png",
-  "brown"
- ],
- [
-  "firewood",
-  "FtrFirewood.png",
-  "brown"
- ],
- [
-  "wooden toolbox",
-  "FtrToolboxWood.png",
-  "brown"
- ],
- [
-  "key holder",
-  "FtrKeyhanger.png",
-  "brown"
- ],
- [
-  "boomerang",
-  "FtrBoomerang.png",
-  "brown"
- ],
- [
-  "deer decoration",
-  "FtrHuntingtrophy.png",
-  "brown"
- ],
- [
-  "wooden-plank sign",
-  "FtrSignboardWood.png",
-  "brown"
- ],
- [
-  "bone doorplate",
-  "FtrDoorPlateBone.png",
-  "brown"
- ],
- [
-  "paw-print doorplate",
-  "FtrDoorOrnamentPaw.png",
-  "brown"
- ],
- [
-  "timber doorplate",
-  "FtrDoorOrnamentLog.png",
-  "brown"
- ],
- [
-  "modern wood wall",
-  "RoomTexWallMixwood00.png",
-  "brown"
- ],
- [
-  "wooden-mosaic wall",
-  "RoomTexWallMixPlankWood00.png",
-  "brown"
- ],
- [
-  "dark wooden-mosaic wall",
-  "RoomTexWallMixPlankWood01.png",
-  "brown"
- ],
- [
-  "wild-wood wall",
-  "RoomTexWallWildWood00.png",
-  "brown"
- ],
- [
-  "brown herringbone wall",
-  "RoomTexWallHerringbone00.png",
-  "brown"
- ],
- [
-  "chocolate herringbone wall",
-  "RoomTexWallHerringbone01.png",
-  "brown"
- ],
- [
-  "wooden-knot wall",
-  "RoomTexWallCedar00.png",
-  "brown"
- ],
- [
-  "cabin wall",
-  "RoomTexWallLog00.png",
-  "brown"
- ],
- [
-  "stacked-wood wall",
-  "RoomTexWallFireWood00.png",
-  "brown"
- ],
- [
-  "log pack",
-  "BagBackpackWood0.png",
-  "brown"
- ],
- [
-  "corral fence",
-  "ItemFenceHorizontalWood.png",
-  "brown"
- ],
- [
-  "vertical-board fence",
-  "ItemFenceVerticalWood.png",
-  "brown"
- ],
- [
-  "country fence",
-  "ItemFenceLog.png",
-  "brown"
- ],
- [
-  "spiky fence",
-  "ItemFenceSharply.png",
-  "brown"
- ],
- [
-  "barbed-wire fence",
-  "ItemFenceBarbedWire.png",
-  "brown"
- ],
- [
-  "simple wooden fence",
-  "ItemFenceNatural.png",
-  "brown"
- ],
- [
-  "lattice fence",
-  "ItemFenceLatiiceNatural.png",
-  "brown"
- ],
- [
-  "imperial fence",
-  "ItemFenceChinese.png",
-  "brown"
- ],
- [
-  "recycled-can thumb piano",
-  "FtrKalimbaCan.png",
-  "dark-gray"
- ],
- [
-  "tire toy",
-  "FtrPlayingtire.png",
-  "dark-gray"
- ],
- [
-  "tire stack",
-  "FtrTyres.png",
-  "dark-gray"
- ],
- [
-  "trash bags",
-  "FtrGarbagebag.png",
-  "dark-gray"
- ],
- [
-  "garbage-heap wall",
-  "RoomTexWallGarbage00.png",
-  "dark-gray"
- ],
- [
-  "garbage-heap flooring",
-  "RoomTexFloorGarbage00.png",
-  "dark-gray"
- ],
- [
-  "recycled boots",
-  "ShoesKneeRecyclingboots0.png",
-  "dark-gray"
- ],
- [
-  "modeling clay",
-  "FtrClaytoy.png",
-  "brick"
- ],
- [
-  "unglazed dish set",
-  "FtrDishesUnglazed.png",
-  "brick"
- ],
- [
-  "classic pitcher",
-  "FtrPotteryjug.png",
-  "brick"
- ],
- [
-  "pot",
-  "FtrKame.png",
-  "brick"
- ],
- [
-  "aroma pot",
-  "FtrAlomapot.png",
-  "brick"
- ],
- [
-  "raccoon figurine",
-  "FtrOrnamentTanuki.png",
-  "brick"
- ],
- [
-  "brick oven",
-  "FtrStoneoven.png",
-  "brick"
- ],
- [
-  "brick well",
-  "FtrWellBrick.png",
-  "brick"
- ],
- [
-  "silo",
-  "FtrSilo.png",
-  "brick"
- ],
- [
-  "brick fence",
-  "ItemFenceWallRenga.png",
-  "brick"
- ],
- [
-  "stone stool",
-  "FtrStoneChair.png",
-  "light-gray"
- ],
- [
-  "stone table",
-  "FtrStoneTable.png",
-  "light-gray"
- ],
- [
-  "birdbath",
-  "FtrBirdbus.png",
-  "light-gray"
- ],
- [
-  "drinking fountain",
-  "FtrDrinkingfountain.png",
-  "light-gray"
- ],
- [
-  "fountain",
-  "FtrFountain.png",
-  "light-gray"
- ],
- [
-  "garden rock",
-  "FtrGardenrock.png",
-  "light-gray"
- ],
- [
-  "flat garden rock",
-  "FtrGardenrockLow.png",
-  "light-gray"
- ],
- [
-  "mossy garden rock",
-  "FtrGardenrockMoss.png",
-  "light-gray"
- ],
- [
-  "tall garden rock",
-  "FtrGardenrockTall.png",
-  "light-gray"
- ],
- [
-  "stone arch",
-  "FtrRockArch.png",
-  "light-gray"
- ],
- [
-  "sauna heater",
-  "FtrStoveSauna.png",
-  "light-gray"
- ],
- [
-  "simple well",
-  "FtrWell.png",
-  "light-gray"
- ],
- [
-  "outdoor bath",
-  "FtrOpenairbath.png",
-  "light-gray"
- ],
- [
-  "wave breaker",
-  "FtrTetrapod.png",
-  "light-gray"
- ],
- [
-  "western-style stone",
-  "FtrGravestoneEuropean.png",
-  "light-gray"
- ],
- [
-  "zen-style stone",
-  "FtrGravestoneJapan.png",
-  "light-gray"
- ],
- [
-  "stone lion-dog",
-  "FtrSekishishi.png",
-  "light-gray"
- ],
- [
-  "stone tablet",
-  "FtrRockMonument.png",
-  "light-gray"
- ],
- [
-  "tall lantern",
-  "FtrStonelantern.png",
-  "light-gray"
- ],
- [
-  "pond stone",
-  "FtrStonewaterbowl.png",
-  "light-gray"
- ],
- [
-  "cherry-blossom pond stone",
-  "FtrStonewaterbowlSakura.png",
-  "light-gray"
- ],
- [
-  "maple-leaf pond stone",
-  "FtrStonewaterbowlAutumun.png",
-  "light-gray"
- ],
- [
-  "fossil doorplate",
-  "FtrDoorOrnamentFossil.png",
-  "light-gray"
- ],
- [
-  "stone wall",
-  "RoomTexWallBasement00.png",
-  "light-gray"
- ],
- [
-  "rustic-stone wall",
-  "RoomTexWallStone00.png",
-  "light-gray"
- ],
- [
-  "basement flooring",
-  "RoomTexFloorBasement00.png",
-  "light-gray"
- ],
- [
-  "stone fence",
-  "ItemFenceStone.png",
-  "light-gray"
- ],
- [
-  "iron-and-stone fence",
-  "ItemFenceIronAndStone.png",
-  "light-gray"
- ],
- [
-  "zen fence",
-  "ItemFenceJapanese.png",
-  "light-gray"
- ],
- [
-  "iron garden chair",
-  "FtrIrongardenChair.png",
-  "dark-gray"
- ],
- [
-  "iron garden table",
-  "FtrIrongardenTable.png",
-  "dark-gray"
- ],
- [
-  "iron garden bench",
-  "FtrIrongardenBench.png",
-  "dark-gray"
- ],
- [
-  "iron worktable",
-  "FtrIronTableM.png",
-  "dark-gray"
- ],
- [
-  "iron closet",
-  "FtrIronClosetLR.png",
-  "dark-gray"
- ],
- [
-  "iron shelf",
-  "FtrIronShelf.png",
-  "dark-gray"
- ],
- [
-  "iron hanger stand",
-  "FtrIronHanger.png",
-  "dark-gray"
- ],
- [
-  "standard umbrella stand",
-  "FtrUmbrellastand.png",
-  "dark-gray"
- ],
- [
-  "frying pan",
-  "FtrPan.png",
-  "dark-gray"
- ],
- [
-  "gong",
-  "FtrTamtam.png",
-  "dark-gray"
- ],
- [
-  "water pump",
-  "FtrHandpump.png",
-  "dark-gray"
- ],
- [
-  "jail bars",
-  "FtrScreenCage.png",
-  "dark-gray"
- ],
- [
-  "kettlebell",
-  "FtrKettlebell.png",
-  "dark-gray"
- ],
- [
-  "barbell",
-  "FtrBarbell.png",
-  "dark-gray"
- ],
- [
-  "iron frame",
-  "FtrIronframe.png",
-  "dark-gray"
- ],
- [
-  "kettle bathtub",
-  "FtrGoemonburo.png",
-  "dark-gray"
- ],
- [
-  "manhole cover",
-  "FtrManhole.png",
-  "dark-gray"
- ],
- [
-  "iron wall lamp",
-  "FtrIronLampW.png",
-  "dark-gray"
- ],
- [
-  "iron wall rack",
-  "FtrIronShelfW.png",
-  "dark-gray"
- ],
- [
-  "iron doorplate",
-  "FtrDoorOrnamentIron.png",
-  "dark-gray"
- ],
- [
-  "crest doorplate",
-  "FtrDoorOrnamentCrest.png",
-  "dark-gray"
- ],
- [
-  "steel-frame wall",
-  "RoomTexWallSteel00.png",
-  "dark-gray"
- ],
- [
-  "steel flooring",
-  "RoomTexFloorSteel00.png",
-  "dark-gray"
- ],
- [
-  "knight's helmet",
-  "CapFullfaceKnightIron.png",
-  "dark-gray"
- ],
- [
-  "iron armor",
-  "TopsTexOnepieceOverallLPlatearmorIron.png",
-  "dark-gray"
- ],
- [
-  "armor shoes",
-  "ShoesKneeKnightIron.png",
-  "dark-gray"
- ],
- [
-  "rope fence",
-  "ItemFencePegRope.png",
-  "dark-gray"
- ],
- [
-  "iron fence",
-  "ItemFenceSteel.png",
-  "dark-gray"
- ],
- [
-  "wedding fence",
-  "ItemFenceJuneBride.png",
-  "dark-gray"
- ],
- [
-  "iron wand",
-  "ToolStickIron.png",
-  "dark-gray"
- ],
- [
-  "ironwood chair",
-  "FtrIronwoodChairS.png",
-  "blue"
- ],
- [
-  "ironwood cart",
-  "FtrIronwoodServingcart.png",
-  "blue"
- ],
- [
-  "ironwood dresser",
-  "FtrIronwoodChest.png",
-  "blue"
- ],
- [
-  "ironwood table",
-  "FtrIronwoodTableL.png",
-  "blue"
- ],
- [
-  "ironwood low table",
-  "FtrIronwoodTableM.png",
-  "blue"
- ],
- [
-  "ironwood bed",
-  "FtrIronwoodBedS.png",
-  "blue"
- ],
- [
-  "ironwood cupboard",
-  "FtrIronwoodCupboard.png",
-  "blue"
- ],
- [
-  "ironwood kitchenette",
-  "FtrIronwoodKitchen.png",
-  "blue"
- ],
- [
-  "ironwood DIY workbench",
-  "FtrWorkbenchIronwood.png",
-  "blue"
- ],
- [
-  "garden bench",
-  "FtrParkbenche.png",
-  "blue"
- ],
- [
-  "ironwood clock",
-  "FtrIronwoodClockW.png",
-  "blue"
- ],
- [
-  "gold bars",
-  "FtrGoldbar.png",
-  "gold"
- ],
- [
-  "golden dishes",
-  "FtrGoldDishes.png",
-  "gold"
- ],
- [
-  "golden candlestick",
-  "FtrGoldCandlestand.png",
-  "gold"
- ],
- [
-  "golden seat",
-  "FtrGoldbench.png",
-  "gold"
- ],
- [
-  "golden casket",
-  "FtrGoldCoffin.png",
-  "gold"
- ],
- [
-  "golden toilet",
-  "FtrGoldWC.png",
-  "gold"
- ],
- [
-  "lucky gold cat",
-  "FtrManekinekoGold.png",
-  "gold"
- ],
- [
-  "golden gears",
-  "FtrGearWallGold.png",
-  "gold"
- ],
- [
-  "golden dung beetle",
-  "FtrInsectKabutomushiGold.png",
-  "gold"
- ],
- [
-  "golden arowana model",
-  "FtrFishArowanaGold.png",
-  "gold"
- ],
- [
-  "golden wall",
-  "RoomTexWallGold00.png",
-  "gold"
- ],
- [
-  "gold-screen wall",
-  "RoomTexWallFusumaGorgeous00.png",
-  "gold"
- ],
- [
-  "golden flooring",
-  "RoomTexFloorGold00.png",
-  "gold"
- ],
- [
-  "gold helmet",
-  "CapFullfaceKnightGold.png",
-  "gold"
- ],
- [
-  "gold armor",
-  "TopsTexOnepieceOverallLPlatearmorGold.png",
-  "gold"
- ],
- [
-  "gold-armor shoes",
-  "ShoesKneeKnightGold.png",
-  "gold"
- ],
- [
-  "golden wand",
-  "ToolStickGolden.png",
-  "gold"
- ],
- [
-  "hay bed",
-  "FtrHaybed.png",
-  "green"
- ],
- [
-  "succulent plant",
-  "FtrPlantSucculents.png",
-  "green"
- ],
- [
-  "terrarium",
-  "FtrTerrarium.png",
-  "green"
- ],
- [
-  "floral swag",
-  "FtrFlowerSwag.png",
-  "green"
- ],
- [
-  "potted ivy",
-  "FtrLeafWall.png",
-  "green"
- ],
- [
-  "hanging terrarium",
-  "FtrTerrariumWall.png",
-  "green"
- ],
- [
-  "jungle wall",
-  "RoomTexWallJungle00.png",
-  "green"
- ],
- [
-  "woodland wall",
-  "RoomTexWallJukai00.png",
-  "green"
- ],
- [
-  "jungle flooring",
-  "RoomTexFloorJungle00.png",
-  "green"
- ],
- [
-  "backyard lawn",
-  "RoomTexFloorLawn00.png",
-  "green"
- ],
- [
-  "leaf",
-  "AccessoryMouthLeafGreen.png",
-  "green"
- ],
- [
-  "leaf mask",
-  "CapMaskLeaf0.png",
-  "green"
- ],
- [
-  "leaf umbrella",
-  "UmbrellaLeaf0.png",
-  "green"
- ],
- [
-  "straw umbrella hat",
-  "CapHatSandogasa0.png",
-  "green"
- ],
- [
-  "bamboo hat",
-  "CapHatAjiroBeige.png",
-  "green"
- ],
- [
-  "traditional straw coat",
-  "TopsTexTopCoatLStrawBeige.png",
-  "green"
- ],
- [
-  "grass skirt",
-  "BottomsTexSkirtBoxGrass0.png",
-  "green"
- ],
- [
-  "green grass skirt",
-  "BottomsTexSkirtBoxGrass1.png",
-  "green"
- ],
- [
-  "knitted-grass backpack",
-  "BagBackpackGrass0.png",
-  "green"
- ],
- [
-  "straw fence",
-  "ItemFenceDriedStraw.png",
-  "green"
- ],
- [
-  "hedge",
-  "ItemFenceIkegaki.png",
-  "green"
- ],
- [
-  "orange end table",
-  "FtrFruitsTableS.png",
-  "orange"
- ],
- [
-  "orange wall-mounted clock",
-  "FtrFruitsClockW.png",
-  "orange"
- ],
- [
-  "orange wall",
-  "RoomTexWallOrange00.png",
-  "orange"
- ],
- [
-  "orange rug",
-  "RugOtherOrangeM00.png",
-  "orange"
- ],
- [
-  "orange umbrella",
-  "UmbrellaOrange0.png",
-  "orange"
- ],
- [
-  "orange hat",
-  "CapHatOrange.png",
-  "orange"
- ],
- [
-  "orange dress",
-  "TopsTexOnepieceAlineNOrange.png",
-  "orange"
- ],
- [
-  "cherry speakers",
-  "FtrFruitsMusic.png",
-  "yellow"
- ],
- [
-  "cherry lamp",
-  "FtrFruitsLampW.png",
-  "yellow"
- ],
- [
-  "cherry wall",
-  "RoomTexWallCherry00.png",
-  "yellow"
- ],
- [
-  "cherry rug",
-  "RugOtherCherryM00.png",
-  "yellow"
- ],
- [
-  "cherry umbrella",
-  "UmbrellaCherry0.png",
-  "yellow"
- ],
- [
-  "cherry hat",
-  "CapHatCherry0.png",
-  "yellow"
- ],
- [
-  "cherry dress",
-  "TopsTexOnepieceAlineNCherry0.png",
-  "yellow"
- ],
- [
-  "peach chair",
-  "FtrFruitsChairPeach.png",
-  "pink"
- ],
- [
-  "peach surprise box",
-  "FtrFruitsBox.png",
-  "pink"
- ],
- [
-  "peach wall",
-  "RoomTexWallPeach00.png",
-  "pink"
- ],
- [
-  "peach rug",
-  "RugOtherPeachM00.png",
-  "pink"
- ],
- [
-  "peach umbrella",
-  "UmbrellaPeach0.png",
-  "pink"
- ],
- [
-  "peach hat",
-  "CapHatPeach0.png",
-  "pink"
- ],
- [
-  "peach dress",
-  "TopsTexOnepieceAlineNPeach0.png",
-  "pink"
- ],
- [
-  "pear wardrobe",
-  "FtrFruitsClosetLR.png",
-  "green"
- ],
- [
-  "pear bed",
-  "FtrFruitsBedS.png",
-  "green"
- ],
- [
-  "pear wall",
-  "RoomTexWallPear00.png",
-  "green"
- ],
- [
-  "pear rug",
-  "RugOtherPearM00.png",
-  "green"
- ],
- [
-  "pear umbrella",
-  "UmbrellaPear0.png",
-  "green"
- ],
- [
-  "pear hat",
-  "CapHatPear0.png",
-  "green"
- ],
- [
-  "pear dress",
-  "TopsTexOnepieceAlineNPear0.png",
-  "green"
  ],
  [
   "apple chair",
@@ -1445,13 +20,13 @@
   "red"
  ],
  [
-  "juicy-apple TV",
-  "FtrFruitsTV.png",
+  "apple dress",
+  "TopsTexOnepieceAlineNApple0.png",
   "red"
  ],
  [
-  "apple wall",
-  "RoomTexWallApple00.png",
+  "apple hat",
+  "CapHatApple0.png",
   "red"
  ],
  [
@@ -1465,44 +40,189 @@
   "red"
  ],
  [
-  "apple hat",
-  "CapHatApple0.png",
+  "apple wall",
+  "RoomTexWallApple00.png",
   "red"
  ],
  [
-  "apple dress",
-  "TopsTexOnepieceAlineNApple0.png",
-  "red"
+  "Aquarius urn",
+  "FtrZodiacAquarius.png",
+  "silver"
  ],
  [
-  "coconut juice",
-  "FtrCoconutjuice.png",
+  "Aries rocking chair",
+  "FtrZodiacAries.png",
+  "silver"
+ ],
+ [
+  "armor shoes",
+  "ShoesKneeKnightIron.png",
+  "dark gray"
+ ],
+ [
+  "aroma pot",
+  "FtrAlomapot.png",
+  "brick"
+ ],
+ [
+  "asteroid",
+  "FtrMeteo.png",
+  "silver"
+ ],
+ [
+  "astronaut suit",
+  "FtrSpacesuit.png",
+  "silver"
+ ],
+ [
+  "autumn wall",
+  "RoomSpWallAutumun00.png",
+  "brown"
+ ],
+ [
+  "axe",
+  "ToolAxeFirst.png",
+  "beige"
+ ],
+ [
+  "backyard lawn",
+  "RoomTexFloorLawn00.png",
   "green"
  ],
  [
-  "palm-tree lamp",
-  "FtrPalmtreelamp.png",
+  "bamboo basket",
+  "FtrBambooBasket.png",
   "green"
  ],
  [
-  "coconut wall planter",
-  "FtrPlanterPalm.png",
+  "bamboo bench",
+  "FtrBambooChairL.png",
   "green"
  ],
  [
-  "fruit basket",
-  "FtrFruitbasket.png",
-  "white"
+  "bamboo candleholder",
+  "FtrBambooCandle.png",
+  "green"
  ],
  [
-  "infused-water dispenser",
-  "FtrFruitswater.png",
-  "white"
+  "bamboo doll",
+  "FtrBambooSurprisedbox.png",
+  "green"
  ],
  [
-  "fruit wreath",
-  "FtrDoorOrnamentWreathFruit.png",
-  "white"
+  "bamboo drum",
+  "FtrBamboodrum.png",
+  "green"
+ ],
+ [
+  "bamboo floor lamp",
+  "FtrBambooLamp.png",
+  "green"
+ ],
+ [
+  "bamboo flooring",
+  "RoomTexFloorBamboo00.png",
+  "green"
+ ],
+ [
+  "bamboo hat",
+  "CapHatAjiroBeige.png",
+  "green"
+ ],
+ [
+  "bamboo lattice fence",
+  "ToolFence.png",
+  "green"
+ ],
+ [
+  "bamboo lunch box",
+  "FtrBambooLunch.png",
+  "green"
+ ],
+ [
+  "bamboo noodle slide",
+  "FtrBambooSomen.png",
+  "green"
+ ],
+ [
+  "bamboo partition",
+  "FtrBambooScreen.png",
+  "green"
+ ],
+ [
+  "bamboo shelf",
+  "FtrBambooShelf.png",
+  "green"
+ ],
+ [
+  "bamboo speaker",
+  "FtrBambooMusic.png",
+  "green"
+ ],
+ [
+  "bamboo sphere",
+  "FtrBambooBall.png",
+  "green"
+ ],
+ [
+  "bamboo stool",
+  "FtrBambooStool.png",
+  "green"
+ ],
+ [
+  "bamboo stopblock",
+  "FtrBambooCarstop.png",
+  "green"
+ ],
+ [
+  "bamboo wall",
+  "RoomTexWallBamboo00.png",
+  "green"
+ ],
+ [
+  "bamboo wall decoration",
+  "FtrBambooFlowerwall.png",
+  "green"
+ ],
+ [
+  "bamboo wand",
+  "ToolStickBamboo.png",
+  "green"
+ ],
+ [
+  "bamboo-grove wall",
+  "RoomTexWallChikurin00.png",
+  "green"
+ ],
+ [
+  "bamboo-shoot lamp",
+  "FtrBambooshootLamp.png",
+  "green"
+ ],
+ [
+  "barbed-wire fence",
+  "ToolFence.png",
+  "brown"
+ ],
+ [
+  "barbell",
+  "FtrBarbell.png",
+  "dark gray"
+ ],
+ [
+  "barrel",
+  "FtrPirateBarrel.png",
+  "brown"
+ ],
+ [
+  "basement flooring",
+  "RoomTexFloorBasement00.png",
+  "light gray"
+ ],
+ [
+  "basket pack",
+  "BagBackpackBasket0.png",
+  "green"
  ],
  [
   "beekeeper's hive",
@@ -1510,58 +230,213 @@
   "orange"
  ],
  [
-  "honeycomb wall",
-  "RoomTexWallHoney00.png",
-  "orange"
+  "big festive tree",
+  "FtrTreeXmasL.png",
+  "white"
  ],
  [
-  "honeycomb flooring",
-  "RoomTexFloorHoney00.png",
-  "orange"
+  "birdbath",
+  "FtrBirdbus.png",
+  "light gray"
  ],
  [
-  "stack of books",
-  "FtrBooks.png",
+  "birdcage",
+  "FtrBirdcage.png",
+  "brown"
+ ],
+ [
+  "birdhouse",
+  "FtrBirdhouse.png",
+  "brown"
+ ],
+ [
+  "blossom-viewing lantern",
+  "FtrSakuraLantern.png",
+  "pink"
+ ],
+ [
+  "blue rose crown",
+  "CapOrnamentRose4.png",
+  "green"
+ ],
+ [
+  "blue rose wreath",
+  "FtrDoorOrnamentWreathRoseUltraRare.png",
+  "green"
+ ],
+ [
+  "bone doorplate",
+  "FtrDoorOrnamentPlateBone.png",
+  "brown"
+ ],
+ [
+  "bonfire",
+  "FtrCampfire.png",
+  "brown"
+ ],
+ [
+  "bonsai shelf",
+  "FtrBonsaiShelf.png",
+  "brown"
+ ],
+ [
+  "boomerang",
+  "FtrBoomerang.png",
+  "brown"
+ ],
+ [
+  "brick fence",
+  "ToolFence.png",
+  "brick"
+ ],
+ [
+  "brick oven",
+  "FtrStoneoven.png",
+  "brick"
+ ],
+ [
+  "brick well",
+  "FtrWellBrick.png",
+  "brick"
+ ],
+ [
+  "bridge construction kit",
+  "BridgeLog.png",
+  "NA"
+ ],
+ [
+  "brown herringbone wall",
+  "RoomTexWallHerringbone00.png",
+  "brown"
+ ],
+ [
+  "Bunny Day arch",
+  "FtrEggArch.png",
   "yellow"
  ],
  [
-  "tiny library",
-  "FtrMicrolibrary.png",
+  "Bunny Day bag",
+  "BagBackpackEgg0.png",
   "yellow"
  ],
  [
-  "wooden bookshelf",
-  "FtrBookshelf.png",
+  "Bunny Day bed",
+  "FtrEggBedW.png",
   "yellow"
  ],
  [
-  "classic-library wall",
-  "RoomTexWallLibrary00.png",
+  "Bunny Day crown",
+  "CapOrnamentCEgg0.png",
   "yellow"
  ],
  [
-  "magazine rack",
-  "FtrMagazinerack.png",
+  "Bunny Day fence",
+  "ToolFence.png",
   "yellow"
  ],
  [
-  "stacked magazines",
-  "FtrMagagine.png",
+  "Bunny Day festive balloons",
+  "FtrEggBalloonB.png",
   "yellow"
  ],
  [
-  "manga-library wall",
-  "RoomTexWallLibrary01.png",
+  "Bunny Day flooring",
+  "RoomTexFloorEaster00.png",
   "yellow"
  ],
  [
-  "document stack",
-  "FtrOfficePapers.png",
+  "Bunny Day glowy garland",
+  "FtrEggLampWall.png",
   "yellow"
  ],
  [
-  "scattered papers",
-  "FtrFloorpapers.png",
+  "Bunny Day lamp",
+  "FtrEggLamp.png",
+  "yellow"
+ ],
+ [
+  "Bunny Day merry balloons",
+  "FtrEggBalloonA.png",
+  "yellow"
+ ],
+ [
+  "Bunny Day rug",
+  "RugOtherEasterM00.png",
+  "yellow"
+ ],
+ [
+  "Bunny Day stool",
+  "FtrEggStool.png",
+  "yellow"
+ ],
+ [
+  "Bunny Day table",
+  "FtrEggTableS.png",
+  "yellow"
+ ],
+ [
+  "Bunny Day vanity",
+  "FtrEggDresser.png",
+  "yellow"
+ ],
+ [
+  "Bunny Day wall",
+  "RoomTexWallEaster00.png",
+  "yellow"
+ ],
+ [
+  "Bunny Day wall clock",
+  "FtrEggClock.png",
+  "yellow"
+ ],
+ [
+  "Bunny Day wand",
+  "ToolStickEgg.png",
+  "yellow"
+ ],
+ [
+  "Bunny Day wardrobe",
+  "FtrEggClosetLR.png",
+  "yellow"
+ ],
+ [
+  "Bunny Day wreath",
+  "FtrDoorOrnamentWreathEaster.png",
+  "yellow"
+ ],
+ [
+  "butter churn",
+  "FtrButtermixer.png",
+  "brown"
+ ],
+ [
+  "cabin wall",
+  "RoomTexWallLog00.png",
+  "brown"
+ ],
+ [
+  "campfire",
+  "FtrBonfire.png",
+  "brown"
+ ],
+ [
+  "campsite construction kit",
+  "StrcCampsiteDiyIconA00.png",
+  "NA"
+ ],
+ [
+  "Cancer table",
+  "FtrZodiacCancer.png",
+  "silver"
+ ],
+ [
+  "Capricorn ornament",
+  "FtrZodiacCapricornus.png",
+  "silver"
+ ],
+ [
+  "cardboard bed",
+  "FtrCardboardBedS.png",
   "yellow"
  ],
  [
@@ -1580,54 +455,214 @@
   "yellow"
  ],
  [
-  "cardboard bed",
-  "FtrCardboardBedS.png",
+  "cherry dress",
+  "TopsTexOnepieceAlineNCherry0.png",
   "yellow"
  ],
  [
-  "small cardboard boxes",
-  "FtrMovingboxS.png",
+  "cherry hat",
+  "CapHatCherry0.png",
   "yellow"
  ],
  [
-  "medium cardboard boxes",
-  "FtrMovingboxM.png",
+  "cherry lamp",
+  "FtrFruitsLampW.png",
   "yellow"
  ],
  [
-  "large cardboard boxes",
-  "FtrMovingboxL.png",
+  "cherry rug",
+  "RugOtherCherryM00.png",
   "yellow"
  ],
  [
-  "pile of zen cushions",
-  "FtrCushionJapanPile.png",
+  "cherry speakers",
+  "FtrFruitsMusic.png",
   "yellow"
  ],
  [
-  "oil-barrel bathtub",
-  "FtrDrumcanbath.png",
+  "cherry umbrella",
+  "UmbrellaCherry0.png",
   "yellow"
  ],
  [
-  "giant teddy bear",
-  "FtrBearXL.png",
+  "cherry wall",
+  "RoomTexWallCherry00.png",
   "yellow"
  ],
  [
-  "street piano",
-  "FtrPianoStreet.png",
+  "cherry-blossom bonsai",
+  "FtrBonsaiSakura.png",
+  "pink"
+ ],
+ [
+  "cherry-blossom branches",
+  "FtrSakuraBranch.png",
+  "pink"
+ ],
+ [
+  "cherry-blossom clock",
+  "FtrSakuraClockW.png",
+  "pink"
+ ],
+ [
+  "cherry-blossom flooring",
+  "RoomTexFloorSakura00.png",
+  "pink"
+ ],
+ [
+  "cherry-blossom pochette",
+  "BagShoulderCherryblossoms0.png",
+  "pink"
+ ],
+ [
+  "cherry-blossom pond stone",
+  "FtrStonewaterbowlSakura.png",
+  "light gray"
+ ],
+ [
+  "cherry-blossom umbrella",
+  "UmbrellaCherryblossom0.png",
+  "pink"
+ ],
+ [
+  "cherry-blossom wand",
+  "ToolStickCherryblossom.png",
+  "pink"
+ ],
+ [
+  "cherry-blossom-petal pile",
+  "FtrSakuraPetal.png",
+  "pink"
+ ],
+ [
+  "cherry-blossom-trees wall",
+  "RoomSpWallSakura00.png",
+  "pink"
+ ],
+ [
+  "chic cosmos wreath",
+  "FtrDoorOrnamentWreathCosmosRare.png",
+  "green"
+ ],
+ [
+  "chic mum crown",
+  "CapOrnamentMum2.png",
+  "green"
+ ],
+ [
+  "chic rose crown",
+  "CapOrnamentRose3.png",
+  "green"
+ ],
+ [
+  "chic tulip crown",
+  "CapOrnamentTulip2.png",
+  "green"
+ ],
+ [
+  "chic windflower wreath",
+  "FtrDoorOrnamentWreathAnemoneRare.png",
+  "green"
+ ],
+ [
+  "chocolate herringbone wall",
+  "RoomTexWallHerringbone01.png",
+  "brown"
+ ],
+ [
+  "clackercart",
+  "FtrKatakataToy.png",
+  "brown"
+ ],
+ [
+  "classic pitcher",
+  "FtrPotteryjug.png",
+  "brick"
+ ],
+ [
+  "classic-library wall",
+  "RoomTexWallLibrary00.png",
   "yellow"
  ],
  [
-  "money flooring",
-  "RoomTexFloorBill00.png",
-  "yellow"
+  "clothesline",
+  "FtrClothesline.png",
+  "brown"
  ],
  [
-  "nova light",
-  "FtrStarLamp.png",
-  "silver"
+  "coconut juice",
+  "FtrCoconutjuice.png",
+  "green"
+ ],
+ [
+  "coconut wall planter",
+  "FtrPlanterPalm.png",
+  "green"
+ ],
+ [
+  "colored-leaves flooring",
+  "RoomTexFloorAutumun00.png",
+  "brown"
+ ],
+ [
+  "cool hyacinth crown",
+  "CapOrnamentHyacinth2.png",
+  "green"
+ ],
+ [
+  "cool hyacinth wreath",
+  "FtrDoorOrnamentWreathHyacinthMix.png",
+  "green"
+ ],
+ [
+  "cool pansy crown",
+  "CapOrnamentPansy2.png",
+  "green"
+ ],
+ [
+  "cool pansy wreath",
+  "FtrDoorOrnamentWreathPansyRare.png",
+  "green"
+ ],
+ [
+  "cool windflower crown",
+  "CapOrnamentAnemone2.png",
+  "green"
+ ],
+ [
+  "cool windflower wreath",
+  "FtrDoorOrnamentWreathAnemoneMix.png",
+  "green"
+ ],
+ [
+  "corral fence",
+  "ToolFence.png",
+  "brown"
+ ],
+ [
+  "cosmos crown",
+  "CapOrnamentCosmos1.png",
+  "green"
+ ],
+ [
+  "cosmos shower",
+  "FtrFlowerShower.png",
+  "green"
+ ],
+ [
+  "cosmos wand",
+  "ToolStickCosmos.png",
+  "green"
+ ],
+ [
+  "cosmos wreath",
+  "FtrDoorOrnamentWreathCosmos.png",
+  "green"
+ ],
+ [
+  "country fence",
+  "ToolFence.png",
+  "brown"
  ],
  [
   "crescent-moon chair",
@@ -1635,39 +670,939 @@
   "silver"
  ],
  [
-  "moon",
-  "FtrMoon.png",
-  "silver"
- ],
- [
-  "asteroid",
-  "FtrMeteo.png",
-  "silver"
- ],
- [
-  "astronaut suit",
-  "FtrSpacesuit.png",
-  "silver"
- ],
- [
-  "rocket",
-  "FtrRocket.png",
-  "silver"
- ],
- [
-  "satellite",
-  "FtrSatellite.png",
-  "silver"
- ],
- [
-  "space shuttle",
-  "FtrShuttle.png",
-  "silver"
+  "crest doorplate",
+  "FtrDoorOrnamentCrest.png",
+  "dark gray"
  ],
  [
   "crewed spaceship",
   "FtrSpacecraft.png",
   "silver"
+ ],
+ [
+  "cute lily crown",
+  "CapOrnamentYuri2.png",
+  "green"
+ ],
+ [
+  "cute rose crown",
+  "CapOrnamentRose2.png",
+  "green"
+ ],
+ [
+  "cutting board",
+  "FtrCuttingboard.png",
+  "brown"
+ ],
+ [
+  "dark bamboo rug",
+  "RugRectBambooM01.png",
+  "green"
+ ],
+ [
+  "dark cosmos crown",
+  "CapOrnamentCosmos3.png",
+  "green"
+ ],
+ [
+  "dark lily crown",
+  "CapOrnamentYuri3.png",
+  "green"
+ ],
+ [
+  "dark lily wreath",
+  "FtrDoorOrnamentWreathYuriRare.png",
+  "green"
+ ],
+ [
+  "dark rose wreath",
+  "FtrDoorOrnamentWreathRoseRare.png",
+  "green"
+ ],
+ [
+  "dark tulip crown",
+  "CapOrnamentTulip3.png",
+  "green"
+ ],
+ [
+  "dark tulip wreath",
+  "FtrDoorOrnamentWreathTulipRare.png",
+  "green"
+ ],
+ [
+  "dark wooden-mosaic wall",
+  "RoomTexWallMixPlankWood01.png",
+  "brown"
+ ],
+ [
+  "decoy duck",
+  "FtrDecoy.png",
+  "brown"
+ ],
+ [
+  "deer decoration",
+  "FtrHuntingtrophy.png",
+  "brown"
+ ],
+ [
+  "deer scare",
+  "FtrShishiodoshi.png",
+  "green"
+ ],
+ [
+  "destinations signpost",
+  "FtrSignpostWorld.png",
+  "brown"
+ ],
+ [
+  "DIY workbench",
+  "FtrWorkbench.png",
+  "brown"
+ ],
+ [
+  "document stack",
+  "FtrOfficePapers.png",
+  "yellow"
+ ],
+ [
+  "doghouse",
+  "FtrDoghouse.png",
+  "brown"
+ ],
+ [
+  "drinking fountain",
+  "FtrDrinkingfountain.png",
+  "light gray"
+ ],
+ [
+  "earth-egg outfit",
+  "TopsTexOnepieceRibNEggground0.png",
+  "yellow"
+ ],
+ [
+  "earth-egg shell",
+  "CapHatEggground0.png",
+  "yellow"
+ ],
+ [
+  "earth-egg shoes",
+  "ShoesLowcutEggground0.png",
+  "yellow"
+ ],
+ [
+  "egg party dress",
+  "TopsTexOnepieceBalloonLEgg0.png",
+  "yellow"
+ ],
+ [
+  "egg party hat",
+  "CapHatEggparty0.png",
+  "yellow"
+ ],
+ [
+  "fancy lily wreath",
+  "FtrDoorOrnamentWreathYuriMix.png",
+  "green"
+ ],
+ [
+  "fancy mum wreath",
+  "FtrDoorOrnamentWreathMumMix.png",
+  "green"
+ ],
+ [
+  "fancy rose wreath",
+  "FtrDoorOrnamentWreathRoseMix.png",
+  "green"
+ ],
+ [
+  "festive top set",
+  "FtrFestivaltop.png",
+  "white"
+ ],
+ [
+  "festive tree",
+  "FtrTreeXmasS.png",
+  "white"
+ ],
+ [
+  "firewood",
+  "FtrFirewood.png",
+  "brown"
+ ],
+ [
+  "fish bait",
+  ".png",
+  "white"
+ ],
+ [
+  "fishing rod",
+  "ToolFishingrodFirst.png",
+  "beige"
+ ],
+ [
+  "flat garden rock",
+  "FtrGardenrockLow.png",
+  "light gray"
+ ],
+ [
+  "flimsy axe",
+  "ToolStoneaxeWood.png",
+  "beige"
+ ],
+ [
+  "flimsy fishing rod",
+  "ToolFishingrodWood.png",
+  "beige"
+ ],
+ [
+  "flimsy net",
+  "ToolNetWood.png",
+  "beige"
+ ],
+ [
+  "flimsy shovel",
+  "ToolScoopWood.png",
+  "beige"
+ ],
+ [
+  "flimsy watering can",
+  "ToolWateringWood.png",
+  "beige"
+ ],
+ [
+  "floral swag",
+  "FtrFlowerSwag.png",
+  "green"
+ ],
+ [
+  "flower stand",
+  "FtrStandflower.png",
+  "green"
+ ],
+ [
+  "flying saucer",
+  "FtrUFO.png",
+  "silver"
+ ],
+ [
+  "forest flooring",
+  "RoomTexFloorMushForest00.png",
+  "orange"
+ ],
+ [
+  "forest wall",
+  "RoomTexWallMushForest00.png",
+  "orange"
+ ],
+ [
+  "fossil doorplate",
+  "FtrDoorOrnamentFossil.png",
+  "light gray"
+ ],
+ [
+  "fountain",
+  "FtrFountain.png",
+  "light gray"
+ ],
+ [
+  "frozen arch",
+  "FtrIceGate.png",
+  "blue"
+ ],
+ [
+  "frozen bed",
+  "FtrIceBedW.png",
+  "blue"
+ ],
+ [
+  "frozen chair",
+  "FtrIceChairS.png",
+  "blue"
+ ],
+ [
+  "frozen counter",
+  "FtrIceCounter.png",
+  "blue"
+ ],
+ [
+  "frozen partition",
+  "FtrIceScreen.png",
+  "blue"
+ ],
+ [
+  "frozen pillar",
+  "FtrIcePillar.png",
+  "blue"
+ ],
+ [
+  "frozen sculpture",
+  "FtrIceArt.png",
+  "blue"
+ ],
+ [
+  "frozen table",
+  "FtrIceTableL.png",
+  "blue"
+ ],
+ [
+  "frozen tree",
+  "FtrIceTree.png",
+  "blue"
+ ],
+ [
+  "frozen-treat set",
+  "FtrIceCandy.png",
+  "blue"
+ ],
+ [
+  "fruit basket",
+  "FtrFruitbasket.png",
+  "white"
+ ],
+ [
+  "fruit wreath",
+  "FtrDoorOrnamentWreathFruit.png",
+  "white"
+ ],
+ [
+  "frying pan",
+  "FtrPan.png",
+  "dark gray"
+ ],
+ [
+  "galaxy flooring",
+  "RoomSpFloorGalaxy00.png",
+  "silver"
+ ],
+ [
+  "garbage-heap flooring",
+  "RoomTexFloorGarbage00.png",
+  "dark gray"
+ ],
+ [
+  "garbage-heap wall",
+  "RoomTexWallGarbage00.png",
+  "dark gray"
+ ],
+ [
+  "garden bench",
+  "FtrParkbenche.png",
+  "blue"
+ ],
+ [
+  "garden rock",
+  "FtrGardenrock.png",
+  "light gray"
+ ],
+ [
+  "garden wagon",
+  "FtrGardenwagon.png",
+  "brown"
+ ],
+ [
+  "Gemini closet",
+  "FtrZodiacGemini.png",
+  "silver"
+ ],
+ [
+  "giant teddy bear",
+  "FtrBearXL.png",
+  "yellow"
+ ],
+ [
+  "gold armor",
+  "TopsTexOnepieceOverallLPlatearmorGold.png",
+  "gold"
+ ],
+ [
+  "gold bars",
+  "FtrGoldbar.png",
+  "gold"
+ ],
+ [
+  "gold helmet",
+  "CapFullfaceKnightGold.png",
+  "gold"
+ ],
+ [
+  "gold rose crown",
+  "CapOrnamentRose5.png",
+  "green"
+ ],
+ [
+  "gold rose wreath",
+  "FtrDoorOrnamentWreathRoseGold.png",
+  "green"
+ ],
+ [
+  "gold-armor shoes",
+  "ShoesKneeKnightGold.png",
+  "gold"
+ ],
+ [
+  "gold-screen wall",
+  "RoomTexWallFusumaGorgeous00.png",
+  "gold"
+ ],
+ [
+  "golden arowana model",
+  "FtrFishArowanaGold.png",
+  "gold"
+ ],
+ [
+  "golden axe",
+  "ToolAxeGold.png",
+  "gold"
+ ],
+ [
+  "golden candlestick",
+  "FtrGoldCandlestand.png",
+  "gold"
+ ],
+ [
+  "golden casket",
+  "FtrGoldCoffin.png",
+  "gold"
+ ],
+ [
+  "golden dishes",
+  "FtrGoldDishes.png",
+  "gold"
+ ],
+ [
+  "golden dung beetle",
+  "FtrInsectFunkorogashiGold.png",
+  "gold"
+ ],
+ [
+  "golden flooring",
+  "RoomTexFloorGold00.png",
+  "gold"
+ ],
+ [
+  "golden gears",
+  "FtrGearWallGold.png",
+  "gold"
+ ],
+ [
+  "golden net",
+  "ToolNetGold.png",
+  "gold"
+ ],
+ [
+  "golden rod",
+  "ToolFishingrodGold.png",
+  "gold"
+ ],
+ [
+  "golden seat",
+  "FtrGoldbench.png",
+  "gold"
+ ],
+ [
+  "golden shovel",
+  "ToolScoopGold.png",
+  "gold"
+ ],
+ [
+  "golden slingshot",
+  "ToolSlingshotGold.png",
+  "gold"
+ ],
+ [
+  "golden toilet",
+  "FtrGoldWC.png",
+  "gold"
+ ],
+ [
+  "golden wall",
+  "RoomTexWallGold00.png",
+  "gold"
+ ],
+ [
+  "golden wand",
+  "ToolStickGolden.png",
+  "gold"
+ ],
+ [
+  "golden watering can",
+  "ToolWateringGold.png",
+  "gold"
+ ],
+ [
+  "gong",
+  "FtrTamtam.png",
+  "dark gray"
+ ],
+ [
+  "grass skirt",
+  "BottomsTexSkirtBoxGrass0.png",
+  "green"
+ ],
+ [
+  "grass standee",
+  "FtrHariboteGrass.png",
+  "brown"
+ ],
+ [
+  "green grass skirt",
+  "BottomsTexSkirtBoxGrass1.png",
+  "green"
+ ],
+ [
+  "green-leaf pile",
+  "FtrFallenleavesGreen.png",
+  "green"
+ ],
+ [
+  "hanging terrarium",
+  "FtrTerrariumWall.png",
+  "green"
+ ],
+ [
+  "hay bed",
+  "FtrHaybed.png",
+  "green"
+ ],
+ [
+  "hearth",
+  "FtrIrori.png",
+  "green"
+ ],
+ [
+  "hedge",
+  "ToolFence.png",
+  "green"
+ ],
+ [
+  "hedge standee",
+  "FtrHariboteHedge.png",
+  "brown"
+ ],
+ [
+  "holiday candle",
+  "FtrCandleXmas.png",
+  "white"
+ ],
+ [
+  "honeycomb flooring",
+  "RoomTexFloorHoney00.png",
+  "orange"
+ ],
+ [
+  "honeycomb wall",
+  "RoomTexWallHoney00.png",
+  "orange"
+ ],
+ [
+  "hyacinth crown",
+  "CapOrnamentHyacinth1.png",
+  "green"
+ ],
+ [
+  "hyacinth lamp",
+  "FtrFlowerLamp.png",
+  "green"
+ ],
+ [
+  "hyacinth wand",
+  "ToolStickHyacinth.png",
+  "green"
+ ],
+ [
+  "hyacinth wreath",
+  "FtrDoorOrnamentWreathHyacinth.png",
+  "green"
+ ],
+ [
+  "ice flooring",
+  "RoomSpFloorIce00.png",
+  "blue"
+ ],
+ [
+  "ice wall",
+  "RoomSpWallIce00.png",
+  "blue"
+ ],
+ [
+  "ice wand",
+  "ToolStickSnow.png",
+  "blue"
+ ],
+ [
+  "iceberg flooring",
+  "RoomSpFloorIceFloe00.png",
+  "blue"
+ ],
+ [
+  "iceberg wall",
+  "RoomTexWallIceFloe00.png",
+  "blue"
+ ],
+ [
+  "illuminated present",
+  "FtrIllumiPresent.png",
+  "white"
+ ],
+ [
+  "illuminated reindeer",
+  "FtrIllumiReindeer.png",
+  "white"
+ ],
+ [
+  "illuminated snowflakes",
+  "FtrIllumiSnow.png",
+  "white"
+ ],
+ [
+  "illuminated tree",
+  "FtrIllumiTree.png",
+  "white"
+ ],
+ [
+  "imperial fence",
+  "ToolFence.png",
+  "brown"
+ ],
+ [
+  "infused-water dispenser",
+  "FtrFruitswater.png",
+  "white"
+ ],
+ [
+  "iron armor",
+  "TopsTexOnepieceOverallLPlatearmorIron.png",
+  "dark gray"
+ ],
+ [
+  "iron closet",
+  "FtrIronClosetLR.png",
+  "dark gray"
+ ],
+ [
+  "iron doorplate",
+  "FtrDoorOrnamentIron.png",
+  "dark gray"
+ ],
+ [
+  "iron fence",
+  "ToolFence.png",
+  "dark gray"
+ ],
+ [
+  "iron frame",
+  "FtrIronframe.png",
+  "dark gray"
+ ],
+ [
+  "iron garden bench",
+  "FtrIrongardenBench.png",
+  "dark gray"
+ ],
+ [
+  "iron garden chair",
+  "FtrIrongardenChair.png",
+  "dark gray"
+ ],
+ [
+  "iron garden table",
+  "FtrIrongardenTable.png",
+  "dark gray"
+ ],
+ [
+  "iron hanger stand",
+  "FtrIronHanger.png",
+  "dark gray"
+ ],
+ [
+  "iron shelf",
+  "FtrIronShelf.png",
+  "dark gray"
+ ],
+ [
+  "iron wall lamp",
+  "FtrIronLampW.png",
+  "dark gray"
+ ],
+ [
+  "iron wall rack",
+  "FtrIronShelfW.png",
+  "dark gray"
+ ],
+ [
+  "iron wand",
+  "ToolStickIron.png",
+  "dark gray"
+ ],
+ [
+  "iron worktable",
+  "FtrIronTableM.png",
+  "dark gray"
+ ],
+ [
+  "iron-and-stone fence",
+  "ToolFence.png",
+  "light gray"
+ ],
+ [
+  "ironwood bed",
+  "FtrIronwoodBedS.png",
+  "blue"
+ ],
+ [
+  "ironwood cart",
+  "FtrIronwoodServingcart.png",
+  "blue"
+ ],
+ [
+  "ironwood chair",
+  "FtrIronwoodChairS.png",
+  "blue"
+ ],
+ [
+  "ironwood clock",
+  "FtrIronwoodClockW.png",
+  "blue"
+ ],
+ [
+  "ironwood cupboard",
+  "FtrIronwoodCupboard.png",
+  "blue"
+ ],
+ [
+  "ironwood DIY workbench",
+  "FtrWorkbenchIronwood.png",
+  "blue"
+ ],
+ [
+  "ironwood dresser",
+  "FtrIronwoodChest.png",
+  "blue"
+ ],
+ [
+  "ironwood kitchenette",
+  "FtrIronwoodKitchen.png",
+  "blue"
+ ],
+ [
+  "ironwood low table",
+  "FtrIronwoodTableM.png",
+  "blue"
+ ],
+ [
+  "ironwood table",
+  "FtrIronwoodTableL.png",
+  "blue"
+ ],
+ [
+  "jail bars",
+  "FtrScreenCage.png",
+  "dark gray"
+ ],
+ [
+  "Jingle wall",
+  "RoomSpWallXmas00.png",
+  "white"
+ ],
+ [
+  "juicy-apple TV",
+  "FtrFruitsTV.png",
+  "red"
+ ],
+ [
+  "jungle flooring",
+  "RoomTexFloorJungle00.png",
+  "green"
+ ],
+ [
+  "jungle wall",
+  "RoomTexWallJungle00.png",
+  "green"
+ ],
+ [
+  "kettle bathtub",
+  "FtrGoemonburo.png",
+  "dark gray"
+ ],
+ [
+  "kettlebell",
+  "FtrKettlebell.png",
+  "dark gray"
+ ],
+ [
+  "key holder",
+  "FtrKeyhanger.png",
+  "brown"
+ ],
+ [
+  "knight's helmet",
+  "CapFullfaceKnightIron.png",
+  "dark gray"
+ ],
+ [
+  "knitted-grass backpack",
+  "BagBackpackGrass0.png",
+  "green"
+ ],
+ [
+  "ladder",
+  "ToolLadder.png",
+  "beige"
+ ],
+ [
+  "large cardboard boxes",
+  "FtrMovingboxL.png",
+  "yellow"
+ ],
+ [
+  "lattice fence",
+  "ToolFence.png",
+  "brown"
+ ],
+ [
+  "leaf",
+  "AccessoryMouthLeafGreen.png",
+  "green"
+ ],
+ [
+  "leaf campfire",
+  "FtrFallenleavesfire.png",
+  "brown"
+ ],
+ [
+  "leaf mask",
+  "CapMaskLeaf0.png",
+  "green"
+ ],
+ [
+  "leaf stool",
+  "FtrFallenleavesChairS.png",
+  "brown"
+ ],
+ [
+  "leaf umbrella",
+  "UmbrellaLeaf0.png",
+  "green"
+ ],
+ [
+  "leaf-egg outfit",
+  "TopsTexOnepieceRibNEggleaf0.png",
+  "yellow"
+ ],
+ [
+  "leaf-egg shell",
+  "CapHatEggleaf0.png",
+  "yellow"
+ ],
+ [
+  "leaf-egg shoes",
+  "ShoesLowcutEggleaf0.png",
+  "yellow"
+ ],
+ [
+  "Leo sculpture",
+  "FtrZodiacLeo.png",
+  "silver"
+ ],
+ [
+  "Libra scale",
+  "FtrZodiacLibra.png",
+  "silver"
+ ],
+ [
+  "light bamboo rug",
+  "RugRectBambooM00.png",
+  "green"
+ ],
+ [
+  "lily crown",
+  "CapOrnamentYuri1.png",
+  "green"
+ ],
+ [
+  "lily record player",
+  "FtrFlowerRecordplayer.png",
+  "green"
+ ],
+ [
+  "lily wand",
+  "ToolStickLily.png",
+  "green"
+ ],
+ [
+  "lily wreath",
+  "FtrDoorOrnamentWreathYuri.png",
+  "green"
+ ],
+ [
+  "log bed",
+  "FtrLogBedW.png",
+  "brown"
+ ],
+ [
+  "log bench",
+  "FtrLogStoolL.png",
+  "brown"
+ ],
+ [
+  "log chair",
+  "FtrLogSofaS.png",
+  "brown"
+ ],
+ [
+  "log decorative shelves",
+  "FtrLogShelf.png",
+  "brown"
+ ],
+ [
+  "log dining table",
+  "FtrLogTableL.png",
+  "brown"
+ ],
+ [
+  "log extra-long sofa",
+  "FtrLogSofaL.png",
+  "brown"
+ ],
+ [
+  "log garden lounge",
+  "FtrLogBedS.png",
+  "brown"
+ ],
+ [
+  "log pack",
+  "BagBackpackWood0.png",
+  "brown"
+ ],
+ [
+  "log round table",
+  "FtrLogTableLRound.png",
+  "brown"
+ ],
+ [
+  "log stakes",
+  "FtrWoodPile.png",
+  "brown"
+ ],
+ [
+  "log stool",
+  "FtrLogStoolS.png",
+  "brown"
+ ],
+ [
+  "log wall-mounted clock",
+  "FtrLogClockWall.png",
+  "brown"
+ ],
+ [
+  "lovely cosmos crown",
+  "CapOrnamentCosmos2.png",
+  "green"
+ ],
+ [
+  "lucky gold cat",
+  "FtrManekinekoGold.png",
+  "gold"
  ],
  [
   "lunar lander",
@@ -1680,9 +1615,544 @@
   "silver"
  ],
  [
-  "flying saucer",
-  "FtrUFO.png",
+  "lunar surface",
+  "RoomTexFloorLunar00.png",
   "silver"
+ ],
+ [
+  "magazine rack",
+  "FtrMagazinerack.png",
+  "yellow"
+ ],
+ [
+  "manga-library wall",
+  "RoomTexWallLibrary01.png",
+  "yellow"
+ ],
+ [
+  "manhole cover",
+  "FtrManhole.png",
+  "dark gray"
+ ],
+ [
+  "maple-leaf pochette",
+  "BagShoulderMaple0.png",
+  "brown"
+ ],
+ [
+  "maple-leaf pond stone",
+  "FtrStonewaterbowlAutumun.png",
+  "light gray"
+ ],
+ [
+  "maple-leaf umbrella",
+  "UmbrellaAutumn0.png",
+  "brown"
+ ],
+ [
+  "matryoshka",
+  "FtrMatryoshka.png",
+  "brown"
+ ],
+ [
+  "medicine",
+  ".png",
+  "white"
+ ],
+ [
+  "medium cardboard boxes",
+  "FtrMovingboxM.png",
+  "yellow"
+ ],
+ [
+  "mermaid bed",
+  "FtrMermaidBedS.png",
+  "white"
+ ],
+ [
+  "mermaid chair",
+  "FtrMermaidChairS.png",
+  "white"
+ ],
+ [
+  "mermaid closet",
+  "FtrMermaidClosetLR.png",
+  "white"
+ ],
+ [
+  "mermaid dresser",
+  "FtrMermaidChest.png",
+  "white"
+ ],
+ [
+  "mermaid flooring",
+  "RoomSpFloorMermaid00.png",
+  "white"
+ ],
+ [
+  "mermaid lamp",
+  "FtrMermaidLamp.png",
+  "white"
+ ],
+ [
+  "mermaid rug",
+  "RugOtherMermaidM00.png",
+  "white"
+ ],
+ [
+  "mermaid screen",
+  "FtrMermaidScreen.png",
+  "white"
+ ],
+ [
+  "mermaid shelf",
+  "FtrMermaidShelf.png",
+  "white"
+ ],
+ [
+  "mermaid sofa",
+  "FtrMermaidChairL.png",
+  "white"
+ ],
+ [
+  "mermaid table",
+  "FtrMermaidTableM.png",
+  "white"
+ ],
+ [
+  "mermaid vanity",
+  "FtrMermaidDresser.png",
+  "white"
+ ],
+ [
+  "mermaid wall",
+  "RoomSpWallMermaid00.png",
+  "white"
+ ],
+ [
+  "mermaid wall clock",
+  "FtrMermaidclockWall.png",
+  "white"
+ ],
+ [
+  "mini DIY workbench",
+  "FtrWorkbenchS.png",
+  "brown"
+ ],
+ [
+  "modeling clay",
+  "FtrClaytoy.png",
+  "brick"
+ ],
+ [
+  "modern wood wall",
+  "RoomTexWallMixwood00.png",
+  "brown"
+ ],
+ [
+  "money flooring",
+  "RoomTexFloorBill00.png",
+  "yellow"
+ ],
+ [
+  "moon",
+  "FtrMoon.png",
+  "silver"
+ ],
+ [
+  "mossy garden rock",
+  "FtrGardenrockMoss.png",
+  "light gray"
+ ],
+ [
+  "mountain standee",
+  "FtrHariboteMountain.png",
+  "brown"
+ ],
+ [
+  "mum crown",
+  "CapOrnamentMum1.png",
+  "green"
+ ],
+ [
+  "mum cushion",
+  "FtrFlowerStoolS.png",
+  "green"
+ ],
+ [
+  "mum wreath",
+  "FtrDoorOrnamentWreathMum.png",
+  "green"
+ ],
+ [
+  "mums wand",
+  "ToolStickChrysanthemum.png",
+  "green"
+ ],
+ [
+  "mush lamp",
+  "FtrMushroomLamp.png",
+  "orange"
+ ],
+ [
+  "mush log",
+  "FtrMushroomPulpwood.png",
+  "orange"
+ ],
+ [
+  "mush low stool",
+  "FtrMushroomChairS.png",
+  "orange"
+ ],
+ [
+  "mush parasol",
+  "FtrMushroomParasol.png",
+  "orange"
+ ],
+ [
+  "mush partition",
+  "FtrMushroomScreen.png",
+  "orange"
+ ],
+ [
+  "mush table",
+  "FtrMushroomTableL.png",
+  "orange"
+ ],
+ [
+  "mush umbrella",
+  "UmbrellaMushroom0.png",
+  "orange"
+ ],
+ [
+  "mush wall",
+  "RoomTexWallMush00.png",
+  "orange"
+ ],
+ [
+  "mushroom wand",
+  "ToolStickMushroom.png",
+  "orange"
+ ],
+ [
+  "mushroom wreath",
+  "FtrDoorOrnamentWreathMushroom.png",
+  "orange"
+ ],
+ [
+  "music stand",
+  "FtrMusicstand.png",
+  "brown"
+ ],
+ [
+  "natural garden chair",
+  "FtrGardenChairNatural.png",
+  "brown"
+ ],
+ [
+  "natural garden table",
+  "FtrGardenTableNatural.png",
+  "brown"
+ ],
+ [
+  "natural mum wreath",
+  "FtrDoorOrnamentWreathMumRare.png",
+  "green"
+ ],
+ [
+  "natural square table",
+  "FtrGardenTableSNatural.png",
+  "brown"
+ ],
+ [
+  "net",
+  "ToolNetFirst.png",
+  "beige"
+ ],
+ [
+  "nova light",
+  "FtrStarLamp.png",
+  "silver"
+ ],
+ [
+  "ocarina",
+  "ToolOcarina.png",
+  "brick"
+ ],
+ [
+  "oil-barrel bathtub",
+  "FtrDrumcanbath.png",
+  "yellow"
+ ],
+ [
+  "old-fashioned washtub",
+  "FtrWashtub.png",
+  "brown"
+ ],
+ [
+  "orange dress",
+  "TopsTexOnepieceAlineNOrange.png",
+  "orange"
+ ],
+ [
+  "orange end table",
+  "FtrFruitsTableS.png",
+  "orange"
+ ],
+ [
+  "orange hat",
+  "CapHatOrange.png",
+  "orange"
+ ],
+ [
+  "orange rug",
+  "RugOtherOrangeM00.png",
+  "orange"
+ ],
+ [
+  "orange umbrella",
+  "UmbrellaOrange0.png",
+  "orange"
+ ],
+ [
+  "orange wall",
+  "RoomTexWallOrange00.png",
+  "orange"
+ ],
+ [
+  "orange wall-mounted clock",
+  "FtrFruitsClockW.png",
+  "orange"
+ ],
+ [
+  "ornament mobile",
+  "FtrOrnamentMobile.png",
+  "white"
+ ],
+ [
+  "ornament wreath",
+  "FtrDoorOrnamentWreathOrnament.png",
+  "white"
+ ],
+ [
+  "outdoor bath",
+  "FtrOpenairbath.png",
+  "light gray"
+ ],
+ [
+  "outdoor picnic set",
+  "FtrSakuraPicnicset.png",
+  "pink"
+ ],
+ [
+  "palm-tree lamp",
+  "FtrPalmtreelamp.png",
+  "green"
+ ],
+ [
+  "pan flute",
+  "ToolPanpipe.png",
+  "green"
+ ],
+ [
+  "pansy crown",
+  "CapOrnamentPansy1.png",
+  "green"
+ ],
+ [
+  "pansy table",
+  "FtrFlowerTableS.png",
+  "green"
+ ],
+ [
+  "pansy wand",
+  "ToolStickPansy.png",
+  "green"
+ ],
+ [
+  "pansy wreath",
+  "FtrDoorOrnamentWreathPansy.png",
+  "green"
+ ],
+ [
+  "paw-print doorplate",
+  "FtrDoorOrnamentPaw.png",
+  "brown"
+ ],
+ [
+  "peach chair",
+  "FtrFruitsChairPeach.png",
+  "pink"
+ ],
+ [
+  "peach dress",
+  "TopsTexOnepieceAlineNPeach0.png",
+  "pink"
+ ],
+ [
+  "peach hat",
+  "CapHatPeach0.png",
+  "pink"
+ ],
+ [
+  "peach rug",
+  "RugOtherPeachM00.png",
+  "pink"
+ ],
+ [
+  "peach surprise box",
+  "FtrFruitsBox.png",
+  "pink"
+ ],
+ [
+  "peach umbrella",
+  "UmbrellaPeach0.png",
+  "pink"
+ ],
+ [
+  "peach wall",
+  "RoomTexWallPeach00.png",
+  "pink"
+ ],
+ [
+  "pear bed",
+  "FtrFruitsBedS.png",
+  "green"
+ ],
+ [
+  "pear dress",
+  "TopsTexOnepieceAlineNPear0.png",
+  "green"
+ ],
+ [
+  "pear hat",
+  "CapHatPear0.png",
+  "green"
+ ],
+ [
+  "pear rug",
+  "RugOtherPearM00.png",
+  "green"
+ ],
+ [
+  "pear umbrella",
+  "UmbrellaPear0.png",
+  "green"
+ ],
+ [
+  "pear wall",
+  "RoomTexWallPear00.png",
+  "green"
+ ],
+ [
+  "pear wardrobe",
+  "FtrFruitsClosetLR.png",
+  "green"
+ ],
+ [
+  "pile of leaves",
+  "FtrFallenleaves.png",
+  "brown"
+ ],
+ [
+  "pile of zen cushions",
+  "FtrCushionJapanPile.png",
+  "yellow"
+ ],
+ [
+  "pine bonsai tree",
+  "FtrBonsaiPine.png",
+  "brown"
+ ],
+ [
+  "Pisces lamp",
+  "FtrZodiacPisces.png",
+  "silver"
+ ],
+ [
+  "pitfall seed",
+  ".png",
+  "green"
+ ],
+ [
+  "plain sink",
+  "FtrWashstandBowl.png",
+  "brown"
+ ],
+ [
+  "plain wooden shop sign",
+  "FtrSignWood.png",
+  "brown"
+ ],
+ [
+  "pond stone",
+  "FtrStonewaterbowl.png",
+  "light gray"
+ ],
+ [
+  "pot",
+  "FtrKame.png",
+  "brick"
+ ],
+ [
+  "potted ivy",
+  "FtrLeafWall.png",
+  "green"
+ ],
+ [
+  "pretty cosmos wreath",
+  "FtrDoorOrnamentWreathCosmosMix.png",
+  "green"
+ ],
+ [
+  "pretty tulip wreath",
+  "FtrDoorOrnamentWreathTulipMix.png",
+  "green"
+ ],
+ [
+  "purple hyacinth crown",
+  "CapOrnamentHyacinth3.png",
+  "green"
+ ],
+ [
+  "purple hyacinth wreath",
+  "FtrDoorOrnamentWreathHyacinthRare.png",
+  "green"
+ ],
+ [
+  "purple pansy crown",
+  "CapOrnamentPansy3.png",
+  "green"
+ ],
+ [
+  "purple windflower crown",
+  "CapOrnamentAnemone3.png",
+  "green"
+ ],
+ [
+  "raccoon figurine",
+  "FtrOrnamentTanuki.png",
+  "brick"
+ ],
+ [
+  "recycled boots",
+  "ShoesKneeRecyclingboots0.png",
+  "dark gray"
+ ],
+ [
+  "recycled-can thumb piano",
+  "FtrKalimbaCan.png",
+  "dark gray"
+ ],
+ [
+  "red-leaf pile",
+  "FtrFallenleavesRed.png",
+  "brown"
+ ],
+ [
+  "ringtoss",
+  "FtrQuoits.png",
+  "brown"
  ],
  [
   "robot hero",
@@ -1690,23 +2160,93 @@
   "silver"
  ],
  [
-  "star clock",
-  "FtrStarClock.png",
+  "rocket",
+  "FtrRocket.png",
   "silver"
  ],
  [
-  "starry garland",
-  "FtrStarDecorationWall.png",
+  "rocking chair",
+  "FtrRockingchair.png",
+  "brown"
+ ],
+ [
+  "rocking horse",
+  "FtrRockinghorse.png",
+  "brown"
+ ],
+ [
+  "rope fence",
+  "ToolFence.png",
+  "dark gray"
+ ],
+ [
+  "rose bed",
+  "FtrFlowerBedW.png",
+  "green"
+ ],
+ [
+  "rose crown",
+  "CapOrnamentRose1.png",
+  "green"
+ ],
+ [
+  "rose wand",
+  "ToolStickRose.png",
+  "green"
+ ],
+ [
+  "rose wreath",
+  "FtrDoorOrnamentWreathRose.png",
+  "green"
+ ],
+ [
+  "rustic-stone wall",
+  "RoomTexWallStone00.png",
+  "light gray"
+ ],
+ [
+  "Sagittarius arrow",
+  "FtrZodiacSagittarius.png",
   "silver"
  ],
  [
-  "starry-sky wall",
-  "RoomSpWallStarSky00.png",
+  "sakura-wood flooring",
+  "RoomTexFloorSolidWood00.png",
+  "pink"
+ ],
+ [
+  "sakura-wood wall",
+  "RoomTexWallSolidWood00.png",
+  "pink"
+ ],
+ [
+  "sandy-beach flooring",
+  "RoomTexFloorSand00.png",
+  "white"
+ ],
+ [
+  "satellite",
+  "FtrSatellite.png",
   "silver"
  ],
  [
-  "starry wall",
-  "RoomSpWallStarPrint00.png",
+  "sauna heater",
+  "FtrStoveSauna.png",
+  "light gray"
+ ],
+ [
+  "scarecrow",
+  "FtrScarecrow.png",
+  "brown"
+ ],
+ [
+  "scattered papers",
+  "FtrFloorpapers.png",
+  "yellow"
+ ],
+ [
+  "sci-fi flooring",
+  "RoomSpFloorSF00.png",
   "silver"
  ],
  [
@@ -1715,18 +2255,208 @@
   "silver"
  ],
  [
-  "galaxy flooring",
-  "RoomSpFloorGalaxy00.png",
+  "Scorpio lamp",
+  "FtrZodiacScorpio.png",
   "silver"
  ],
  [
-  "lunar surface",
-  "RoomTexFloorLunar00.png",
+  "shell arch",
+  "FtrShellArch.png",
+  "white"
+ ],
+ [
+  "shell bed",
+  "FtrShellBedW.png",
+  "white"
+ ],
+ [
+  "shell fountain",
+  "FtrShellFountain.png",
+  "white"
+ ],
+ [
+  "shell lamp",
+  "FtrShellLamp.png",
+  "white"
+ ],
+ [
+  "shell partition",
+  "FtrShellScreen.png",
+  "white"
+ ],
+ [
+  "shell rug",
+  "RugOtherShellM00.png",
+  "white"
+ ],
+ [
+  "shell speaker",
+  "FtrShellMusic.png",
+  "white"
+ ],
+ [
+  "shell stool",
+  "FtrShellStoolS.png",
+  "white"
+ ],
+ [
+  "shell table",
+  "FtrShellTableL.png",
+  "white"
+ ],
+ [
+  "shell wand",
+  "ToolStickShell.png",
+  "white"
+ ],
+ [
+  "shell wreath",
+  "FtrDoorOrnamentWreathShell.png",
+  "white"
+ ],
+ [
+  "shellfish pochette",
+  "BagShoulderShell0.png",
+  "white"
+ ],
+ [
+  "shovel",
+  "ToolScoopFirst.png",
+  "beige"
+ ],
+ [
+  "signpost",
+  "FtrSignpost.png",
+  "brown"
+ ],
+ [
+  "silo",
+  "FtrSilo.png",
+  "brick"
+ ],
+ [
+  "simple DIY workbench",
+  "FtrWorkbenchStump.png",
+  "brown"
+ ],
+ [
+  "simple mum crown",
+  "CapOrnamentMum3.png",
+  "green"
+ ],
+ [
+  "simple well",
+  "FtrWell.png",
+  "light gray"
+ ],
+ [
+  "simple wooden fence",
+  "ToolFence.png",
+  "brown"
+ ],
+ [
+  "ski-slope flooring",
+  "RoomTexFloorGelande00.png",
+  "blue"
+ ],
+ [
+  "ski-slope wall",
+  "RoomSpWallGelande00.png",
+  "blue"
+ ],
+ [
+  "sky-egg outfit",
+  "TopsTexOnepieceRibNEggsky0.png",
+  "yellow"
+ ],
+ [
+  "sky-egg shell",
+  "CapHatEggsky0.png",
+  "yellow"
+ ],
+ [
+  "sky-egg shoes",
+  "ShoesLowcutEggsky0.png",
+  "yellow"
+ ],
+ [
+  "sleigh",
+  "FtrSled.png",
+  "brown"
+ ],
+ [
+  "slingshot",
+  "ToolSlingshotNormal.png",
+  "beige"
+ ],
+ [
+  "small cardboard boxes",
+  "FtrMovingboxS.png",
+  "yellow"
+ ],
+ [
+  "snazzy pansy wreath",
+  "FtrDoorOrnamentWreathPansyMix.png",
+  "green"
+ ],
+ [
+  "snowflake pochette",
+  "BagShoulderSnow0.png",
+  "blue"
+ ],
+ [
+  "snowflake wall",
+  "RoomTexWallSnowCrystal00.png",
+  "blue"
+ ],
+ [
+  "snowflake wreath",
+  "FtrDoorOrnamentWreathIce.png",
+  "blue"
+ ],
+ [
+  "snowperson head",
+  "CapCostumeSnowball0.png",
+  "blue"
+ ],
+ [
+  "space shuttle",
+  "FtrShuttle.png",
   "silver"
  ],
  [
-  "sci-fi flooring",
-  "RoomSpFloorSF00.png",
+  "spiky fence",
+  "ToolFence.png",
+  "brown"
+ ],
+ [
+  "stack of books",
+  "FtrBooks.png",
+  "yellow"
+ ],
+ [
+  "stacked magazines",
+  "FtrMagagine.png",
+  "yellow"
+ ],
+ [
+  "stacked-wood wall",
+  "RoomTexWallFireWood00.png",
+  "brown"
+ ],
+ [
+  "stall",
+  "FtrFloat.png",
+  "brown"
+ ],
+ [
+  "standard umbrella stand",
+  "FtrUmbrellastand.png",
+  "dark gray"
+ ],
+ [
+  "star clock",
+  "FtrStarClock.png",
   "silver"
  ],
  [
@@ -1741,343 +2471,18 @@
  ],
  [
   "star wand",
-  "ToolChangeStick.png",
+  "ToolStickStar.png",
   "silver"
  ],
  [
-  "Aries rocking chair",
-  "FtrZodiacAries.png",
+  "starry garland",
+  "FtrStarDecorationWall.png",
   "silver"
  ],
  [
-  "Taurus bathtub",
-  "FtrZodiacTaurus.png",
+  "starry wall",
+  "RoomSpWallStarPrint00.png",
   "silver"
- ],
- [
-  "Gemini closet",
-  "FtrZodiacGemini.png",
-  "silver"
- ],
- [
-  "Cancer table",
-  "FtrZodiacCancer.png",
-  "silver"
- ],
- [
-  "Leo sculpture",
-  "FtrZodiacLeo.png",
-  "silver"
- ],
- [
-  "Virgo harp",
-  "FtrZodiacVirgo.png",
-  "silver"
- ],
- [
-  "Libra scale",
-  "FtrZodiacLibra.png",
-  "silver"
- ],
- [
-  "Scorpio lamp",
-  "FtrZodiacScorpio.png",
-  "silver"
- ],
- [
-  "Sagittarius arrow",
-  "FtrZodiacSagittarius.png",
-  "silver"
- ],
- [
-  "Capricorn ornament",
-  "FtrZodiacCapricornus.png",
-  "silver"
- ],
- [
-  "Aquarius urn",
-  "FtrZodiacAquarius.png",
-  "silver"
- ],
- [
-  "Pisces lamp",
-  "FtrZodiacPisces.png",
-  "silver"
- ],
- [
-  "bamboo stool",
-  "FtrBambooStool.png",
-  "green"
- ],
- [
-  "bamboo bench",
-  "FtrBambooChairL.png",
-  "green"
- ],
- [
-  "bamboo candleholder",
-  "FtrBambooCandle.png",
-  "green"
- ],
- [
-  "bamboo partition",
-  "FtrBambooScreen.png",
-  "green"
- ],
- [
-  "bamboo sphere",
-  "FtrBambooBall.png",
-  "green"
- ],
- [
-  "bamboo shelf",
-  "FtrBambooShelf.png",
-  "green"
- ],
- [
-  "bamboo lunch box",
-  "FtrBambooLunch.png",
-  "green"
- ],
- [
-  "hearth",
-  "FtrIrori.png",
-  "green"
- ],
- [
-  "deer scare",
-  "FtrShishiodoshi.png",
-  "green"
- ],
- [
-  "bamboo basket",
-  "FtrBambooBasket.png",
-  "green"
- ],
- [
-  "bamboo floor lamp",
-  "FtrBambooLamp.png",
-  "green"
- ],
- [
-  "bamboo speaker",
-  "FtrBambooMusic.png",
-  "green"
- ],
- [
-  "bamboo stopblock",
-  "FtrBambooCarstop.png",
-  "green"
- ],
- [
-  "bamboo drum",
-  "FtrBamboodrum.png",
-  "green"
- ],
- [
-  "bamboo wall decoration",
-  "FtrBambooFlowerwall.png",
-  "green"
- ],
- [
-  "bamboo wall",
-  "RoomTexWallBamboo00.png",
-  "green"
- ],
- [
-  "bamboo flooring",
-  "RoomTexFloorBamboo00.png",
-  "green"
- ],
- [
-  "dark bamboo rug",
-  "RugRectBambooM01.png",
-  "green"
- ],
- [
-  "bamboo lattice fence",
-  "ItemFenceBamboo.png",
-  "green"
- ],
- [
-  "bamboo doll",
-  "FtrBambooSurprisedbox.png",
-  "green"
- ],
- [
-  "green-leaf pile",
-  "FtrFallenleavesGreen.png",
-  "green"
- ],
- [
-  "bamboo noodle slide",
-  "FtrBambooSomen.png",
-  "green"
- ],
- [
-  "steamer-basket set",
-  "FtrBasketsteamer.png",
-  "green"
- ],
- [
-  "bamboo-shoot lamp",
-  "FtrBambooshootLamp.png",
-  "green"
- ],
- [
-  "bamboo-grove wall",
-  "RoomTexWallChikurin00.png",
-  "green"
- ],
- [
-  "light bamboo rug",
-  "RugRectBambooM00.png",
-  "green"
- ],
- [
-  "basket pack",
-  "BagBackpackBasket0.png",
-  "green"
- ],
- [
-  "bamboo wand",
-  "ToolStickBamboo.png",
-  "green"
- ],
- [
-  "cherry-blossom-petal pile",
-  "FtrSakuraPetal.png",
-  "pink"
- ],
- [
-  "cherry-blossom bonsai",
-  "FtrBonsaiSakura.png",
-  "pink"
- ],
- [
-  "cherry-blossom branches",
-  "FtrSakuraBranch.png",
-  "pink"
- ],
- [
-  "outdoor picnic set",
-  "FtrSakuraPicnicset.png",
-  "pink"
- ],
- [
-  "blossom-viewing lantern",
-  "FtrSakuraLantern.png",
-  "pink"
- ],
- [
-  "cherry-blossom clock",
-  "FtrSakuraClockW.png",
-  "pink"
- ],
- [
-  "cherry-blossom-trees wall",
-  "RoomSpWallSakura00.png",
-  "pink"
- ],
- [
-  "sakura-wood wall",
-  "RoomTexWallSolidWood00.png",
-  "pink"
- ],
- [
-  "cherry-blossom flooring",
-  "RoomTexFloorSakura00.png",
-  "pink"
- ],
- [
-  "sakura-wood flooring",
-  "RoomTexFloorSolidWood00.png",
-  "pink"
- ],
- [
-  "cherry-blossom umbrella",
-  "UmbrellaCherryblossom0.png",
-  "pink"
- ],
- [
-  "cherry-blossom pochette",
-  "BagShoulderCherryblossoms0.png",
-  "pink"
- ],
- [
-  "cherry-blossom wand",
-  "ToolStickCherryblossom.png",
-  "pink"
- ],
- [
-  "shell stool",
-  "FtrShellStoolS.png",
-  "white"
- ],
- [
-  "shell fountain",
-  "FtrShellFountain.png",
-  "white"
- ],
- [
-  "shell table",
-  "FtrShellTableL.png",
-  "white"
- ],
- [
-  "shell bed",
-  "FtrShellBedW.png",
-  "white"
- ],
- [
-  "shell partition",
-  "FtrShellScreen.png",
-  "white"
- ],
- [
-  "shell arch",
-  "FtrShellArch.png",
-  "white"
- ],
- [
-  "shell lamp",
-  "FtrShellLamp.png",
-  "white"
- ],
- [
-  "shell speaker",
-  "FtrShellMusic.png",
-  "white"
- ],
- [
-  "sandy-beach flooring",
-  "RoomTexFloorSand00.png",
-  "white"
- ],
- [
-  "shell rug",
-  "RugOtherShellM00.png",
-  "white"
- ],
- [
-  "shell wreath",
-  "FtrDoorOrnamentWreathShell.png",
-  "white"
- ],
- [
-  "tropical vista",
-  "RoomSpWallTropical00.png",
-  "white"
- ],
- [
-  "underwater wall",
-  "RoomSpWallFishTank00.png",
-  "white"
- ],
- [
-  "underwater flooring",
-  "RoomSpFloorFishTank00.png",
-  "white"
  ],
  [
   "starry-sands flooring",
@@ -2085,48 +2490,203 @@
   "white"
  ],
  [
-  "water flooring",
-  "RoomSpFloorWater00.png",
+  "starry-sky wall",
+  "RoomSpWallStarSky00.png",
+  "silver"
+ ],
+ [
+  "steamer-basket set",
+  "FtrBasketsteamer.png",
+  "green"
+ ],
+ [
+  "steel flooring",
+  "RoomTexFloorSteel00.png",
+  "dark gray"
+ ],
+ [
+  "steel-frame wall",
+  "RoomTexWallSteel00.png",
+  "dark gray"
+ ],
+ [
+  "stone arch",
+  "FtrRockArch.png",
+  "light gray"
+ ],
+ [
+  "stone axe",
+  "ToolStoneaxeFirst.png",
+  "beige"
+ ],
+ [
+  "stone fence",
+  "ToolFence.png",
+  "light gray"
+ ],
+ [
+  "stone lion-dog",
+  "FtrSekishishi.png",
+  "light gray"
+ ],
+ [
+  "stone stool",
+  "FtrStoneChair.png",
+  "light gray"
+ ],
+ [
+  "stone table",
+  "FtrStoneTable.png",
+  "light gray"
+ ],
+ [
+  "stone tablet",
+  "FtrRockMonument.png",
+  "light gray"
+ ],
+ [
+  "stone wall",
+  "RoomTexWallBasement00.png",
+  "light gray"
+ ],
+ [
+  "stone-egg outfit",
+  "TopsTexOnepieceRibNEggrock0.png",
+  "yellow"
+ ],
+ [
+  "stone-egg shell",
+  "CapHatEggrock0.png",
+  "yellow"
+ ],
+ [
+  "stone-egg shoes",
+  "ShoesLowcutEggrock0.png",
+  "yellow"
+ ],
+ [
+  "straw fence",
+  "ToolFence.png",
+  "green"
+ ],
+ [
+  "straw umbrella hat",
+  "CapHatSandogasa0.png",
+  "green"
+ ],
+ [
+  "street piano",
+  "FtrPianoStreet.png",
+  "yellow"
+ ],
+ [
+  "succulent plant",
+  "FtrPlantSucculents.png",
+  "green"
+ ],
+ [
+  "swinging bench",
+  "FtrSwingWood.png",
+  "brown"
+ ],
+ [
+  "tabletop festive tree",
+  "FtrTreeXmasMini.png",
   "white"
  ],
  [
-  "shellfish pochette",
-  "BagShoulderShell0.png",
-  "white"
+  "tall garden rock",
+  "FtrGardenrockTall.png",
+  "light gray"
  ],
  [
-  "shell wand",
-  "ToolStickShell.png",
-  "white"
+  "tall lantern",
+  "FtrStonelantern.png",
+  "light gray"
  ],
  [
-  "yellow-leaf pile",
-  "FtrFallenleavesYellow.png",
+  "Taurus bathtub",
+  "FtrZodiacTaurus.png",
+  "silver"
+ ],
+ [
+  "tea table",
+  "FtrDiningtableJapan.png",
   "brown"
  ],
  [
-  "red-leaf pile",
-  "FtrFallenleavesRed.png",
+  "terrarium",
+  "FtrTerrarium.png",
+  "green"
+ ],
+ [
+  "three-tiered snowperson",
+  "FtrSnowman.png",
+  "blue"
+ ],
+ [
+  "tiki torch",
+  "FtrTorch.png",
   "brown"
  ],
  [
-  "pile of leaves",
-  "FtrFallenleaves.png",
+  "timber doorplate",
+  "FtrDoorOrnamentLog.png",
   "brown"
  ],
  [
-  "leaf campfire",
-  "FtrFallenleavesfire.png",
-  "brown"
+  "tiny library",
+  "FtrMicrolibrary.png",
+  "yellow"
  ],
  [
-  "leaf stool",
-  "FtrFallenleavesChairS.png",
-  "brown"
+  "tire stack",
+  "FtrTyres.png",
+  "dark gray"
+ ],
+ [
+  "tire toy",
+  "FtrPlayingtire.png",
+  "dark gray"
  ],
  [
   "traditional balancing toy",
   "FtrBalancingtoy.png",
+  "brown"
+ ],
+ [
+  "traditional straw coat",
+  "TopsTexTopCoatLStrawBeige.png",
+  "green"
+ ],
+ [
+  "trash bags",
+  "FtrGarbagebag.png",
+  "dark gray"
+ ],
+ [
+  "tree branch wreath",
+  "FtrDoorOrnamentWreathBranch.png",
+  "brown"
+ ],
+ [
+  "tree standee",
+  "FtrHariboteTree.png",
+  "brown"
+ ],
+ [
+  "tree-branch wand",
+  "ToolStickTree.png",
+  "brown"
+ ],
+ [
+  "tree's bounty arch",
+  "FtrNutArch.png",
+  "brown"
+ ],
+ [
+  "tree's bounty big tree",
+  "FtrNutTreeL.png",
   "brown"
  ],
  [
@@ -2140,293 +2700,23 @@
   "brown"
  ],
  [
-  "tree's bounty big tree",
-  "FtrNutTreeL.png",
-  "brown"
- ],
- [
-  "tree's bounty arch",
-  "FtrNutArch.png",
-  "brown"
- ],
- [
-  "pine bonsai tree",
-  "FtrBonsaiPine.png",
-  "brown"
- ],
- [
   "tree's bounty mobile",
   "FtrNutMobile.png",
   "brown"
  ],
  [
-  "autumn wall",
-  "RoomSpWallAutumun00.png",
+  "trophy case",
+  "FtrTrophycase.png",
   "brown"
  ],
  [
-  "colored-leaves flooring",
-  "RoomTexFloorAutumun00.png",
-  "brown"
- ],
- [
-  "maple-leaf umbrella",
-  "UmbrellaAutumn0.png",
-  "brown"
- ],
- [
-  "maple-leaf pochette",
-  "BagShoulderMaple0.png",
-  "brown"
- ],
- [
-  "acorn pochette",
-  "BagShoulderAcorn0.png",
-  "brown"
- ],
- [
-  "mush low stool",
-  "FtrMushroomChairS.png",
-  "orange"
- ],
- [
-  "mush log",
-  "FtrMushroomPulpwood.png",
-  "orange"
- ],
- [
-  "mush table",
-  "FtrMushroomTableL.png",
-  "orange"
- ],
- [
-  "mush lamp",
-  "FtrMushroomLamp.png",
-  "orange"
- ],
- [
-  "mush parasol",
-  "FtrMushroomParasol.png",
-  "orange"
- ],
- [
-  "mush partition",
-  "FtrMushroomScreen.png",
-  "orange"
- ],
- [
-  "mushroom wreath",
-  "FtrDoorOrnamentWreathMushroom.png",
-  "orange"
- ],
- [
-  "forest wall",
-  "RoomTexWallMushForest00.png",
-  "orange"
- ],
- [
-  "mush wall",
-  "RoomTexWallMush00.png",
-  "orange"
- ],
- [
-  "forest flooring",
-  "RoomTexFloorMushForest00.png",
-  "orange"
- ],
- [
-  "mush umbrella",
-  "UmbrellaMushroom0.png",
-  "orange"
- ],
- [
-  "mushroom wand",
-  "ToolStickMushroom.png",
-  "orange"
- ],
- [
-  "frozen-treat set",
-  "FtrIceCandy.png",
-  "blue"
- ],
- [
-  "frozen chair",
-  "FtrIceChairS.png",
-  "blue"
- ],
- [
-  "frozen counter",
-  "FtrIceCounter.png",
-  "blue"
- ],
- [
-  "frozen table",
-  "FtrIceTableL.png",
-  "blue"
- ],
- [
-  "frozen bed",
-  "FtrIceBedW.png",
-  "blue"
- ],
- [
-  "frozen partition",
-  "FtrIceScreen.png",
-  "blue"
- ],
- [
-  "frozen arch",
-  "FtrIceGate.png",
-  "blue"
- ],
- [
-  "frozen pillar",
-  "FtrIcePillar.png",
-  "blue"
- ],
- [
-  "frozen sculpture",
-  "FtrIceArt.png",
-  "blue"
- ],
- [
-  "frozen tree",
-  "FtrIceTree.png",
-  "blue"
- ],
- [
-  "three-tiered snowperson",
-  "FtrSnowman.png",
-  "blue"
- ],
- [
-  "ice wall",
-  "RoomSpWallIce00.png",
-  "blue"
- ],
- [
-  "ice flooring",
-  "RoomSpFloorIce00.png",
-  "blue"
- ],
- [
-  "snowperson head",
-  "CapCostumeSnowball0.png",
-  "blue"
- ],
- [
-  "ice wand",
-  "ToolStickSnow.png",
-  "blue"
- ],
- [
-  "snowflake wreath",
-  "FtrDoorOrnamentWreathIce.png",
-  "blue"
- ],
- [
-  "ski-slope wall",
-  "RoomSpWallGelande00.png",
-  "blue"
- ],
- [
-  "iceberg wall",
-  "RoomTexWallIceFloe00.png",
-  "blue"
- ],
- [
-  "snowflake wall",
-  "RoomTexWallSnowCrystal00.png",
-  "blue"
- ],
- [
-  "ski-slope flooring",
-  "RoomTexFloorGelande00.png",
-  "blue"
- ],
- [
-  "iceberg flooring",
-  "RoomSpFloorIceFloe00.png",
-  "blue"
- ],
- [
-  "snowflake pochette",
-  "BagShoulderSnow0.png",
-  "blue"
- ],
- [
-  "festive top set",
-  "FtrFestivaltop.png",
+  "tropical vista",
+  "RoomSpWallTropical00.png",
   "white"
  ],
  [
-  "holiday candle",
-  "FtrCandleXmas.png",
-  "white"
- ],
- [
-  "tabletop festive tree",
-  "FtrTreeXmasMini.png",
-  "white"
- ],
- [
-  "festive tree",
-  "FtrTreeXmasS.png",
-  "white"
- ],
- [
-  "big festive tree",
-  "FtrTreeXmasL.png",
-  "white"
- ],
- [
-  "illuminated snowflakes",
-  "FtrIllumiSnow.png",
-  "white"
- ],
- [
-  "illuminated present",
-  "FtrIllumiPresent.png",
-  "white"
- ],
- [
-  "illuminated reindeer",
-  "FtrIllumiReindeer.png",
-  "white"
- ],
- [
-  "illuminated tree",
-  "FtrIllumiTree.png",
-  "white"
- ],
- [
-  "ornament mobile",
-  "FtrOrnamentMobile.png",
-  "white"
- ],
- [
-  "ornament wreath",
-  "FtrDoorOrnamentWreathOrnament.png",
-  "white"
- ],
- [
-  "Jingle wall",
-  "RoomSpWallXmas00.png",
-  "white"
- ],
- [
-  "windflower fan",
-  "FtrFlowerFan.png",
-  "green"
- ],
- [
-  "mum cushion",
-  "FtrFlowerStoolS.png",
-  "green"
- ],
- [
-  "cosmos shower",
-  "FtrFlowerShower.png",
+  "tulip crown",
+  "CapOrnamentTulip1.png",
   "green"
  ],
  [
@@ -2435,73 +2725,8 @@
   "green"
  ],
  [
-  "rose bed",
-  "FtrFlowerBedW.png",
-  "green"
- ],
- [
-  "pansy table",
-  "FtrFlowerTableS.png",
-  "green"
- ],
- [
-  "hyacinth lamp",
-  "FtrFlowerLamp.png",
-  "green"
- ],
- [
-  "lily record player",
-  "FtrFlowerRecordplayer.png",
-  "green"
- ],
- [
-  "flower stand",
-  "FtrStandflower.png",
-  "green"
- ],
- [
-  "windflower wreath",
-  "FtrDoorOrnamentWreathAnemone.png",
-  "green"
- ],
- [
-  "cool windflower wreath",
-  "FtrDoorOrnamentWreathAnemoneMix.png",
-  "green"
- ],
- [
-  "chic windflower wreath",
-  "FtrDoorOrnamentWreathAnemoneRare.png",
-  "green"
- ],
- [
-  "mum wreath",
-  "FtrDoorOrnamentWreathMum.png",
-  "green"
- ],
- [
-  "fancy mum wreath",
-  "FtrDoorOrnamentWreathMumMix.png",
-  "green"
- ],
- [
-  "natural mum wreath",
-  "FtrDoorOrnamentWreathMumRare.png",
-  "green"
- ],
- [
-  "cosmos wreath",
-  "FtrDoorOrnamentWreathCosmos.png",
-  "green"
- ],
- [
-  "pretty cosmos wreath",
-  "FtrDoorOrnamentWreathCosmosMix.png",
-  "green"
- ],
- [
-  "chic cosmos wreath",
-  "FtrDoorOrnamentWreathCosmosRare.png",
+  "tulip wand",
+  "ToolStickTulip.png",
   "green"
  ],
  [
@@ -2510,413 +2735,58 @@
   "green"
  ],
  [
-  "pretty tulip wreath",
-  "FtrDoorOrnamentWreathTulipMix.png",
-  "green"
+  "ukulele",
+  "FtrUkulele.png",
+  "brown"
  ],
  [
-  "dark tulip wreath",
-  "FtrDoorOrnamentWreathTulipRare.png",
-  "green"
+  "underwater flooring",
+  "RoomSpFloorFishTank00.png",
+  "white"
  ],
  [
-  "rose wreath",
-  "FtrDoorOrnamentWreathRose.png",
-  "green"
+  "underwater wall",
+  "RoomSpWallFishTank00.png",
+  "white"
  ],
  [
-  "fancy rose wreath",
-  "FtrDoorOrnamentWreathRoseMix.png",
-  "green"
+  "unglazed dish set",
+  "FtrDishesUnglazed.png",
+  "brick"
  ],
  [
-  "dark rose wreath",
-  "FtrDoorOrnamentWreathRoseRare.png",
-  "green"
+  "vaulting pole",
+  "ToolLongwoodenstick.png",
+  "beige"
  ],
  [
-  "blue rose wreath",
-  "FtrDoorOrnamentWreathRoseUrtraRare.png",
-  "green"
+  "vertical-board fence",
+  "ToolFence.png",
+  "brown"
  ],
  [
-  "gold rose wreath",
-  "FtrDoorOrnamentWreathRoseGold.png",
-  "green"
+  "Virgo harp",
+  "FtrZodiacVirgo.png",
+  "silver"
  ],
  [
-  "pansy wreath",
-  "FtrDoorOrnamentWreathPansy.png",
-  "green"
+  "wand",
+  "ToolStickWood.png",
+  "beige"
  ],
  [
-  "snazzy pansy wreath",
-  "FtrDoorOrnamentWreathPansyMix.png",
-  "green"
+  "water flooring",
+  "RoomSpFloorWater00.png",
+  "white"
  ],
  [
-  "cool pansy wreath",
-  "FtrDoorOrnamentWreathPansyRare.png",
-  "green"
+  "water pump",
+  "FtrHandpump.png",
+  "dark gray"
  ],
  [
-  "hyacinth wreath",
-  "FtrDoorOrnamentWreathHyacinth.png",
-  "green"
- ],
- [
-  "cool hyacinth wreath",
-  "FtrDoorOrnamentWreathHyacinthMix.png",
-  "green"
- ],
- [
-  "purple hyacinth wreath",
-  "FtrDoorOrnamentWreathHyacinthRare.png",
-  "green"
- ],
- [
-  "lily wreath",
-  "FtrDoorOrnamentWreathYuri.png",
-  "green"
- ],
- [
-  "fancy lily wreath",
-  "FtrDoorOrnamentWreathYuriMix.png",
-  "green"
- ],
- [
-  "dark lily wreath",
-  "FtrDoorOrnamentWreathYuriRare.png",
-  "green"
- ],
- [
-  "windflower crown",
-  "CapOrnamentAnemone1.png",
-  "green"
- ],
- [
-  "cool windflower crown",
-  "CapOrnamentAnemone2.png",
-  "green"
- ],
- [
-  "purple windflower crown",
-  "CapOrnamentAnemone3.png",
-  "green"
- ],
- [
-  "mum crown",
-  "CapOrnamentMum1.png",
-  "green"
- ],
- [
-  "chic mum crown",
-  "CapOrnamentMum2.png",
-  "green"
- ],
- [
-  "simple mum crown",
-  "CapOrnamentMum3.png",
-  "green"
- ],
- [
-  "cosmos crown",
-  "CapOrnamentCosmos1.png",
-  "green"
- ],
- [
-  "lovely cosmos crown",
-  "CapOrnamentCosmos2.png",
-  "green"
- ],
- [
-  "dark cosmos crown",
-  "CapOrnamentCosmos3.png",
-  "green"
- ],
- [
-  "tulip crown",
-  "CapOrnamentTulip1.png",
-  "green"
- ],
- [
-  "chic tulip crown",
-  "CapOrnamentTulip2.png",
-  "green"
- ],
- [
-  "dark tulip crown",
-  "CapOrnamentTulip3.png",
-  "green"
- ],
- [
-  "rose crown",
-  "CapOrnamentRose1.png",
-  "green"
- ],
- [
-  "cute rose crown",
-  "CapOrnamentRose2.png",
-  "green"
- ],
- [
-  "chic rose crown",
-  "CapOrnamentRose3.png",
-  "green"
- ],
- [
-  "blue rose crown",
-  "CapOrnamentRose4.png",
-  "green"
- ],
- [
-  "gold rose crown",
-  "CapOrnamentRose5.png",
-  "green"
- ],
- [
-  "pansy crown",
-  "CapOrnamentPansy1.png",
-  "green"
- ],
- [
-  "cool pansy crown",
-  "CapOrnamentPansy2.png",
-  "green"
- ],
- [
-  "purple pansy crown",
-  "CapOrnamentPansy3.png",
-  "green"
- ],
- [
-  "hyacinth crown",
-  "CapOrnamentHyacinth1.png",
-  "green"
- ],
- [
-  "cool hyacinth crown",
-  "CapOrnamentHyacinth2.png",
-  "green"
- ],
- [
-  "purple hyacinth crown",
-  "CapOrnamentHyacinth3.png",
-  "green"
- ],
- [
-  "lily crown",
-  "CapOrnamentYuri1.png",
-  "green"
- ],
- [
-  "cute lily crown",
-  "CapOrnamentYuri2.png",
-  "green"
- ],
- [
-  "dark lily crown",
-  "CapOrnamentYuri3.png",
-  "green"
- ],
- [
-  "windflower wand",
-  "ToolStickAnemones.png",
-  "green"
- ],
- [
-  "mums wand",
-  "ToolStickChrysanthemum.png",
-  "green"
- ],
- [
-  "cosmos wand",
-  "ToolStickCosmos.png",
-  "green"
- ],
- [
-  "tulip wand",
-  "ToolStickTulip.png",
-  "green"
- ],
- [
-  "rose wand",
-  "ToolStickRose.png",
-  "green"
- ],
- [
-  "pansy wand",
-  "ToolStickPansy.png",
-  "green"
- ],
- [
-  "hyacinth wand",
-  "ToolStickHyacinth.png",
-  "green"
- ],
- [
-  "lily wand",
-  "ToolStickYuri.png",
-  "green"
- ],
- [
-  "wedding wand",
-  "ToolStickJune.png",
-  "green"
- ],
- [
-  "Bunny Day stool",
-  "FtrEggStool.png",
-  "yellow"
- ],
- [
-  "Bunny Day table",
-  "FtrEggTableS.png",
-  "yellow"
- ],
- [
-  "Bunny Day wardrobe",
-  "FtrEggClosetLR.png",
-  "yellow"
- ],
- [
-  "Bunny Day vanity",
-  "FtrEggDresser.png",
-  "yellow"
- ],
- [
-  "Bunny Day bed",
-  "FtrEggBedW.png",
-  "yellow"
- ],
- [
-  "Bunny Day lamp",
-  "FtrEggLamp.png",
-  "yellow"
- ],
- [
-  "Bunny Day merry balloons",
-  "FtrEggBalloonA.png",
-  "yellow"
- ],
- [
-  "Bunny Day festive balloons",
-  "FtrEggBalloonB.png",
-  "yellow"
- ],
- [
-  "Bunny Day arch",
-  "FtrEggArch.png",
-  "yellow"
- ],
- [
-  "wobbling Zipper toy",
-  "FtrDollPyn.png",
-  "yellow"
- ],
- [
-  "Bunny Day wall clock",
-  "FtrEggClock.png",
-  "yellow"
- ],
- [
-  "Bunny Day glowy garland",
-  "FtrEggLampWall.png",
-  "yellow"
- ],
- [
-  "Bunny Day wreath",
-  "FtrDoorOrnamentWreathEaster.png",
-  "yellow"
- ],
- [
-  "Bunny Day wall",
-  "RoomTexWallEaster00.png",
-  "yellow"
- ],
- [
-  "Bunny Day flooring",
-  "RoomTexFloorEaster00.png",
-  "yellow"
- ],
- [
-  "Bunny Day rug",
-  "RugOtherEasterM00.png",
-  "yellow"
- ],
- [
-  "earth-egg shell",
-  "CapHatEggground0.png",
-  "yellow"
- ],
- [
-  "earth-egg outfit",
-  "TopsTexOnepieceRibNEggground0.png",
-  "yellow"
- ],
- [
-  "earth-egg shoes",
-  "ShoesLowcutEggground0.png",
-  "yellow"
- ],
- [
-  "stone-egg shell",
-  "CapHatEggrock0.png",
-  "yellow"
- ],
- [
-  "stone-egg outfit",
-  "TopsTexOnepieceRibNEggrock0.png",
-  "yellow"
- ],
- [
-  "stone-egg shoes",
-  "ShoesLowcutEggrock0.png",
-  "yellow"
- ],
- [
-  "leaf-egg shell",
-  "CapHatEggleaf0.png",
-  "yellow"
- ],
- [
-  "leaf-egg outfit",
-  "TopsTexOnepieceRibNEggleaf0.png",
-  "yellow"
- ],
- [
-  "leaf-egg shoes",
-  "ShoesLowcutEggleaf0.png",
-  "yellow"
- ],
- [
-  "wood-egg shell",
-  "CapHatEggforest0.png",
-  "yellow"
- ],
- [
-  "wood-egg outfit",
-  "TopsTexOnepieceRibNEggforest0.png",
-  "yellow"
- ],
- [
-  "wood-egg shoes",
-  "ShoesLowcutEggforest0.png",
-  "yellow"
- ],
- [
-  "sky-egg shell",
-  "CapHatEggsky0.png",
-  "yellow"
- ],
- [
-  "sky-egg outfit",
-  "TopsTexOnepieceRibNEggsky0.png",
-  "yellow"
- ],
- [
-  "sky-egg shoes",
-  "ShoesLowcutEggsky0.png",
+  "water-egg outfit",
+  "TopsTexOnepieceRibNEggfish0.png",
   "yellow"
  ],
  [
@@ -2925,43 +2795,253 @@
   "yellow"
  ],
  [
-  "water-egg outfit",
-  "TopsTexOnepieceRibNEggfish0.png",
-  "yellow"
- ],
- [
   "water-egg shoes",
   "ShoesLowcutEggfish0.png",
   "yellow"
  ],
  [
-  "egg party hat",
-  "CapHatEggparty0.png",
+  "watering can",
+  "ToolWateringFirst.png",
+  "beige"
+ ],
+ [
+  "wave breaker",
+  "FtrTetrapod.png",
+  "light gray"
+ ],
+ [
+  "wedding fence",
+  "ToolFence.png",
+  "dark gray"
+ ],
+ [
+  "wedding wand",
+  "ToolStickJune.png",
+  "green"
+ ],
+ [
+  "western-style stone",
+  "FtrGravestoneEuropean.png",
+  "light gray"
+ ],
+ [
+  "wild log bench",
+  "FtrWoodBench.png",
+  "brown"
+ ],
+ [
+  "wild-wood wall",
+  "RoomTexWallWildWood00.png",
+  "brown"
+ ],
+ [
+  "windflower crown",
+  "CapOrnamentAnemone1.png",
+  "green"
+ ],
+ [
+  "windflower fan",
+  "FtrFlowerFan.png",
+  "green"
+ ],
+ [
+  "windflower wand",
+  "ToolStickAnemones.png",
+  "green"
+ ],
+ [
+  "windflower wreath",
+  "FtrDoorOrnamentWreathAnemone.png",
+  "green"
+ ],
+ [
+  "Wobbling Zipper toy",
+  "FtrDollPyn.png",
   "yellow"
  ],
  [
-  "egg party dress",
-  "TopsTexOnepieceBalloonLEgg0.png",
+  "wood-egg outfit",
+  "TopsTexOnepieceRibNEggforest0.png",
   "yellow"
  ],
  [
-  "Bunny Day crown",
-  "CapOrnamentCEgg0.png",
+  "wood-egg shell",
+  "CapHatEggforest0.png",
   "yellow"
  ],
  [
-  "Bunny Day bag",
-  "BagBackpackEgg0.png",
+  "wood-egg shoes",
+  "ShoesLowcutEggforest0.png",
   "yellow"
  ],
  [
-  "Bunny Day fence",
-  "ItemFenceEgg.png",
+  "wooden bookshelf",
+  "FtrBookshelf.png",
   "yellow"
  ],
  [
-  "Bunny Day wand",
-  "ToolStickEgg.png",
-  "yellow"
+  "wooden bucket",
+  "FtrBucketWood.png",
+  "brown"
+ ],
+ [
+  "wooden chair",
+  "FtrWoodenChairS.png",
+  "brown"
+ ],
+ [
+  "wooden chest",
+  "FtrWoodenChest.png",
+  "brown"
+ ],
+ [
+  "wooden double bed",
+  "FtrWoodenBedW.png",
+  "brown"
+ ],
+ [
+  "wooden end table",
+  "FtrWoodenTableS.png",
+  "brown"
+ ],
+ [
+  "wooden fish",
+  "FtrMokugyo.png",
+  "brown"
+ ],
+ [
+  "wooden full-length mirror",
+  "FtrWoodenMirror.png",
+  "brown"
+ ],
+ [
+  "wooden low table",
+  "FtrWoodenTableM.png",
+  "brown"
+ ],
+ [
+  "wooden mini table",
+  "FtrWoodenTableMini.png",
+  "brown"
+ ],
+ [
+  "wooden simple bed",
+  "FtrWoodenBedS.png",
+  "brown"
+ ],
+ [
+  "wooden stool",
+  "FtrWoodenStoolS.png",
+  "brown"
+ ],
+ [
+  "wooden table",
+  "FtrWoodenTableL.png",
+  "brown"
+ ],
+ [
+  "wooden table mirror",
+  "FtrWoodenMirrorS.png",
+  "brown"
+ ],
+ [
+  "wooden toolbox",
+  "FtrToolboxWood.png",
+  "brown"
+ ],
+ [
+  "wooden wardrobe",
+  "FtrWoodenCloset.png",
+  "brown"
+ ],
+ [
+  "wooden waste bin",
+  "FtrTrashboxWood.png",
+  "brown"
+ ],
+ [
+  "wooden-block bed",
+  "FtrBlockBedS.png",
+  "brown"
+ ],
+ [
+  "wooden-block bench",
+  "FtrBlockChairL.png",
+  "brown"
+ ],
+ [
+  "wooden-block bookshelf",
+  "FtrBlockShelf.png",
+  "brown"
+ ],
+ [
+  "wooden-block chair",
+  "FtrBlockChairS.png",
+  "brown"
+ ],
+ [
+  "wooden-block chest",
+  "FtrBlockChest.png",
+  "brown"
+ ],
+ [
+  "wooden-block stereo",
+  "FtrBlockCompo.png",
+  "brown"
+ ],
+ [
+  "wooden-block stool",
+  "FtrBlockStoolS.png",
+  "brown"
+ ],
+ [
+  "wooden-block table",
+  "FtrBlockTableL.png",
+  "brown"
+ ],
+ [
+  "wooden-block toy",
+  "FtrBlockBrick.png",
+  "brown"
+ ],
+ [
+  "wooden-block wall clock",
+  "FtrBlockClock.png",
+  "brown"
+ ],
+ [
+  "wooden-knot wall",
+  "RoomTexWallCedar00.png",
+  "brown"
+ ],
+ [
+  "wooden-mosaic wall",
+  "RoomTexWallMixPlankWood00.png",
+  "brown"
+ ],
+ [
+  "wooden-plank sign",
+  "FtrSignboardWood.png",
+  "brown"
+ ],
+ [
+  "woodland wall",
+  "RoomTexWallJukai00.png",
+  "green"
+ ],
+ [
+  "yellow-leaf pile",
+  "FtrFallenleavesYellow.png",
+  "brown"
+ ],
+ [
+  "zen fence",
+  "ToolFence.png",
+  "light gray"
+ ],
+ [
+  "zen-style stone",
+  "FtrGravestoneJapan.png",
+  "light gray"
  ]
 ]
