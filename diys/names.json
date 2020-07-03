@@ -81,7 +81,7 @@
  ],
  [
   "axe",
-  "ToolAxeFirst.png",
+  "ToolAxe.png",
   "beige"
  ],
  [
@@ -131,7 +131,7 @@
  ],
  [
   "bamboo lattice fence",
-  "ToolFence.png",
+  "ItemFenceBamboo.png",
   "green"
  ],
  [
@@ -201,7 +201,7 @@
  ],
  [
   "barbed-wire fence",
-  "ToolFence.png",
+  "ItemFenceBarbedWire.png",
   "brown"
  ],
  [
@@ -261,12 +261,12 @@
  ],
  [
   "blue rose wreath",
-  "FtrDoorOrnamentWreathRoseUltraRare.png",
+  "FtrDoorOrnamentWreathRoseUrtraRare.png",
   "green"
  ],
  [
   "bone doorplate",
-  "FtrDoorOrnamentPlateBone.png",
+  "FtrDoorPlateBone.png",
   "brown"
  ],
  [
@@ -286,7 +286,7 @@
  ],
  [
   "brick fence",
-  "ToolFence.png",
+  "ItemFenceWallRenga.png",
   "brick"
  ],
  [
@@ -298,11 +298,6 @@
   "brick well",
   "FtrWellBrick.png",
   "brick"
- ],
- [
-  "bridge construction kit",
-  "BridgeLog.png",
-  "NA"
  ],
  [
   "brown herringbone wall",
@@ -331,7 +326,7 @@
  ],
  [
   "Bunny Day fence",
-  "ToolFence.png",
+  "ItemFenceEgg.png",
   "yellow"
  ],
  [
@@ -418,11 +413,6 @@
   "campfire",
   "FtrBonfire.png",
   "brown"
- ],
- [
-  "campsite construction kit",
-  "StrcCampsiteDiyIconA00.png",
-  "NA"
  ],
  [
   "Cancer table",
@@ -571,7 +561,7 @@
  ],
  [
   "clackercart",
-  "FtrKatakataToy.png",
+  "FtrKatakatatoy.png",
   "brown"
  ],
  [
@@ -636,7 +626,7 @@
  ],
  [
   "corral fence",
-  "ToolFence.png",
+  "ItemFenceHorizontalWood.png",
   "brown"
  ],
  [
@@ -661,7 +651,7 @@
  ],
  [
   "country fence",
-  "ToolFence.png",
+  "ItemFenceLog.png",
   "brown"
  ],
  [
@@ -831,12 +821,12 @@
  ],
  [
   "fish bait",
-  ".png",
+  "FishBait.png",
   "white"
  ],
  [
   "fishing rod",
-  "ToolFishingrodFirst.png",
+  "ToolAngling.png",
   "beige"
  ],
  [
@@ -846,7 +836,7 @@
  ],
  [
   "flimsy axe",
-  "ToolStoneaxeWood.png",
+  "ToolAxeStone.png",
   "beige"
  ],
  [
@@ -856,12 +846,12 @@
  ],
  [
   "flimsy net",
-  "ToolNetWood.png",
+  "ToolNet.png",
   "beige"
  ],
  [
   "flimsy shovel",
-  "ToolScoopWood.png",
+  "ToolShovelWood.png",
   "beige"
  ],
  [
@@ -1071,7 +1061,7 @@
  ],
  [
   "golden dung beetle",
-  "FtrInsectFunkorogashiGold.png",
+  "FtrInsectKabutomushiGold.png",
   "gold"
  ],
  [
@@ -1171,7 +1161,7 @@
  ],
  [
   "hedge",
-  "ToolFence.png",
+  "ItemFenceIkegaki.png",
   "green"
  ],
  [
@@ -1261,7 +1251,7 @@
  ],
  [
   "imperial fence",
-  "ToolFence.png",
+  "ItemFenceChinese.png",
   "brown"
  ],
  [
@@ -1286,7 +1276,7 @@
  ],
  [
   "iron fence",
-  "ToolFence.png",
+  "ItemFenceSteel.png",
   "dark gray"
  ],
  [
@@ -1341,7 +1331,7 @@
  ],
  [
   "iron-and-stone fence",
-  "ToolFence.png",
+  "ItemFenceIronAndStone.png",
   "light gray"
  ],
  [
@@ -1456,7 +1446,7 @@
  ],
  [
   "lattice fence",
-  "ToolFence.png",
+  "ItemFenceLatiiceNatural.png",
   "brown"
  ],
  [
@@ -1526,7 +1516,7 @@
  ],
  [
   "lily wand",
-  "ToolStickLily.png",
+  "ToolStickYuri.png",
   "green"
  ],
  [
@@ -1656,7 +1646,7 @@
  ],
  [
   "medicine",
-  ".png",
+  "ItemMedicine.png",
   "white"
  ],
  [
@@ -1866,7 +1856,7 @@
  ],
  [
   "net",
-  "ToolNetFirst.png",
+  "ToolNetNormal.png",
   "beige"
  ],
  [
@@ -2071,7 +2061,7 @@
  ],
  [
   "pitfall seed",
-  ".png",
+  "PitfallSeed.png",
   "green"
  ],
  [
@@ -2176,7 +2166,7 @@
  ],
  [
   "rope fence",
-  "ToolFence.png",
+  "ItemFencePegRope.png",
   "dark gray"
  ],
  [
@@ -2321,7 +2311,7 @@
  ],
  [
   "shovel",
-  "ToolScoopFirst.png",
+  "ToolScoop.png",
   "beige"
  ],
  [
@@ -2351,7 +2341,7 @@
  ],
  [
   "simple wooden fence",
-  "ToolFence.png",
+  "ItemFenceNatural.png",
   "brown"
  ],
  [
@@ -2386,7 +2376,7 @@
  ],
  [
   "slingshot",
-  "ToolSlingshotNormal.png",
+  "ToolSlingshot.png",
   "beige"
  ],
  [
@@ -2426,7 +2416,7 @@
  ],
  [
   "spiky fence",
-  "ToolFence.png",
+  "ItemFenceSharply.png",
   "brown"
  ],
  [
@@ -2471,7 +2461,7 @@
  ],
  [
   "star wand",
-  "ToolStickStar.png",
+  "ToolChangeStick.png",
   "silver"
  ],
  [
@@ -2516,12 +2506,12 @@
  ],
  [
   "stone axe",
-  "ToolStoneaxeFirst.png",
+  "ToolAxeStoneNormal.png",
   "beige"
  ],
  [
   "stone fence",
-  "ToolFence.png",
+  "ItemFenceStone.png",
   "light gray"
  ],
  [
@@ -2566,7 +2556,7 @@
  ],
  [
   "straw fence",
-  "ToolFence.png",
+  "ItemFenceDriedStraw.png",
   "green"
  ],
  [
@@ -2756,12 +2746,12 @@
  ],
  [
   "vaulting pole",
-  "ToolLongwoodenstick.png",
+  "LongWoodenStick.png",
   "beige"
  ],
  [
   "vertical-board fence",
-  "ToolFence.png",
+  "ItemFenceVerticalWood.png",
   "brown"
  ],
  [
@@ -2801,7 +2791,7 @@
  ],
  [
   "watering can",
-  "ToolWateringFirst.png",
+  "ToolWatering.png",
   "beige"
  ],
  [
@@ -2811,7 +2801,7 @@
  ],
  [
   "wedding fence",
-  "ToolFence.png",
+  "ItemFenceJuneBride.png",
   "dark gray"
  ],
  [
@@ -3036,7 +3026,7 @@
  ],
  [
   "zen fence",
-  "ToolFence.png",
+  "ItemFenceJapanese.png",
   "light gray"
  ],
  [
