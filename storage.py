@@ -26,8 +26,8 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
     """Parses a whole video and returns images for all storage items found."""
     all_rows: List[numpy.ndarray] = []
     for i, frame in enumerate(_read_frames(filename)):
-        if i % 6 != 0:
-            continue  # Skip every 6th frame
+        if i % 4 != 0:
+            continue  # Skip every 4th frame
         for new_row in _parse_frame(frame):
             if _is_duplicate_row(all_rows, new_row):
                 continue  # Skip non-moving frames
