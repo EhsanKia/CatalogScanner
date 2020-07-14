@@ -75,7 +75,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     cols = []
     for x in x_lines[1:-1]:
         empty_col = gray[:, x-10:x+10]
-        if empty_col.min() < 200 or empty_col.max() > 250:
+        if empty_col.min() < 200:
             continue  # Skip columns with occlusions
         cols.append(empty_col)
 
@@ -83,8 +83,10 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     separators = thresh.mean(axis=1) < 240
     y_lines = [0] + list(separators.nonzero()[0])
 
+    height_correction = 0
     for y1, y2 in zip(y_lines, y_lines[1:]):
         if not (118 < y2 - y1 < 130):
+            height_correction += 1
             continue  # Invalid row size
 
         # Skip row when tooltip is overlapping the item.
@@ -92,8 +94,10 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
         if tooltip.mean() > 10:
             continue
 
+        y1 -= height_correction // 2
         yield [frame[y1+2:y1+124, x1+5:x2-5]
                for x1, x2 in zip(x_lines, x_lines[1:])]
+        height_correction = 0
 
 
 def _is_duplicate_row(all_rows: List[numpy.ndarray], new_row: List[numpy.ndarray]) -> bool:
