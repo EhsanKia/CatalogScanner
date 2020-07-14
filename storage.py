@@ -87,6 +87,11 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
         if not (118 < y2 - y1 < 130):
             continue  # Invalid row size
 
+        # Skip row when tooltip is overlapping the item.
+        tooltip = cv2.inRange(frame[y2-10:y2-5, :], (160, 195, 80), (180, 205, 100))
+        if tooltip.mean() > 10:
+            continue
+
         yield [frame[y1+2:y1+124, x1+5:x2-5]
                for x1, x2 in zip(x_lines, x_lines[1:])]
 
