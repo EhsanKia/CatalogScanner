@@ -107,11 +107,11 @@ def _is_duplicate_row(all_rows: List[numpy.ndarray], new_row: List[numpy.ndarray
 
     new_concat = cv2.hconcat(new_row)
     # Checks the last 3 rows for similarities to the newly added row.
-    for ind in [slice(-8, None), slice(-16, -8)]:
+    for ind in [slice(-8, None), slice(-16, -8), slice(-24, -16), slice(-32, -24)]:
         old_concat = cv2.hconcat(all_rows[ind])
         if old_concat is None:
             continue
-        if cv2.absdiff(new_concat, old_concat).mean() < 10:
+        if cv2.absdiff(new_concat, old_concat).mean() < 9:
             return True
 
     return False
