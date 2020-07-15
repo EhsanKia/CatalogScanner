@@ -146,7 +146,7 @@ class VariationParser:
         # Detect to width of the name by collapsing along the x axis
         # and finding the right-most dark pixel (text).
         item_region = frame[rect.y1:rect.y2, rect.x1:rect.x2, 1]
-        detected_text = numpy.nonzero(item_region.min(axis=0) < 50)[0]
+        detected_text = numpy.nonzero(item_region.min(axis=0) < 55)[0]
         if not detected_text.any():
             return None
 
@@ -213,7 +213,7 @@ def best_match(needle: Optional[str], haystack: Sequence[str]) -> Optional[str]:
 def pick_device_id() -> int:
     """Tries to use a library to list video devices"""
     try:
-        import pymf
+        import pymf  # noqa
     except ImportError:
         return 0
 
