@@ -86,6 +86,7 @@ def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
     assert all_rows, 'No items found, invalid video?'
 
     # Concatenate all rows into a single image.
+    all_rows = _dedupe_rows(all_rows)
     concat_rows = cv2.vconcat(all_rows)
 
     # For larger catalogs, shrink size in half to avoid Tesseract's 32k limit.
@@ -196,6 +197,21 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
     # Items move by only one position when item scrolling.
     diff = cv2.absdiff(all_rows[-2], new_rows[-3])
     return diff.mean() < 5
+
+
+def _dedupe_rows(all_rows: List[numpy.ndarray]) -> List[numpy.ndarray]:
+    """Dedupe rows by using image hashing and remove blank rows."""
+    row_set: Set[str] = set()
+    deduped_rows: List[numpy.ndarray] = []
+    for row in all_rows:
+        if row.min() > 150:
+            continue  # Blank row
+        row_hash = str(cv2.img_hash.blockMeanHash(row, mode=1)[0])
+        if row_hash in row_set:
+            continue  # Row already seen
+        row_set.add(row_hash)
+        deduped_rows.append(row)
+    return deduped_rows
 
 
 def _get_tesseract_config(lang: str) -> str:
