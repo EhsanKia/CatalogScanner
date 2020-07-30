@@ -1425,6 +1425,11 @@
   "brown"
  ],
  [
+  "King Tut mask",
+  "CapFullfaceKingtut0.png",
+  "gold"
+ ],
+ [
   "knight's helmet",
   "CapFullfaceKnightIron.png",
   "dark gray"
@@ -2665,11 +2670,6 @@
   "brown"
  ],
  [
-  "tree-branch wand",
-  "ToolStickTree.png",
-  "brown"
- ],
- [
   "tree's bounty arch",
   "FtrNutArch.png",
   "brown"
@@ -2692,6 +2692,11 @@
  [
   "tree's bounty mobile",
   "FtrNutMobile.png",
+  "brown"
+ ],
+ [
+  "tree-branch wand",
+  "ToolStickTree.png",
   "brown"
  ],
  [
