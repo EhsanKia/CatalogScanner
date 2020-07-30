@@ -48,7 +48,8 @@ class VariationParser:
 
     def __init__(self):
         self.tesseract = PyTessBaseAPI(path='./', psm=PSM.SINGLE_LINE)
-        self.item_db = json.load(open('en-us-var.json', 'rb'))
+        with open('en-us-var.json', encoding='utf-8') as fp:
+            self.item_db = json.load(fp)
 
         self.items: Set[str] = set()
         self.active_section = 0
