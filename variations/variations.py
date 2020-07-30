@@ -243,7 +243,7 @@ def main(argv):
     # Handle working inside PyInstaller
     script_dir = os.path.dirname(argv[0])
     data_dir = getattr(sys, '_MEIPASS', script_dir)
-    os.chdir(data_dir)
+    os.chdir(data_dir or '.')
 
     # Find the right device ID.
     if FLAGS.video_path:
