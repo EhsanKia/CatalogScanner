@@ -14,6 +14,8 @@ from PIL import Image
 from tesserocr import PSM, PyTessBaseAPI
 
 flags.DEFINE_integer('device_id', None, 'ID of the capture card device.')
+flags.DEFINE_boolean('for_sale', False, 'Whether to only process items that are for sale.')
+flags.DEFINE_string('video_path', None, 'Path to video file to use instead of capture device.')
 
 FLAGS = flags.FLAGS
 TUTORIAL_LINES = [
@@ -63,7 +65,7 @@ class VariationParser:
         """Parses various parts of a frame for catalog items and annotates it."""
 
         # Detect whether we are in in Nook Shopping catalog.
-        if not numpy.array_equal(frame[500, 20], (182, 249, 255)):
+        if numpy.linalg.norm(frame[500, 20] - (182, 249, 255)) > 5:
             text = 'Navigate to Nook catalog to start!'
             opts = {'org': (200, 70), 'fontFace': cv2.FONT_HERSHEY_PLAIN,
                     'lineType': cv2.LINE_AA, 'fontScale': 3}
@@ -84,8 +86,8 @@ class VariationParser:
         frame = cv2.putText(frame, count_text, (500, 700), 0, 1, 0)
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        section = numpy.nonzero(gray[20, 250:] == 156)[0]
-        if section.any() and section[0] != self.active_section:
+        section = numpy.where((154 < gray[20, 250:]) & (gray[20, 250:] < 162))[0]
+        if section.any() and abs(self.active_section - section[0]) > 10:
             # Grab the new section name
             x1, *_, x2 = 250 + section
             section_region = 255 - gray[8:32, x1+5:x2-5]
@@ -131,7 +133,7 @@ class VariationParser:
     def get_selected_item(self, frame: numpy.ndarray) -> Optional[Rectangle]:
         """Returns the rectangle around the selected item name if there is one."""
         # Search for the yellow selected region along the item list area.
-        select_region = numpy.nonzero(frame[140:640, 1052, 0] < 100)[0]
+        select_region = numpy.where(frame[140:640, 1052, 0] < 100)[0]
         if not select_region.any():
             return None
 
@@ -147,7 +149,7 @@ class VariationParser:
         # Detect to width of the name by collapsing along the x axis
         # and finding the right-most dark pixel (text).
         item_region = frame[rect.y1:rect.y2, rect.x1:rect.x2, 1]
-        detected_text = numpy.nonzero(item_region.min(axis=0) < 55)[0]
+        detected_text = numpy.where(item_region.min(axis=0) < 55)[0]
         if not detected_text.any():
             return None
 
@@ -157,7 +159,7 @@ class VariationParser:
     def get_variation(self, gray: numpy.ndarray) -> Optional[Rectangle]:
         """Returns the rectangle around the variation text if there is one."""
         # There's a white box if the item has a variation.
-        if gray[650, 25] != 250:
+        if gray[650, 25] < 250:
             return None
 
         variation = Rectangle(x1=30, y1=628, y2=665)
@@ -196,6 +198,7 @@ class VariationParser:
 
         date = datetime.datetime.now().strftime('%d-%m-%Y %H-%M-%S')
         with open(f'{self.section_name} ({date}).txt', 'w') as fp:
+            print(f'Saving {len(self.items)} items to {fp.name}')
             fp.write('\n'.join(sorted(self.items)))
 
         self.section_name = None
@@ -243,22 +246,29 @@ def main(argv):
     os.chdir(data_dir)
 
     # Find the right device ID.
-    device_id = FLAGS.device_id
-    if device_id is None:
-        device_id = pick_device_id()
+    if FLAGS.video_path:
+        video_capture = FLAGS.video_path
+        print(f'Processing video file {video_capture}')
+    elif FLAGS.device_id is not None:
+        video_capture = FLAGS.device_id
+    else:
+        video_capture = pick_device_id()
 
-    # Connect to the capture card and adjust video dimensions.
-    cap = cv2.VideoCapture(device_id)
+    # Connect to input feed and adjust video dimensions.
+    cap = cv2.VideoCapture(video_capture)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-    cv2.namedWindow('frame')
 
     parser = VariationParser()
-    while cv2.getWindowProperty('frame', 0) >= 0:
-        ret, frame = cap.read()
-        assert ret, 'Video capture ended unexpectedly'
+    while True:
+        success, frame = cap.read()
+        if not success:
+            break
 
         frame = parser.annotate_frame(frame)
+        if FLAGS.video_path:
+            continue  # Skip showing frame if parsing video.
+
         cv2.imshow('frame', frame)
 
         keypress = cv2.waitKey(1) & 0xFF
@@ -270,6 +280,9 @@ def main(argv):
             parser.items = set()
         if keypress == ord('f'):
             parser.for_sale = not parser.for_sale
+
+    # Save any remaining unsaved items.
+    parser.save_items()
 
     cap.release()
     cv2.destroyAllWindows()
