@@ -45,7 +45,7 @@ class RecipeCard:
 
 
 def scan_recipes(video_file: str, locale: str = 'en-us') -> ScanResult:
-    """Scans a video of scrolling through DIY list and returns all recipes found."""
+    """Scans a video of scrolling through recipes list and returns all recipes found."""
     recipe_cards = parse_video(video_file)
     recipe_names = match_recipes(recipe_cards)
     results = translate_names(recipe_names, locale)
@@ -107,14 +107,14 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         if numpy.linalg.norm(color - BG_COLOR) > 10:
             continue  # Skip frames that are not showing recipes.
 
-        # Crop the region containing DIY cards.
+        # Crop the region containing recipe cards.
         yield frame[110:720, 45:730]
     cap.release()
 
 
 def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     """Parses an individual frame and extracts cards from the recipe list."""
-    # Start/end horizontal position for the 5 DIY cards.
+    # Start/end horizontal position for the 5 recipe cards.
     x_positions = [(11, 123), (148, 260), (286, 398), (423, 535), (560, 672)]
 
     # This code finds areas of the image that are beige (background color),
@@ -160,10 +160,10 @@ def _is_duplicate_cards(all_cards: List[numpy.ndarray], new_cards: List[numpy.nd
 def _get_recipe_db() -> Dict[str, List[RecipeCard]]:
     """Fetches the item database for a given locale, with caching."""
     with open(os.path.join('recipes', 'names.json')) as fp:
-        diy_data = json.load(fp)
+        recipes_data = json.load(fp)
 
     recipe_db = collections.defaultdict(list)
-    for item_name, _, card_type in diy_data:
+    for item_name, _, card_type in recipes_data:
         recipe = RecipeCard(item_name, card_type)
         recipe_db[card_type].append(recipe)
 
