@@ -35,7 +35,7 @@ class RecipeCard:
     """The image and data associated with a given recipe."""
 
     def __init__(self, item_name, card_type):
-        img_path = os.path.join('diys', 'generated', item_name + '.png')
+        img_path = os.path.join('recipes', 'generated', item_name + '.png')
         self.img = cv2.imread(img_path)
         self.item_name = item_name
         self.card_type = card_type
@@ -86,7 +86,7 @@ def translate_names(recipe_names: List[str], locale: str) -> List[str]:
     if locale in ['auto', 'en-us']:
         return recipe_names
 
-    translation_path = os.path.join('diys', 'translations.json')
+    translation_path = os.path.join('recipes', 'translations.json')
     with open(translation_path, encoding='utf-8') as fp:
         translations = json.load(fp)
     return [translations[name][locale] for name in recipe_names]
@@ -159,7 +159,7 @@ def _is_duplicate_cards(all_cards: List[numpy.ndarray], new_cards: List[numpy.nd
 @functools.lru_cache()
 def _get_recipe_db() -> Dict[str, List[RecipeCard]]:
     """Fetches the item database for a given locale, with caching."""
-    with open(os.path.join('diys', 'names.json')) as fp:
+    with open(os.path.join('recipes', 'names.json')) as fp:
         diy_data = json.load(fp)
 
     recipe_db = collections.defaultdict(list)
