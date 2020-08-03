@@ -13,7 +13,7 @@ from PIL import Image
 from typing import Dict, Iterator, List, Set
 
 # The expected color for the video background.
-BG_COLOR = numpy.array([181, 253, 253])
+BG_COLOR = numpy.array([110, 232, 238])
 
 # Mapping supported AC:NH locales to tesseract languages.
 LOCALE_MAP: Dict[str, str] = {
@@ -149,8 +149,8 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
-        color = frame[300:400, :10].mean(axis=(0, 1))
-        if numpy.linalg.norm(color - BG_COLOR) > 10:
+        color = frame[:30, 1100:1150].mean(axis=(0, 1))
+        if numpy.linalg.norm(color - BG_COLOR) > 5:
             continue  # Skip frames that are not showing items.
 
         # Turn to grayscale and crop the region containing item name and price.

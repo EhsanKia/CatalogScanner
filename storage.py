@@ -6,7 +6,7 @@ import numpy
 from typing import Iterator, List
 
 # The expected color for the video background.
-BG_COLOR = numpy.array([221, 243, 245])
+BG_COLOR = numpy.array([69, 198, 246])
 
 
 def scan_storage(video_file: str, locale: str = 'en-us') -> ScanResult:
@@ -58,8 +58,8 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
-        color = frame[300:400, :10].mean(axis=(0, 1))
-        if numpy.linalg.norm(color - BG_COLOR) > 10:
+        color = frame[:30, 1100:1150].mean(axis=(0, 1))
+        if numpy.linalg.norm(color - BG_COLOR) > 5:
             continue  # Skip frames that are not showing storage.
 
         # Crop the region containing storage items.

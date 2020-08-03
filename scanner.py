@@ -45,10 +45,10 @@ def _detect_video_type(file_name: str) -> str:
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
         # Get the average color of the background.
-        color = frame[300:400, :10].mean(axis=(0, 1))
-        if numpy.linalg.norm(color - catalog.BG_COLOR) < 10:
+        color = frame[:30, 1100:1150].mean(axis=(0, 1))
+        if numpy.linalg.norm(color - catalog.BG_COLOR) < 5:
             return 'catalog'
-        elif numpy.linalg.norm(color - recipes.BG_COLOR) < 10:
+        elif numpy.linalg.norm(color - recipes.BG_COLOR) < 5:
             return 'recipes'
 
     raise AssertionError('Video is not showing catalog or recipes.')
@@ -58,7 +58,7 @@ def main(argv):
     if len(argv) > 1:
         video_file = argv[1]
     elif FLAGS.mode == 'recipes':
-        video_file = 'videos/diy.mp4'
+        video_file = 'videos/recipes.mp4'
     else:
         video_file = 'videos/catalog.mp4'
 
