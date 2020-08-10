@@ -1,5 +1,6 @@
 from common import ScanResult
 import catalog
+import critters
 import recipes
 
 import cv2
@@ -28,8 +29,12 @@ def scan_video(file_name: str, mode: str = 'auto', locale: str = 'auto',
 
     if mode == 'catalog':
         return catalog.scan_catalog(file_name, locale=locale, for_sale=for_sale)
-    else:
+    elif mode == 'recipes':
         return recipes.scan_recipes(file_name, locale=locale)
+    elif mode == 'critters':
+        return critters.scan_critters(file_name, locale=locale)
+    else:
+        raise RuntimeError('Invalid mode: %r' % mode)
 
 
 def _detect_video_type(file_name: str) -> str:
@@ -39,7 +44,7 @@ def _detect_video_type(file_name: str) -> str:
     for _ in range(100):
         success, frame = video_capture.read()
         if not success or frame is None:
-            raise AssertionError('Unable to parse video.')
+            break
 
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
@@ -50,8 +55,10 @@ def _detect_video_type(file_name: str) -> str:
             return 'catalog'
         elif numpy.linalg.norm(color - recipes.BG_COLOR) < 5:
             return 'recipes'
+        elif numpy.linalg.norm(color - critters.BG_COLOR) < 5:
+            return 'critters'
 
-    raise AssertionError('Video is not showing catalog or recipes.')
+    raise AssertionError('Video is not showing a known scan type.')
 
 
 def main(argv):
@@ -59,6 +66,8 @@ def main(argv):
         video_file = argv[1]
     elif FLAGS.mode == 'recipes':
         video_file = 'videos/recipes.mp4'
+    elif FLAGS.mode == 'critters':
+        video_file = 'videos/critters.mp4'
     else:
         video_file = 'videos/catalog.mp4'
 

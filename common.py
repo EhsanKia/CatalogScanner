@@ -8,6 +8,7 @@ class ScanMode(enum.Enum):
     CATALOG = 1
     RECIPES = 2
     STORAGE = 3
+    CRITTERS = 4
 
 
 @dataclasses.dataclass
