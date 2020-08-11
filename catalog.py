@@ -287,3 +287,8 @@ def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
     best_locale = max(possible_locales, key=match_score_func)
     logging.info('Detected locale: %s', best_locale)
     return best_locale
+
+
+if __name__ == "__main__":
+    results = scan_catalog('videos/catalog.mp4')
+    print('\n'.join(results.items))

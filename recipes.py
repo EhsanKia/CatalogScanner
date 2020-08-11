@@ -205,3 +205,8 @@ def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCa
 
     similarities = list(map(slow_similarity_metric, recipes))
     return recipes[numpy.argmin(similarities)]
+
+
+if __name__ == "__main__":
+    results = scan_recipes('videos/recipes.mp4')
+    print('\n'.join(results.items))

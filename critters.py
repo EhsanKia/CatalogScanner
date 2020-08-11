@@ -199,3 +199,8 @@ def _find_best_match(icon: numpy.ndarray, critters: List[CritterIcon]) -> Critte
 
     similarities = list(map(slow_similarity_metric, critters))
     return critters[numpy.argmin(similarities)]
+
+
+if __name__ == "__main__":
+    results = scan_critters('videos/critters.mp4')
+    print(len(results.items))
