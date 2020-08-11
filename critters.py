@@ -57,8 +57,6 @@ def parse_video(filename: str) -> List[Tuple[CritterType, numpy.ndarray]]:
     icons: Dict[CritterType, List[numpy.ndarray]] = collections.defaultdict(list)
     for i, (critter_type, frame) in enumerate(_read_frames(filename)):
         for new_icons in _parse_frame(frame):
-            if _is_duplicate(icons[critter_type], new_icons):
-                continue
             icons[critter_type].extend(new_icons)
 
     all_icons: List[Tuple[CritterType, numpy.ndarray]] = []
@@ -102,7 +100,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
 
         color = frame[:20, 1100:1150].mean(axis=(0, 1))
         if numpy.linalg.norm(color - BG_COLOR) > 5:
-            continue  # Skip frames that are not showing recipes.
+            continue  # Skip frames that are not showing critterpedia.
 
         # Detect a dark line that shows up only in Pictures Mode.
         mode_detector = frame[20:24, 600:800].mean(axis=(0, 1))
@@ -134,7 +132,7 @@ def _detect_critter_type(gray_frame: numpy.ndarray) -> CritterType:
 
 
 def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
-    """Parses an individual frame and extracts cards from the recipe list."""
+    """Parses an individual frame and extracts icons from the Critterpedia page."""
     # Start/end verical position for the 5 grid rows.
     y_positions = [0, 95, 190, 285, 379]
     y_offsets = [7, 87]
@@ -155,11 +153,6 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
         if not (100 < x2 - x1 < 120):
             continue
         yield [frame[y+8:y+88, x1+16:x1+96] for y in y_positions]
-
-
-def _is_duplicate(all_icons: List[numpy.ndarray], new_icons: List[numpy.ndarray]) -> bool:
-    """Detects if a given column of icons is already included in the icon list."""
-    return False  # Not yet implemented.
 
 
 def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
@@ -197,11 +190,11 @@ def _find_best_match(icon: numpy.ndarray, critters: List[CritterIcon]) -> Critte
         return critters[numpy.argmin(similarities)]
 
     # Otherwise, we use a slower matching, which tries various shifts.
-    def slow_similarity_metric(recipe):
+    def slow_similarity_metric(critter):
         diffs = []
         for x in [-1, 0, 1]:
             shifted = numpy.roll(icon, x, axis=1)
-            diffs.append(cv2.absdiff(shifted, recipe.img).sum())
+            diffs.append(cv2.absdiff(shifted, critter.img).sum())
         return min(diffs)  # Return lowest diff across shifts.
 
     similarities = list(map(slow_similarity_metric, critters))
