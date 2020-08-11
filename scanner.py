@@ -50,7 +50,7 @@ def _detect_video_type(file_name: str) -> str:
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
         # Get the average color of the background.
-        color = frame[:30, 1100:1150].mean(axis=(0, 1))
+        color = frame[:20, 1100:1150].mean(axis=(0, 1))
         if numpy.linalg.norm(color - catalog.BG_COLOR) < 5:
             return 'catalog'
         elif numpy.linalg.norm(color - recipes.BG_COLOR) < 5:

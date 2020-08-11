@@ -58,7 +58,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
-        color = frame[:30, 1100:1150].mean(axis=(0, 1))
+        color = frame[:20, 1100:1150].mean(axis=(0, 1))
         if numpy.linalg.norm(color - BG_COLOR) > 5:
             continue  # Skip frames that are not showing storage.
 
