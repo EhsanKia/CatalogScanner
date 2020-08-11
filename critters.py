@@ -104,6 +104,11 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         if numpy.linalg.norm(color - BG_COLOR) > 5:
             continue  # Skip frames that are not showing recipes.
 
+        # Detect a dark line that shows up only in Pictures Mode.
+        mode_detector = frame[20:24, 600:800].mean(axis=(0, 1))
+        if numpy.linalg.norm(mode_detector - (199, 234, 237)) > 50:
+            raise AssertionError('Critterpedia is in Pictures Mode.')
+
         # Skip non-moving frames.
         if last_frame is not None and cv2.absdiff(frame, last_frame).mean() < 3:
             continue
