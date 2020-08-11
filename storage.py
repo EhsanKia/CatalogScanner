@@ -95,7 +95,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
             continue
 
         y1 -= height_correction // 2
-        yield [frame[y1+2:y1+124, x1+5:x2-5]
+        yield [frame[y1+13:y1+113, x1+16:x2-16]
                for x1, x2 in zip(x_lines, x_lines[1:])]
         height_correction = 0
 
