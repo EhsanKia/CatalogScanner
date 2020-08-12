@@ -144,7 +144,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
 def _detect_critter_type(gray_frame: numpy.ndarray) -> CritterType:
     for i, critter_type in enumerate(CritterType):
         start_x, end_x = 65 + i * 65, 65 + (i + 1) * 65
-        section_icon = gray_frame[50:100, start_x:end_x]
+        section_icon = gray_frame[70:80, start_x:end_x]
         if section_icon.min() > 150:
             return critter_type
     raise AssertionError('Invalid Critterpedia page')
