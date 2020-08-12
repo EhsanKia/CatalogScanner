@@ -116,7 +116,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
 
         # Only parse frames that are at the very left or very right of the list.
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        if gray[150:620, :30].min() < 200 and gray[150:620, -30:].min() < 200:
+        if gray[150:620, :20].min() < 200 and gray[150:620, -20:].min() < 200:
             continue
 
         # Skip few frames after section changes to allow icons to load.
