@@ -88,12 +88,19 @@ def translate_names(critter_names: List[str], locale: str) -> List[str]:
 
 def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region."""
-    last_frame = None
+    frame_skip = 0
+    last_section = None
+    last_gray = None
+
     cap = cv2.VideoCapture(filename)
     while True:
         ret, frame = cap.read()
         if not ret:
             break  # Video is over
+
+        if frame_skip > 0:
+            frame_skip -= 1
+            continue
 
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
@@ -107,18 +114,30 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         if numpy.linalg.norm(mode_detector - (199, 234, 237)) > 50:
             raise AssertionError('Critterpedia is in Pictures Mode.')
 
-        # Skip non-moving frames.
-        if last_frame is not None and cv2.absdiff(frame, last_frame).mean() < 3:
-            continue
-        last_frame = frame
-
-        # Skip frames that contain no icons.
+        # Only parse frames that are at the very left or very right of the list.
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        if gray[150:620, :30].min() < 200 and gray[150:620, -30:].min() < 200:
+            continue
+
+        # Skip few frames after section changes to allow icons to load.
+        critter_section = _detect_critter_type(gray)
+        if critter_section != last_section:
+            if last_section is not None:
+                frame_skip = 15
+            last_section = critter_section
+            continue
+
+        # Skip non-moving frames.
+        if last_gray is not None and cv2.absdiff(gray, last_gray).mean() < 4:
+            continue
+        last_gray = gray
+
+        # Skip empty frames.
         if gray[149:623, :].min() > 5:
             continue
 
         # Get the section name and crop the region containing critter icons.
-        yield _detect_critter_type(gray), frame[149:623, :]
+        yield critter_section, frame[149:623, :]
     cap.release()
 
 
@@ -135,22 +154,25 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     """Parses an individual frame and extracts icons from the Critterpedia page."""
     # Start/end verical position for the 5 grid rows.
     y_positions = [0, 95, 190, 285, 379]
-    y_offsets = [7, 87]
+    y_offsets = [6, 88]
 
     rows = []
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     for y_pos, offset in itertools.product(y_positions, y_offsets):
         line = gray[y_pos + offset - 3:y_pos + offset + 3, :]
-        if line.min() < 185 or line.max() > 245:
+        if line.min() < 170 or line.max() > 240:
             continue
         rows.append(line)
 
+    if not rows:
+        return
+
     thresh = cv2.threshold(cv2.vconcat(rows), 215, 255, 0)[1]
-    separators = thresh.mean(axis=0) < 250
+    separators = thresh.mean(axis=0) < 240
     x_lines = list(separators.nonzero()[0])
 
     for x1, x2 in zip(x_lines, x_lines[1:]):
-        if not (100 < x2 - x1 < 120):
+        if not (107 < x2 - x1 < 117):
             continue
         yield [frame[y+8:y+88, x1+16:x1+96] for y in y_positions]
 
@@ -192,7 +214,7 @@ def _find_best_match(icon: numpy.ndarray, critters: List[CritterIcon]) -> Critte
     # Otherwise, we use a slower matching, which tries various shifts.
     def slow_similarity_metric(critter):
         diffs = []
-        for x in [-1, 0, 1]:
+        for x in [-2, -1, 0, 1, 2]:
             shifted = numpy.roll(icon, x, axis=1)
             diffs.append(cv2.absdiff(shifted, critter.img).sum())
         return min(diffs)  # Return lowest diff across shifts.
