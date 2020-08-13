@@ -95,7 +95,7 @@ def run_ocr(item_rows: numpy.ndarray, lang: str = 'eng') -> Set[str]:
     # For larger catalogs, shrink size to avoid Tesseract's 32k limit.
     # Accuracy still remains good for most scripts.
     if item_rows.shape[0] > 32765:
-        item_rows = cv2.resize(item_rows, None, fx=0.7, fy=0.7)
+        item_rows = cv2.resize(item_rows, None, fx=0.5, fy=0.5)
 
     parsed_text = pytesseract.image_to_string(
         Image.fromarray(item_rows), lang=lang, config=_get_tesseract_config(lang))
