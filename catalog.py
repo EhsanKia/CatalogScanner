@@ -87,18 +87,16 @@ def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
 
     # Concatenate all rows into a single image.
     all_rows = _dedupe_rows(all_rows)
-    concat_rows = cv2.vconcat(all_rows)
-
-    # For larger catalogs, shrink size in half to avoid Tesseract's 32k limit.
-    # Accuracy still remains good for more scripts.
-    if concat_rows.shape[0] > 32000:
-        concat_rows = cv2.resize(concat_rows, None, fx=0.5, fy=0.5)
-
-    return concat_rows
+    return cv2.vconcat(all_rows)
 
 
 def run_ocr(item_rows: numpy.ndarray, lang: str = 'eng') -> Set[str]:
     """Runs tesseract OCR on an image of item names and returns all items found."""
+    # For larger catalogs, shrink size to avoid Tesseract's 32k limit.
+    # Accuracy still remains good for most scripts.
+    if item_rows.shape[0] > 32765:
+        item_rows = cv2.resize(item_rows, None, fx=0.7, fy=0.7)
+
     parsed_text = pytesseract.image_to_string(
         Image.fromarray(item_rows), lang=lang, config=_get_tesseract_config(lang))
 
@@ -235,6 +233,7 @@ def _cleanup_name(item_name: str, lang: str) -> str:
     """Applies some manual name cleanup to fix OCR issues and improve matching."""
     item_name = item_name.strip()
     item_name = item_name.replace('Ao dai', 'Áo dài')
+    item_name = item_name.replace('Bail', 'Ball')
 
     # Normalize unicode characters for better matching.
     item_name = unicodedata.normalize('NFKC', item_name)
@@ -261,10 +260,11 @@ def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
         # If locale is already specified, return as is.
         return locale
 
-    # run script detection.
+    # Convert to Pillow image and truncate overly long images.
+    image = Image.fromarray(item_rows[:9800, :])
+
     try:
-        osd_data = pytesseract.image_to_osd(
-            Image.fromarray(item_rows), output_type=pytesseract.Output.DICT)
+        osd_data = pytesseract.image_to_osd(image, output_type=pytesseract.Output.DICT)
     except pytesseract.TesseractError:
         return 'en-us'
 
