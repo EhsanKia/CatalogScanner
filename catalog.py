@@ -121,17 +121,17 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
         matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.5)
         if not matches:
             no_match_items.append(item)
-            logging.warning('No matches found for %r', item)
             assert len(no_match_items) <= 25, \
                 'Failed to match multiple items, wrong language?'
             continue
 
         # Calculate difference ratio for better logging
         ratio = difflib.SequenceMatcher(None, item, matches[0]).ratio()
-        log_func = logging.info if ratio < 0.8 else logging.debug
-        log_func('Matched %r to %r (%.2f)', item, matches[0], ratio)
+        logging.debug('Matched %r to %r (%.2f)', item, matches[0], ratio)
 
         matched_items.add(matches[0])  # type: ignore
+
+    logging.warning('Failed to match %d items: %s', len(no_match_items), no_match_items)
 
     return sorted(matched_items)
 
