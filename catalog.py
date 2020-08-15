@@ -183,7 +183,7 @@ def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray
 
 def _is_duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
     """Checks if the new set of rows are the same as the previous seen rows."""
-    if not new_rows or len(all_rows) < len(new_rows):
+    if not len(all_rows) > len(new_rows) > 3:
         return False
 
     # Check 2nd to last to avoid the hovered row.
