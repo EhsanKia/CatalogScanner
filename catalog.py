@@ -147,9 +147,13 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
-        color = frame[:20, 1100:1150].mean(axis=(0, 1))
-        if numpy.linalg.norm(color - BG_COLOR) > 5:
-            continue  # Skip frames that are not showing items.
+        top_color = frame[:20, 1100:1150].mean(axis=(0, 1))
+        if numpy.linalg.norm(top_color - BG_COLOR) > 5:
+            continue  # Skip frames that are not showing the catalog.
+
+        side_color = frame[140:150, -20:].mean(axis=(0, 1))
+        if numpy.linalg.norm(side_color - (178, 252, 254)) > 5:
+            continue  # Skip frames where item list is not visible.
 
         # Turn to grayscale and crop the region containing item name and price.
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
