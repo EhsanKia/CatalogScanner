@@ -261,7 +261,7 @@ def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
         return locale
 
     # Convert to Pillow image and truncate overly long images.
-    image = Image.fromarray(item_rows[:9800, :])
+    image = Image.fromarray(item_rows[:7000, :])
 
     try:
         osd_data = pytesseract.image_to_osd(image, output_type=pytesseract.Output.DICT)
