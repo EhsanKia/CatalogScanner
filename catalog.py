@@ -182,9 +182,9 @@ def _is_duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarr
     if not new_rows or len(all_rows) < len(new_rows):
         return False
 
-    row_index = -len(new_rows) // 2  # Just check a middle row instead of all
-    diff = cv2.absdiff(all_rows[row_index], new_rows[row_index])
-    return diff.mean() < 2
+    # Check 2nd to last to avoid the hovered row.
+    diff = cv2.absdiff(all_rows[-2], new_rows[-2])
+    return diff.mean() < 4
 
 
 def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
@@ -194,7 +194,7 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
 
     # Items move by only one position when item scrolling.
     diff = cv2.absdiff(all_rows[-2], new_rows[-3])
-    return diff.mean() < 5
+    return diff.mean() < 4
 
 
 def _dedupe_rows(all_rows: List[numpy.ndarray]) -> List[numpy.ndarray]:
