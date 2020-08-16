@@ -9,7 +9,7 @@ import json
 import numpy
 import os
 
-from typing import Dict, Iterator, List, Tuple
+from typing import Dict, Iterator, List
 
 # The expected color for the video background.
 BG_COLOR = numpy.array([207, 238, 240])
@@ -26,7 +26,7 @@ class CritterType(enum.Enum):
         return cls.__members__[key]
 
 
-class CritterIcon:
+class CritterImage:
     """The image and data associated with a critter icon."""
 
     def __init__(self, critter_name: str, icon_name: str, critter_type: CritterType):
@@ -37,6 +37,11 @@ class CritterIcon:
 
     def __repr__(self):
         return f'CritterIcon({self.item_name!r}, {self.icon_name!r}, {self.critter_type!r})'
+
+
+class CritterIcon(numpy.ndarray):
+    """Dummy ndarray subclass to hold critter type info."""
+    critter_type: CritterType
 
 
 def scan_critters(video_file: str, locale: str = 'en-us') -> ScanResult:
@@ -52,25 +57,23 @@ def scan_critters(video_file: str, locale: str = 'en-us') -> ScanResult:
     )
 
 
-def parse_video(filename: str) -> List[Tuple[CritterType, numpy.ndarray]]:
+def parse_video(filename: str) -> List[CritterImage]:
     """Parses a whole video and returns icons for all critters found."""
-    icons: Dict[CritterType, List[numpy.ndarray]] = collections.defaultdict(list)
+    all_icons: List[CritterImage] = []
     for i, (critter_type, frame) in enumerate(_read_frames(filename)):
-        for new_icons in _parse_frame(frame):
-            icons[critter_type].extend(new_icons)
-
-    all_icons: List[Tuple[CritterType, numpy.ndarray]] = []
-    for critter_type, critter_icons in icons.items():
-        all_icons.extend((critter_type, i) for i in _remove_blanks(critter_icons))
-    return all_icons
+        for new_icon in _parse_frame(frame):
+            critter_icon = new_icon.view(CritterIcon)
+            critter_icon.critter_type = critter_type
+            all_icons.append(critter_icon)
+    return _remove_blanks(all_icons)
 
 
-def match_critters(critter_icons: List[Tuple[CritterType, numpy.ndarray]]) -> List[str]:
+def match_critters(critter_icons: List[CritterImage]) -> List[str]:
     """Matches a list of names against a database of items, finding best matches."""
     matched_critters = set()
     critter_db = _get_critter_db()
-    for critter_type, critter_icon in critter_icons:
-        best_match = _find_best_match(critter_icon, critter_db[critter_type])
+    for icon in critter_icons:
+        best_match = _find_best_match(icon, critter_db[icon.critter_type])
         matched_critters.add(best_match.critter_name)
     return list(matched_critters)
 
@@ -145,7 +148,7 @@ def _detect_critter_type(gray_frame: numpy.ndarray) -> CritterType:
     raise AssertionError('Invalid Critterpedia page')
 
 
-def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
+def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
     """Parses an individual frame and extracts icons from the Critterpedia page."""
     # Start/end verical position for the 5 grid rows.
     y_positions = [0, 95, 190, 285, 379]
@@ -169,7 +172,8 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     for x1, x2 in zip(x_lines, x_lines[1:]):
         if not (107 < x2 - x1 < 117):
             continue
-        yield [frame[y+8:y+88, x1+16:x1+96] for y in y_positions]
+        for y in y_positions:
+            yield frame[y+8:y+88, x1+16:x1+96]
 
 
 def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
@@ -183,7 +187,7 @@ def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
 
 
 @functools.lru_cache()
-def _get_critter_db() -> Dict[CritterType, List[CritterIcon]]:
+def _get_critter_db() -> Dict[CritterType, List[CritterImage]]:
     """Fetches the item database for a given locale, with caching."""
     with open(os.path.join('critters', 'names.json')) as fp:
         critter_data = json.load(fp)
@@ -191,12 +195,12 @@ def _get_critter_db() -> Dict[CritterType, List[CritterIcon]]:
     critter_db = collections.defaultdict(list)
     for critter_name, icon_name, critter_type_str in critter_data:
         critter_type = CritterType.from_str(critter_type_str)
-        critter = CritterIcon(critter_name, icon_name, critter_type)
+        critter = CritterImage(critter_name, icon_name, critter_type)
         critter_db[critter_type].append(critter)
     return critter_db
 
 
-def _find_best_match(icon: numpy.ndarray, critters: List[CritterIcon]) -> CritterIcon:
+def _find_best_match(icon: numpy.ndarray, critters: List[CritterImage]) -> CritterImage:
     """Finds the closest matching critter for the given icon."""
     fast_similarity_metric = lambda r: cv2.absdiff(icon, r.img).mean()
     similarities = list(map(fast_similarity_metric, critters))
