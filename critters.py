@@ -9,7 +9,7 @@ import json
 import numpy
 import os
 
-from typing import Dict, Iterator, List
+from typing import Dict, Iterator, List, Tuple
 
 # The expected color for the video background.
 BG_COLOR = numpy.array([207, 238, 240])
@@ -93,7 +93,9 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region."""
     frame_skip = 0
     last_section = None
-    last_gray = None
+    last_frame = None
+
+    good_frames: Dict[Tuple[CritterType, int], numpy.ndarray] = {}
 
     cap = cv2.VideoCapture(filename)
     while True:
@@ -117,26 +119,31 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         if numpy.linalg.norm(mode_detector - (199, 234, 237)) > 50:
             raise AssertionError('Critterpedia is in Pictures Mode.')
 
-        # Only parse frames that are at the very left or very right of the list.
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        if gray[560:630, :70].min() < 220 and gray[560:630, -70:].min() < 220:
+        if last_frame is None:
+            last_frame = frame
             continue
 
-        # Skip few frames after section changes to allow icons to load.
         critter_section = _detect_critter_type(gray)
         if critter_section != last_section:
             if last_section is not None:
                 frame_skip = 15
             last_section = critter_section
-
-        # Skip non-moving frames.
-        if last_gray is not None and cv2.absdiff(gray, last_gray).mean() < 5:
             continue
-        last_gray = gray
 
-        # Get the section name and crop the region containing critter icons.
-        yield critter_section, frame[149:623, :]
+        # Grab the last frame for each side and section combination.
+        if last_frame[560:630, :70, 2].min() > 235:
+            good_frames[critter_section, 0] = last_frame
+        elif last_frame[560:630, -70:, 2].min() > 235:
+            good_frames[critter_section, 1] = last_frame
+
+        last_frame = frame
+
     cap.release()
+
+    for (critter_type, _), frame in good_frames.items():
+        # Crop the region containing critter icons.
+        yield critter_type, frame[149:623, :]
 
 
 def _detect_critter_type(gray_frame: numpy.ndarray) -> CritterType:
