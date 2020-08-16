@@ -116,7 +116,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
 
         # Only parse frames that are at the very left or very right of the list.
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        if gray[150:620, :20].min() < 200 and gray[150:620, -20:].min() < 200:
+        if gray[560:630, :70].min() < 220 and gray[560:630, -70:].min() < 220:
             continue
 
         # Skip few frames after section changes to allow icons to load.
@@ -125,16 +125,11 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
             if last_section is not None:
                 frame_skip = 15
             last_section = critter_section
-            continue
 
         # Skip non-moving frames.
-        if last_gray is not None and cv2.absdiff(gray, last_gray).mean() < 4:
+        if last_gray is not None and cv2.absdiff(gray, last_gray).mean() < 5:
             continue
         last_gray = gray
-
-        # Skip empty frames.
-        if gray[149:623, :].min() > 5:
-            continue
 
         # Get the section name and crop the region containing critter icons.
         yield critter_section, frame[149:623, :]
