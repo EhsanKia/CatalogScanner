@@ -131,7 +131,8 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
 
         matched_items.add(matches[0])  # type: ignore
 
-    logging.warning('Failed to match %d items: %s', len(no_match_items), no_match_items)
+    if no_match_items:
+        logging.warning('Failed to match %d items: %s', len(no_match_items), no_match_items)
 
     return sorted(matched_items)
 
