@@ -197,9 +197,11 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
         return False
 
     # Items move by only one position when item scrolling.
-    diff = cv2.absdiff(all_rows[-2], new_rows[-3])
-    return diff.mean() < 4
-
+    if cv2.absdiff(all_rows[-2], new_rows[-3]).mean() < 4:
+        return True
+    if cv2.absdiff(all_rows[-3], new_rows[-2]).mean() < 4:
+        return True
+    return False
 
 def _dedupe_rows(all_rows: List[numpy.ndarray]) -> List[numpy.ndarray]:
     """Dedupe rows by using image hashing and remove blank rows."""
