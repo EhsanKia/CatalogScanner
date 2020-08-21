@@ -204,6 +204,7 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
         return True
     return False
 
+
 def _dedupe_rows(all_rows: List[numpy.ndarray]) -> List[numpy.ndarray]:
     """Dedupe rows by using image hashing and remove blank rows."""
     row_set: Set[str] = set()

@@ -124,7 +124,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
             last_frame = frame
             continue
 
-        critter_section = _detect_critter_type(gray)
+        critter_section = _detect_critter_section(gray)
         if critter_section != last_section:
             if last_section is not None:
                 frame_skip = 15
@@ -146,7 +146,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         yield critter_type, frame[149:623, :]
 
 
-def _detect_critter_type(gray_frame: numpy.ndarray) -> CritterType:
+def _detect_critter_section(gray_frame: numpy.ndarray) -> CritterType:
     for i, critter_type in enumerate(CritterType):
         start_x, end_x = 65 + i * 65, 65 + (i + 1) * 65
         section_icon = gray_frame[70:80, start_x:end_x]
