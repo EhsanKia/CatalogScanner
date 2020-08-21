@@ -14,6 +14,7 @@ from typing import Dict, Iterator, List, Set
 
 # The expected color for the video background.
 BG_COLOR = numpy.array([110, 232, 238])
+BG_COLOR2 = numpy.array((178, 252, 254))
 
 # Mapping supported AC:NH locales to tesseract languages.
 LOCALE_MAP: Dict[str, str] = {
@@ -149,11 +150,11 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
         top_color = frame[:20, 1100:1150].mean(axis=(0, 1))
-        if numpy.linalg.norm(top_color - BG_COLOR) > 5:
+        if numpy.linalg.norm(top_color - BG_COLOR) > 6:
             continue  # Skip frames that are not showing the catalog.
 
         side_color = frame[140:150, -20:].mean(axis=(0, 1))
-        if numpy.linalg.norm(side_color - (178, 252, 254)) > 5:
+        if numpy.linalg.norm(side_color - BG_COLOR2) > 6:
             continue  # Skip frames where item list is not visible.
 
         # Turn to grayscale and crop the region containing item name and price.

@@ -195,7 +195,7 @@ def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
 
 @functools.lru_cache()
 def _get_critter_db() -> Dict[CritterType, List[CritterImage]]:
-    """Fetches the item database for a given locale, with caching."""
+    """Fetches the critters database for a given locale, with caching."""
     with open(os.path.join('critters', 'names.json')) as fp:
         critter_data = json.load(fp)
 
