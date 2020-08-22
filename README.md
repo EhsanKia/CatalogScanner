@@ -27,11 +27,18 @@ Before using this script, you need to create a valid video file. There are two t
 3. Scroll to the bottom using the **right analog stick** (page scrolling)
 4. Hold down "Capture" button on left joycon to record the last 30s
 
-### Nook Shopping Catalog
+### DIY Recipes
 
 1. Open DIY recipes list (phone app)
 2. Select desired section
 3. Scroll to the bottom using the **left analog stick** (item scrolling)
+4. Hold down "Capture" button on left joycon to record the last 30s
+
+### Critters
+
+1. Navigate to the Critterpedia phone app
+2. Make sure you are in List Mode (not Display Mode)
+3. Move through every section to view all the critters
 4. Hold down "Capture" button on left joycon to record the last 30s
 
 ### Trimming and exporting video
@@ -52,7 +59,7 @@ python scanner.py catalog.mp4
 By default, it will detect the video type (catalog or recipes), but you can force on with `--mode`.
 
 You can use `--for_sale` to filter out items that are not purchasable,
-and you can use `--lang` to adjust the parsed language.
+and you can use `--locale` to adjust the parsed language.
 
 By default, the script prints out the name of all the items found in your catalog video.
 
