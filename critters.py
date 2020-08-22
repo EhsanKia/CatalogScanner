@@ -44,7 +44,13 @@ class CritterIcon(numpy.ndarray):
     critter_type: CritterType
 
 
-def scan_critters(video_file: str, locale: str = 'en-us') -> ScanResult:
+def detect(frame: numpy.ndarray) -> bool:
+    """Detects if a given frame is showing Critterpedia."""
+    color = frame[:20, 1100:1150].mean(axis=(0, 1))
+    return numpy.linalg.norm(color - BG_COLOR) < 5
+
+
+def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
     """Scans a video of scrolling through Critterpedia and returns all critters found."""
     critter_icons = parse_video(video_file)
     critter_names = match_critters(critter_icons)
@@ -110,8 +116,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
-        color = frame[:20, 1100:1150].mean(axis=(0, 1))
-        if numpy.linalg.norm(color - BG_COLOR) > 5:
+        if not detect(frame):
             continue  # Skip frames that are not showing critterpedia.
 
         # Detect a dark line that shows up only in Pictures Mode.
@@ -230,5 +235,5 @@ def _find_best_match(icon: numpy.ndarray, critters: List[CritterImage]) -> Critt
 
 
 if __name__ == "__main__":
-    results = scan_critters('examples/critters.mp4')
-    print(results.items)
+    results = scan('examples/critters.mp4')
+    print('\n'.join(results.items))

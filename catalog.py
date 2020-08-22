@@ -13,8 +13,7 @@ from PIL import Image
 from typing import Dict, Iterator, List, Set
 
 # The expected color for the video background.
-BG_COLOR = numpy.array([110, 232, 238])
-BG_COLOR2 = numpy.array((178, 252, 254))
+BG_COLOR = numpy.array((178, 252, 254))
 
 # Mapping supported AC:NH locales to tesseract languages.
 LOCALE_MAP: Dict[str, str] = {
@@ -47,7 +46,13 @@ SCRIPT_MAP: Dict[str, List[str]] = {
 }
 
 
-def scan_catalog(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> ScanResult:
+def detect(frame: numpy.ndarray) -> bool:
+    """Detects if a given frame is showing Nook Shopping catalog."""
+    side_color = frame[140:150, -20:].mean(axis=(0, 1))
+    return numpy.linalg.norm(side_color - BG_COLOR) < 6
+
+
+def scan(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> ScanResult:
     """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file, for_sale)
     locale = _detect_locale(item_rows, locale)
@@ -149,12 +154,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
-        top_color = frame[:20, 1100:1150].mean(axis=(0, 1))
-        if numpy.linalg.norm(top_color - BG_COLOR) > 6:
-            continue  # Skip frames that are not showing the catalog.
-
-        side_color = frame[140:150, -20:].mean(axis=(0, 1))
-        if numpy.linalg.norm(side_color - BG_COLOR2) > 6:
+        if not detect(frame):
             continue  # Skip frames where item list is not visible.
 
         # Turn to grayscale and crop the region containing item name and price.
@@ -299,5 +299,5 @@ def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
 
 
 if __name__ == "__main__":
-    results = scan_catalog('examples/catalog.mp4')
+    results = scan('examples/catalog.mp4')
     print('\n'.join(results.items))

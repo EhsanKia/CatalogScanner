@@ -38,7 +38,13 @@ class ReactionImage:
         return f'ReactionImage({self.reaction_name!r}, {self.filename!r})'
 
 
-def scan_reactions(image_file: str, locale: str = 'en-us') -> ScanResult:
+def detect(frame: numpy.ndarray) -> bool:
+    """Detects if a given frame is showing reactions list."""
+    color = frame[370:380, 290:300].mean(axis=(0, 1))
+    return numpy.linalg.norm(color - BG_COLOR) < 2
+
+
+def scan(image_file: str, locale: str = 'en-us') -> ScanResult:
     """Scans an image of reactions list and returns all reactions found."""
     reaction_icons = parse_image(image_file)
     reaction_names = match_reactions(reaction_icons)
@@ -55,19 +61,23 @@ def parse_image(filename: str) -> List[ReactionImage]:
     """Parses a screenshot and returns icons for all reactions found."""
     all_icons: List[ReactionImage] = []
 
-    frame = cv2.imread(filename)
-    color = frame[370:380, 290:300].mean(axis=(0, 1))
-    if numpy.linalg.norm(color - BG_COLOR) > 2:
-        raise AssertionError('Screenshot is not showing reactions.')
+    cap = cv2.VideoCapture(filename)
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break  # Video is over
 
-    for x, y in REACTION_POSITIONS:
-        # Skip empty slots.
-        center_color = frame[y-6:y+6, x-6:x+6].mean(axis=(0, 1))
-        if numpy.linalg.norm(center_color - EMPTY_COLOR) < 2:
-            continue
-        if numpy.linalg.norm(center_color - SELECT_COLOR) < 2:
-            continue
-        all_icons.append(frame[y-32:y+32, x-32:x+32])
+        if not detect(frame):
+            continue  # Skip frames not containing reactions.
+
+        for x, y in REACTION_POSITIONS:
+            # Skip empty slots.
+            center_color = frame[y-6:y+6, x-6:x+6].mean(axis=(0, 1))
+            if numpy.linalg.norm(center_color - EMPTY_COLOR) < 2:
+                continue
+            if numpy.linalg.norm(center_color - SELECT_COLOR) < 2:
+                continue
+            all_icons.append(frame[y-32:y+32, x-32:x+32])
 
     return all_icons
 
@@ -124,5 +134,5 @@ def _find_best_match(icon: numpy.ndarray, reactions: List[ReactionImage]) -> Rea
 
 
 if __name__ == "__main__":
-    results = scan_reactions('examples/reactions.jpg', locale='fr-eu')
-    print(results.items)
+    results = scan('examples/reactions.jpg', locale='fr-eu')
+    print('\n'.join(results.items))

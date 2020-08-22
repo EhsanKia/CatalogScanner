@@ -1,15 +1,23 @@
 from common import ScanResult
+from typing import Any, Dict
+
 import catalog
 import critters
+import reactions
 import recipes
 
 import cv2
-import numpy
 
 from absl import app
 from absl import flags
 from absl import logging
 
+SCANNERS: Dict[str, Any] = {
+    'catalog': catalog,
+    'critters': critters,
+    'reactions': reactions,
+    'recipes': recipes,
+}
 
 FLAGS = flags.FLAGS
 flags.DEFINE_enum('locale', 'auto', catalog.LOCALE_MAP.keys(),
@@ -21,23 +29,22 @@ flags.DEFINE_enum('mode', 'auto', ['auto', 'catalog', 'recipes'],
                   'and recipes refers to DIY list. Auto tries to detect from the video frames.')
 
 
-def scan_video(file_name: str, mode: str = 'auto', locale: str = 'auto',
-               for_sale: bool = False) -> ScanResult:
+def scan_media(file_name: str, mode: str = 'auto', locale: str = 'auto', for_sale: bool = False) -> ScanResult:
     if mode == 'auto':
-        mode = _detect_video_type(file_name)
+        mode = _detect_media_type(file_name)
         logging.info('Detected video mode: %s', mode)
 
-    if mode == 'catalog':
-        return catalog.scan_catalog(file_name, locale=locale, for_sale=for_sale)
-    elif mode == 'recipes':
-        return recipes.scan_recipes(file_name, locale=locale)
-    elif mode == 'critters':
-        return critters.scan_critters(file_name, locale=locale)
-    else:
+    if mode not in SCANNERS:
         raise RuntimeError('Invalid mode: %r' % mode)
 
+    kwargs = {}
+    if mode == 'catalog':
+        kwargs['for_sale'] = for_sale
 
-def _detect_video_type(file_name: str) -> str:
+    return SCANNERS[mode].scan(file_name, locale=locale, **kwargs)
+
+
+def _detect_media_type(file_name: str) -> str:
     video_capture = cv2.VideoCapture(file_name)
 
     # Check the first ~3s of the video.
@@ -49,14 +56,9 @@ def _detect_video_type(file_name: str) -> str:
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
-        # Get the average color of the background.
-        color = frame[:20, 1100:1150].mean(axis=(0, 1))
-        if numpy.linalg.norm(color - catalog.BG_COLOR) < 5:
-            return 'catalog'
-        elif numpy.linalg.norm(color - recipes.BG_COLOR) < 5:
-            return 'recipes'
-        elif numpy.linalg.norm(color - critters.BG_COLOR) < 5:
-            return 'critters'
+        for mode, scanner in SCANNERS.items():
+            if scanner.detect(frame):
+                return mode
 
     raise AssertionError('Video is not showing a known scan type.')
 
@@ -73,7 +75,7 @@ def main(argv):
     else:
         media_file = 'examples/catalog.mp4'
 
-    result = scan_video(
+    result = scan_media(
         media_file,
         mode=FLAGS.mode,
         locale=FLAGS.locale,

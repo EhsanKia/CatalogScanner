@@ -44,7 +44,13 @@ class RecipeCard:
         return f'RecipeCard({self.item_name!r}, {self.card_type!r})'
 
 
-def scan_recipes(video_file: str, locale: str = 'en-us') -> ScanResult:
+def detect(frame: numpy.ndarray) -> bool:
+    """Detects if a given frame is showing DIY recipes."""
+    color = frame[:20, 1100:1150].mean(axis=(0, 1))
+    return numpy.linalg.norm(color - BG_COLOR) < 5
+
+
+def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
     """Scans a video of scrolling through recipes list and returns all recipes found."""
     recipe_cards = parse_video(video_file)
     recipe_names = match_recipes(recipe_cards)
@@ -103,8 +109,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
-        color = frame[:20, 1100:1150].mean(axis=(0, 1))
-        if numpy.linalg.norm(color - BG_COLOR) > 5:
+        if not detect(frame):
             continue  # Skip frames that are not showing recipes.
 
         # Crop the region containing recipe cards.
@@ -208,5 +213,5 @@ def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCa
 
 
 if __name__ == "__main__":
-    results = scan_recipes('videos/recipes.mp4')
+    results = scan('examples/recipes.mp4')
     print('\n'.join(results.items))
