@@ -118,5 +118,5 @@ def _is_duplicate_row(all_rows: List[numpy.ndarray], new_row: List[numpy.ndarray
 
 
 if __name__ == "__main__":
-    results = scan_storage('videos/storage.mp4')
+    results = scan_storage('examples/storage.mp4')
     print('\n'.join(results.items))

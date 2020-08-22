@@ -81,7 +81,7 @@ def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
 
         # Exit if video is not properly page scrolling.
         item_scroll_count += _is_item_scroll(all_rows, new_rows)
-        assert item_scroll_count < 20, 'Video is not page scrolling.'
+        assert item_scroll_count < 20, 'Video is not scrolling at the right speed.'
         all_rows.extend(new_rows)
 
     assert all_rows, 'No items found, invalid video?'
@@ -299,5 +299,5 @@ def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
 
 
 if __name__ == "__main__":
-    results = scan_catalog('videos/catalog.mp4')
+    results = scan_catalog('examples/catalog.mp4')
     print('\n'.join(results.items))

@@ -4,6 +4,6 @@
 .vscode/
 __pycache__/
 build/
-videos/extras/
+examples/extra/
 dist/
 *.code-workspace

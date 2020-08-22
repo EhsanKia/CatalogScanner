@@ -124,5 +124,5 @@ def _find_best_match(icon: numpy.ndarray, reactions: List[ReactionImage]) -> Rea
 
 
 if __name__ == "__main__":
-    results = scan_reactions('videos/reactions.jpg', locale='fr-eu')
+    results = scan_reactions('examples/reactions.jpg', locale='fr-eu')
     print(results.items)

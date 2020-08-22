@@ -230,5 +230,5 @@ def _find_best_match(icon: numpy.ndarray, critters: List[CritterImage]) -> Critt
 
 
 if __name__ == "__main__":
-    results = scan_critters('videos/critters.mp4')
-    print(len(results.items))
+    results = scan_critters('examples/critters.mp4')
+    print(results.items)

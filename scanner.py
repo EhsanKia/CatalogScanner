@@ -63,16 +63,18 @@ def _detect_video_type(file_name: str) -> str:
 
 def main(argv):
     if len(argv) > 1:
-        video_file = argv[1]
+        media_file = argv[1]
     elif FLAGS.mode == 'recipes':
-        video_file = 'videos/recipes.mp4'
+        media_file = 'examples/recipes.mp4'
     elif FLAGS.mode == 'critters':
-        video_file = 'videos/critters.mp4'
+        media_file = 'examples/critters.mp4'
+    elif FLAGS.mode == 'reactions':
+        media_file = 'examples/reactions.jpg'
     else:
-        video_file = 'videos/catalog.mp4'
+        media_file = 'examples/catalog.mp4'
 
     result = scan_video(
-        video_file,
+        media_file,
         mode=FLAGS.mode,
         locale=FLAGS.locale,
         for_sale=FLAGS.for_sale,
