@@ -125,6 +125,10 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
             raise AssertionError('Critterpedia is in Pictures Mode.')
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        if filename.endswith('.jpg'):  # Handle screenshots
+            yield _detect_critter_section(gray), frame[149:623, :]
+            continue
+
         if last_frame is None:
             last_frame = frame
             continue
@@ -177,7 +181,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
     if not rows:
         return
 
-    thresh = cv2.threshold(cv2.vconcat(rows), 215, 255, 0)[1]
+    thresh = cv2.threshold(cv2.vconcat(rows), 210, 255, 0)[1]
     separators = thresh.mean(axis=0) < 240
     x_lines = list(separators.nonzero()[0])
 
