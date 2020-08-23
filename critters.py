@@ -168,7 +168,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
     """Parses an individual frame and extracts icons from the Critterpedia page."""
     # Start/end verical position for the 5 grid rows.
     y_positions = [0, 95, 190, 285, 379]
-    y_offsets = [6, 88]
+    y_offsets = [5, 89]
 
     rows = []
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -184,6 +184,12 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
     thresh = cv2.threshold(cv2.vconcat(rows), 210, 255, 0)[1]
     separators = thresh.mean(axis=0) < 240
     x_lines = list(separators.nonzero()[0])
+
+    # Normalize column lines by taking the average of all of them.
+    # We know they are 112.7px apart, so we find the best offset from given lines.
+    centers = [numpy.fmod(x, 112.7) for x in x_lines]
+    centroid = round(numpy.median(centers))
+    x_lines = numpy.arange(centroid, 1280, 112.7).astype(int)
 
     for x1, x2 in zip(x_lines, x_lines[1:]):
         if not (107 < x2 - x1 < 117):
