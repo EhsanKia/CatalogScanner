@@ -41,7 +41,7 @@ class ReactionImage:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing reactions list."""
     color = frame[370:380, 290:300].mean(axis=(0, 1))
-    return numpy.linalg.norm(color - BG_COLOR) < 2
+    return numpy.linalg.norm(color - BG_COLOR) < 5
 
 
 def scan(image_file: str, locale: str = 'en-us') -> ScanResult:
@@ -67,15 +67,18 @@ def parse_image(filename: str) -> List[ReactionImage]:
         if not ret:
             break  # Video is over
 
+        if frame.shape[:2] == (1080, 1920):
+            frame = cv2.resize(frame, (1280, 720))
+
         if not detect(frame):
             continue  # Skip frames not containing reactions.
 
         for x, y in REACTION_POSITIONS:
             # Skip empty slots.
             center_color = frame[y-6:y+6, x-6:x+6].mean(axis=(0, 1))
-            if numpy.linalg.norm(center_color - EMPTY_COLOR) < 2:
+            if numpy.linalg.norm(center_color - EMPTY_COLOR) < 5:
                 continue
-            if numpy.linalg.norm(center_color - SELECT_COLOR) < 2:
+            if numpy.linalg.norm(center_color - SELECT_COLOR) < 5:
                 continue
             all_icons.append(frame[y-32:y+32, x-32:x+32])
 
@@ -134,5 +137,5 @@ def _find_best_match(icon: numpy.ndarray, reactions: List[ReactionImage]) -> Rea
 
 
 if __name__ == "__main__":
-    results = scan('examples/reactions.jpg', locale='fr-eu')
+    results = scan('examples/reactions.jpg')
     print('\n'.join(results.items))
