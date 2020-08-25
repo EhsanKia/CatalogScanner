@@ -10,11 +10,11 @@ import os
 from typing import List
 
 # The expected color for the reactions background.
-BG_COLOR = numpy.array([255, 224, 245])
+BG_COLOR = (255, 224, 245)
 
 # The color of the middle dot on empty icons.
-SELECT_COLOR = numpy.array([169, 182, 0])
-EMPTY_COLOR = numpy.array([239, 200, 215])
+SELECT_COLOR = (169, 182, 0)
+EMPTY_COLOR = (239, 200, 215)
 
 # The position for all 44 reaction slots, listed manually.
 REACTION_POSITIONS = [
@@ -80,7 +80,18 @@ def parse_image(filename: str) -> List[ReactionImage]:
                 continue
             if numpy.linalg.norm(center_color - SELECT_COLOR) < 5:
                 continue
-            all_icons.append(frame[y-32:y+32, x-32:x+32])
+
+            icon = frame[y-32:y+32, x-32:x+32]
+            assert icon[30:42, 10:22].mean() < 250, 'Cursor is blocking a reaction.'
+
+            # If the cursor is hovering on the icon, shrink it to normalize size.
+            if icon[-1, -1, 1] > 230:
+                icon = cv2.copyMakeBorder(
+                    icon, top=8, bottom=8, left=8, right=8,
+                    borderType=cv2.BORDER_CONSTANT, value=BG_COLOR)
+                icon = cv2.resize(icon, (64, 64))
+
+            all_icons.append(icon)
 
     return all_icons
 
