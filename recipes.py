@@ -10,7 +10,8 @@ import os
 from typing import Dict, Iterator, List, Tuple
 
 # The expected color for the video background.
-BG_COLOR = numpy.array([194, 223, 228])
+BG_COLOR = (194, 223, 228)
+WOOD_COLOR = (115, 175, 228)
 
 # Mapping from background colors (in BGR for cv2) to card type.
 CARD_TYPES: Dict[Tuple[int, int, int], str] = {
@@ -46,7 +47,9 @@ class RecipeCard:
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing DIY recipes."""
-    color = frame[:20, 1100:1150].mean(axis=(0, 1))
+    color = frame[:20, 1200:1250].mean(axis=(0, 1))
+    if numpy.linalg.norm(color - WOOD_COLOR) < 5:
+        raise AssertionError('Workbench scanning is not supported.')
     return numpy.linalg.norm(color - BG_COLOR) < 5
 
 
