@@ -86,7 +86,7 @@ def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
 
         # Exit if video is not properly page scrolling.
         item_scroll_count += _is_item_scroll(all_rows, new_rows)
-        assert item_scroll_count < 20, 'Video is not scrolling at the right speed.'
+        assert item_scroll_count < 20, 'Video is scrolling too slowly.'
         all_rows.extend(new_rows)
 
     assert all_rows, 'No items found, invalid video?'
