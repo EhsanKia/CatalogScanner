@@ -75,34 +75,32 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
 def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     """Parses an individual frame and extracts cards from the storage."""
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    x_lines = list(range(0, 1057, 132))
+    x_positions = list(range(0, 1056, 132))
 
     cols = []
-    for x in x_lines[1:-1]:
+    for x in x_positions[1:]:
         empty_col = gray[:, x-10:x+10]
         if empty_col.min() < 200:
             continue  # Skip columns with occlusions
         cols.append(empty_col)
 
     thresh = cv2.threshold(cv2.hconcat(cols), 236, 255, 0)[1]
-    separators = thresh.mean(axis=1) < 240
-    y_lines = [0] + list(separators.nonzero()[0])
+    separators = list(numpy.nonzero(thresh.mean(axis=1) < 240)[0])
 
-    height_correction = 0
-    for y1, y2 in zip(y_lines, y_lines[1:]):
-        if not (118 < y2 - y1 < 130):
-            height_correction += 1
-            continue  # Invalid row size
+    # Normalize row lines by taking the average of all of them.
+    # We know they are 127px apart, so we find the best offset from given lines.
+    centroid = int(numpy.median([s % 127 for s in separators]))
+    y_positions = list(range(centroid, 525, 127))
 
+    for y in y_positions:
+        if y + 127 > frame.shape[0]:
+            continue  # Past the bottom of the frame.
         # Skip row when tooltip is overlapping the item.
-        tooltip = cv2.inRange(frame[y2-10:y2-5, :], (160, 195, 80), (180, 205, 100))
+        tooltip = cv2.inRange(frame[y+122:y+127, :], (160, 195, 80), (180, 205, 100))
         if tooltip.mean() > 10:
             continue
 
-        y1 -= height_correction // 2
-        yield [frame[y1+13:y1+113, x1+16:x2-16]
-               for x1, x2 in zip(x_lines, x_lines[1:])]
-        height_correction = 0
+        yield [frame[y+13:y+113, x+16:x+116] for x in x_positions]
 
 
 def _is_duplicate_row(all_rows: List[numpy.ndarray], new_row: List[numpy.ndarray]) -> bool:
