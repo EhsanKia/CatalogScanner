@@ -114,7 +114,11 @@ def _is_duplicate_row(all_rows: List[numpy.ndarray], new_row: List[numpy.ndarray
         old_concat = cv2.hconcat(all_rows[ind])
         if old_concat is None:
             continue
-        if cv2.absdiff(new_concat, old_concat).mean() < 9:
+
+        if cv2.absdiff(new_concat, old_concat).mean() < 12:
+            # If the old version had a cursor in it, erplace with new row.
+            if old_concat[-5:].min() < 50:
+                all_rows[ind] = new_row
             return True
 
     return False
