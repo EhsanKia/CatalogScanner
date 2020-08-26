@@ -126,14 +126,20 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     # then it averages the frame across the Y-axis to find the area rows.
     # Lastly, it finds the y-positions marking the start/end of each row.
     thresh = cv2.inRange(frame, (185, 215, 218), (210, 230, 237))
-    separators = numpy.diff(thresh.mean(axis=1) > 200).nonzero()[0]
-    y_positions = zip(separators, separators[1:])
+    separators = numpy.diff(thresh.mean(axis=1) > 190).nonzero()[0]
 
-    # Loop over pair of start/end positions:
-    for y1, y2 in y_positions:
+    # We do a first pass finding all sensible y positions.
+    y_positions = []
+    for y1, y2 in zip(separators, separators[1:]):
         if not (180 < y2 - y1 < 200):
             continue  # Invalid card size
+        y_positions.append(y1)
 
+    # Then, if the last row is missing, we predict its value.
+    if y_positions and y_positions[-1] < 100:
+        y_positions.append(y_positions[-1] + 211)
+
+    for y1 in y_positions:
         row = []
         for x1, x2 in x_positions:
             card = frame[y1+37:y1+149, x1:x2]
