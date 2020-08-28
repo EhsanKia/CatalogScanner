@@ -103,7 +103,7 @@ def translate_names(critter_names: List[str], locale: str) -> List[str]:
     return [translations[name][locale] for name in critter_names]
 
 
-def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
+def _read_frames(filename: str) -> Iterator[Tuple[CritterType, numpy.ndarray]]:
     """Parses frames of the given video and returns the relevant region."""
     frame_skip = 0
     last_section = None
@@ -197,13 +197,12 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
     # We know they are 112.7px apart, so we find the best offset from given lines.
     centers = [numpy.fmod(x, 112.7) for x in x_lines]
     centroid = round(numpy.median(centers))
-    x_lines = numpy.arange(centroid, 1280, 112.7).astype(int)
+    x_positions = numpy.arange(centroid, 1280, 112.7).astype(int)
 
-    for x1, x2 in zip(x_lines, x_lines[1:]):
-        if not (107 < x2 - x1 < 117):
-            continue
-        for y in y_positions:
-            yield frame[y+8:y+88, x1+16:x1+96]
+    for x, y in itertools.product(x_positions, y_positions):
+        if x + 96 > frame.shape[1]:
+            continue  # Past the right side of the frame
+        yield frame[y+8:y+88, x+16:x+96]
 
 
 def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
