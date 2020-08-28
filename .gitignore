@@ -3,6 +3,7 @@
 .venv/
 .vscode/
 __pycache__/
+pythonenv*/
 build/
 examples/extra/
 dist/

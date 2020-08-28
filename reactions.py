@@ -33,6 +33,7 @@ class ReactionImage:
         img_path = os.path.join('reactions', 'generated', filename)
         self.img = cv2.imread(img_path)
         self.reaction_name = reaction_name
+        self.filename = filename
 
     def __repr__(self):
         return f'ReactionImage({self.reaction_name!r}, {self.filename!r})'
