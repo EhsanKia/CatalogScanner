@@ -66,11 +66,19 @@ def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
 def parse_video(filename: str) -> List[CritterImage]:
     """Parses a whole video and returns icons for all critters found."""
     all_icons: List[CritterImage] = []
+    section_count: Dict[CritterType, int] = collections.defaultdict(int)
     for i, (critter_type, frame) in enumerate(_read_frames(filename)):
+        section_count[critter_type] += 1
         for new_icon in _parse_frame(frame):
             critter_icon = new_icon.view(CritterIcon)
             critter_icon.critter_type = critter_type
             all_icons.append(critter_icon)
+
+    assert section_count[CritterType.INSECTS] != 1, \
+        'Incomplete critter scan for INSECTS section.'
+    assert section_count[CritterType.FISH] != 1, \
+        'Incomplete critter scan for FISH section.'
+
     return _remove_blanks(all_icons)
 
 
