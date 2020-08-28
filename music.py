@@ -162,28 +162,6 @@ def _get_song_db() -> List[SongCover]:
     return [SongCover(name, hash_hex) for name, _, hash_hex in music_data]
 
 
-def _find_best_match(icon: numpy.ndarray, covers: List[SongCover]) -> SongCover:
-    """Finds the closest matching song cover for the given icon."""
-    fast_similarity_metric = lambda r: cv2.absdiff(icon, r.img).mean()
-    similarities = list(map(fast_similarity_metric, covers))
-    sim1, sim2 = numpy.partition(similarities, kth=2)[:2]
-
-    # If the match seems obvious, return the quick result.
-    if abs(sim1 - sim2) > 3:
-        return covers[numpy.argmin(similarities)]
-
-    # Otherwise, we use a slower matching, which tries various shifts.
-    def slow_similarity_metric(cover):
-        diffs = []
-        for y in [-1, 0, 1]:
-            shifted = numpy.roll(icon, y, axis=0)
-            diffs.append(cv2.absdiff(shifted, cover.img).sum())
-        return min(diffs)  # Return lowest diff across shifts.
-
-    similarities = list(map(slow_similarity_metric, covers))
-    return covers[numpy.argmin(similarities)]
-
-
 if __name__ == "__main__":
     results = scan('examples/music.mp4')
     print('\n'.join(results.items))
