@@ -6,7 +6,10 @@ import numpy
 from typing import Iterator, List
 
 # The expected color for the video background.
-BG_COLOR = numpy.array([69, 198, 246])
+BG_COLOR = (69, 198, 246)
+
+# The center color for a empty storage slot.
+BLANK_COLOR = (192, 230, 242)
 
 
 def detect(frame: numpy.ndarray) -> bool:
@@ -38,7 +41,7 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
             if _is_duplicate_row(all_rows, new_row):
                 continue  # Skip non-moving frames
             all_rows.extend(new_row)
-    return all_rows
+    return _remove_blanks(all_rows)
 
 
 def match_items(item_images: List[numpy.ndarray]) -> List[str]:
@@ -122,6 +125,17 @@ def _is_duplicate_row(all_rows: List[numpy.ndarray], new_row: List[numpy.ndarray
             return True
 
     return False
+
+
+def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
+    """Remove all icons that show empty critter boxes."""
+    filtered_icons = []
+    for icon in all_icons:
+        center_color = icon[40:60, 40:60].mean(axis=(0, 1))
+        if numpy.linalg.norm(center_color - BLANK_COLOR) < 5:
+            continue
+        filtered_icons.append(icon)
+    return filtered_icons
 
 
 if __name__ == "__main__":
