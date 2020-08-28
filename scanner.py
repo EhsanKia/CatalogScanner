@@ -3,6 +3,7 @@ from typing import Any, Dict
 
 import catalog
 import critters
+import music
 import reactions
 import recipes
 
@@ -15,6 +16,7 @@ from absl import logging
 SCANNERS: Dict[str, Any] = {
     'catalog': catalog,
     'critters': critters,
+    'music': music,
     'reactions': reactions,
     'recipes': recipes,
 }
@@ -24,7 +26,7 @@ flags.DEFINE_enum('locale', 'auto', catalog.LOCALE_MAP.keys(),
                   'The locale to use for parsing item names.')
 flags.DEFINE_bool('for_sale', None,
                   'If true, the scanner will skip items that are not for sale.')
-flags.DEFINE_enum('mode', 'auto', ['auto', 'catalog', 'recipes', 'critters', 'reactions'],
+flags.DEFINE_enum('mode', 'auto', ['auto'] + list(SCANNERS.keys()),
                   'The type of video to scan. Catalog refers to Nook shopping catalog '
                   'and recipes refers to DIY list. Auto tries to detect from the video frames.')
 
@@ -53,6 +55,7 @@ def _detect_media_type(filename: str) -> str:
         if not success or frame is None:
             break
 
+        # Resize 1080p screenshots to 720p to match videos.
         if filename.endswith('.jpg') and frame.shape[:2] == (1080, 1920):
             frame = cv2.resize(frame, (1280, 720))
 
@@ -75,6 +78,8 @@ def main(argv):
         media_file = 'examples/critters.mp4'
     elif FLAGS.mode == 'reactions':
         media_file = 'examples/reactions.jpg'
+    elif FLAGS.mode == 'music':
+        media_file = 'examples/music.mp4'
     else:
         media_file = 'examples/catalog.mp4'
 

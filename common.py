@@ -10,6 +10,7 @@ class ScanMode(enum.Enum):
     STORAGE = 3
     CRITTERS = 4
     REACTIONS = 5
+    MUSIC = 6
 
 
 @dataclasses.dataclass
