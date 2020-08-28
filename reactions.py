@@ -97,7 +97,7 @@ def parse_image(filename: str) -> List[ReactionImage]:
 
 
 def match_reactions(reaction_icons: List[ReactionImage]) -> List[str]:
-    """Matches a list of names against a database of items, finding best matches."""
+    """Matches icons against database of reactions images, finding best matches."""
     matched_reactions = set()
     reaction_db = _get_reaction_db()
     for icon in reaction_icons:

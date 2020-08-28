@@ -42,7 +42,7 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
 
 
 def match_items(item_images: List[numpy.ndarray]) -> List[str]:
-    """Matches a list of names against a database of items, finding best matches."""
+    """Matches icons against database of item images, finding best matches."""
     # TODO: Implement image to item matching.
     return []
 

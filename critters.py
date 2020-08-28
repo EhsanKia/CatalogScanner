@@ -83,7 +83,7 @@ def parse_video(filename: str) -> List[CritterImage]:
 
 
 def match_critters(critter_icons: List[CritterImage]) -> List[str]:
-    """Matches a list of names against a database of items, finding best matches."""
+    """Matches icons against database of critter images, finding best matches."""
     matched_critters = set()
     critter_db = _get_critter_db()
     for icon in critter_icons:

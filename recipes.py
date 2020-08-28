@@ -80,7 +80,7 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
 
 
 def match_recipes(recipe_cards: List[numpy.ndarray]) -> List[str]:
-    """Matches a list of names against a database of items, finding best matches."""
+    """Matches icons against database of recipe images, finding best matches."""
     matched_recipes = set()
     recipe_db = _get_recipe_db()
     for card in recipe_cards:
