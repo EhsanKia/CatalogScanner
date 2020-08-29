@@ -185,11 +185,13 @@ def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray
 
 def _is_duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
     """Checks if the new set of rows are the same as the previous seen rows."""
-    if not len(all_rows) > len(new_rows) > 3:
+    if not len(all_rows) > len(new_rows) > 4:
         return False
 
-    # Check 2nd to last to avoid the hovered row.
-    diff = cv2.absdiff(all_rows[-2], new_rows[-2])
+    # Check a few middle rows to avoid the hovered row.
+    old_concat = cv2.vconcat(all_rows[-5:-2])
+    new_concat = cv2.vconcat(new_rows[-5:-2])
+    diff = cv2.absdiff(old_concat, new_concat)
     return diff.mean() < 4
 
 
