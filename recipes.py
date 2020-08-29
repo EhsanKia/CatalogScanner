@@ -147,7 +147,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
         for x1, x2 in x_positions:
             card = frame[y1+37:y1+149, x1:x2]
             # Detects selected cards, which are bigger, and resizes them.
-            if thresh[y1-8:y1-5, x1:x2].mean() < 100:
+            if y1 > 9 and thresh[y1-10:y1-5, x1:x2].mean() < 100:
                 card = frame[y1+22:y1+152, x1-9:x2+9]
                 card = cv2.resize(card, (112, 112))
             row.append(card)
