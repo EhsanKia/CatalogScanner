@@ -7,10 +7,10 @@ import json
 import numpy
 import os
 
-from typing import List
+from typing import Iterator, List
 
 # The expected color for the reactions background.
-BG_COLOR = (255, 224, 245)
+BG_COLOR = (254, 221, 244)
 
 # The color of the middle dot on empty icons.
 SELECT_COLOR = (169, 182, 0)
@@ -74,25 +74,8 @@ def parse_image(filename: str) -> List[ReactionImage]:
         if not detect(frame):
             continue  # Skip frames not containing reactions.
 
-        for x, y in REACTION_POSITIONS:
-            # Skip empty slots.
-            center_color = frame[y-6:y+6, x-6:x+6].mean(axis=(0, 1))
-            if numpy.linalg.norm(center_color - EMPTY_COLOR) < 5:
-                continue
-            if numpy.linalg.norm(center_color - SELECT_COLOR) < 5:
-                continue
-
-            icon = frame[y-32:y+32, x-32:x+32]
-            assert icon[30:42, 10:22].mean() < 250, 'Cursor is blocking a reaction.'
-
-            # If the cursor is hovering on the icon, shrink it to normalize size.
-            if icon[-1, -1, 1] > 230:
-                icon = cv2.copyMakeBorder(
-                    icon, top=8, bottom=8, left=8, right=8,
-                    borderType=cv2.BORDER_CONSTANT, value=BG_COLOR)
-                icon = cv2.resize(icon, (64, 64))
-
-            all_icons.append(icon)
+        all_icons = list(_parse_frame(frame))
+        break
 
     return all_icons
 
@@ -116,6 +99,29 @@ def translate_names(reaction_names: List[str], locale: str) -> List[str]:
     with open(translation_path, encoding='utf-8') as fp:
         translations = json.load(fp)
     return [translations[name][locale] for name in reaction_names]
+
+
+def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
+    """Extracts the individual reaction icons from the frame."""
+    for x, y in REACTION_POSITIONS:
+        # Skip empty slots.
+        center_color = frame[y-6:y+6, x-6:x+6].mean(axis=(0, 1))
+        if numpy.linalg.norm(center_color - EMPTY_COLOR) < 5:
+            continue
+        if numpy.linalg.norm(center_color - SELECT_COLOR) < 5:
+            continue
+
+        icon = frame[y-32:y+32, x-32:x+32]
+        assert icon[30:42, 10:22].mean() < 250, 'Cursor is blocking a reaction.'
+
+        # If the cursor is hovering on the icon, shrink it to normalize size.
+        if icon[-1, -1, 1] > 230:
+            icon = cv2.copyMakeBorder(
+                icon, top=8, bottom=8, left=8, right=8,
+                borderType=cv2.BORDER_CONSTANT, value=BG_COLOR)
+            icon = cv2.resize(icon, (64, 64))
+
+        yield icon
 
 
 @functools.lru_cache()
