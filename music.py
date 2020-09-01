@@ -18,10 +18,11 @@ BG_COLOR2 = (226, 119, 79)
 class SongCover:
     """The image and data associated with a given song."""
 
-    def __init__(self, song_name: str, hash_hex: str):
+    def __init__(self, song_name: str, image_name: str, hash_hex: str):
         self.song_name = song_name
-        self.icon_hash = imagehash.hex_to_hash(hash_hex)
+        self.image_name = image_name
         self.hash_hex = hash_hex
+        self.icon_hash = imagehash.hex_to_hash(hash_hex)
 
     def __repr__(self):
         return f'SongCover({self.song_name!r}, {self.hash_hex!r})'
@@ -53,7 +54,7 @@ def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
 def parse_video(filename: str) -> List[numpy.ndarray]:
     """Parses a whole video and returns images for all song covers found."""
     all_covers: List[numpy.ndarray] = []
-    for i, frame in enumerate(_read_frames(filename)):
+    for frame in _read_frames(filename):
         for new_covers in _parse_frame(frame):
             if _is_duplicate_cards(all_covers, new_covers):
                 continue  # Skip non-moving frames
@@ -113,7 +114,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     # then it averages the frame across the Y-axis to find the area rows.
     # Lastly, it finds the y-positions marking the start/end of each row.
     bg_color = frame[:20, :20].mean(axis=(0, 1))
-    thresh = cv2.inRange(frame[:410], bg_color - 25, bg_color + 25)
+    thresh = cv2.inRange(frame[:410], bg_color - 30, bg_color + 30)
     separators = numpy.diff(thresh.mean(axis=1) > 100).nonzero()[0]
     if len(separators) < 2:
         return
@@ -125,6 +126,9 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
             y_centers.extend([y1 % 287, (y2 + 25) % 287])
         if 20 < y2 - y1 < 27:
             y_centers.extend([y2 % 287, (y1 + 25) % 287])
+    if not y_centers:
+        return
+
     y_centroid = numpy.mean(y_centers) + 1
     y_positions = numpy.arange(y_centroid, 575, 287).astype(int)
 
@@ -168,7 +172,7 @@ def _get_song_db() -> List[SongCover]:
     """Fetches the song cover database for a given locale, with caching."""
     with open(os.path.join('music', 'names.json')) as fp:
         music_data = json.load(fp)
-    return [SongCover(name, hash_hex) for name, _, hash_hex in music_data]
+    return [SongCover(*data) for data in music_data]
 
 
 if __name__ == "__main__":
