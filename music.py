@@ -11,7 +11,8 @@ import os
 from typing import Iterator, List
 
 # The expected color for the video background.
-BG_COLOR = (238, 217, 101)
+BG_COLOR1 = (238, 217, 101)
+BG_COLOR2 = (226, 119, 79)
 
 
 class SongCover:
@@ -20,6 +21,7 @@ class SongCover:
     def __init__(self, song_name: str, hash_hex: str):
         self.song_name = song_name
         self.icon_hash = imagehash.hex_to_hash(hash_hex)
+        self.hash_hex = hash_hex
 
     def __repr__(self):
         return f'SongCover({self.song_name!r}, {self.hash_hex!r})'
@@ -28,7 +30,11 @@ class SongCover:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing the music list."""
     color = frame[:20, 1220:1250].mean(axis=(0, 1))
-    return numpy.linalg.norm(color - BG_COLOR) < 10
+    if numpy.linalg.norm(color - BG_COLOR1) < 10:
+        return True
+    if numpy.linalg.norm(color - BG_COLOR2) < 10:
+        return True
+    return False
 
 
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
@@ -64,7 +70,7 @@ def match_songs(song_covers: List[numpy.ndarray]) -> List[str]:
         test_hash = imagehash.phash(image, hash_size=18)
         best_match = min(song_db, key=lambda x: x.icon_hash - test_hash)
         matched_songs.add(best_match.song_name)
-    return list(matched_songs)
+    return sorted(matched_songs)
 
 
 def translate_names(song_names: List[str], locale: str) -> List[str]:
@@ -103,10 +109,11 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     # Start vertical position for the 4 song covers.
     x_positions = [40, 327, 614, 900]
 
-    # This code finds areas of the image that are sky blue (background color),
+    # This code finds areas of the image that are blue (background color),
     # then it averages the frame across the Y-axis to find the area rows.
     # Lastly, it finds the y-positions marking the start/end of each row.
-    thresh = cv2.inRange(frame[:410], (210, 200, 75), (255, 235, 125))
+    bg_color = frame[:20, :20].mean(axis=(0, 1))
+    thresh = cv2.inRange(frame[:410], bg_color - 25, bg_color + 25)
     separators = numpy.diff(thresh.mean(axis=1) > 100).nonzero()[0]
     if len(separators) < 2:
         return
@@ -148,7 +155,9 @@ def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
     filtered_icons = []
     for icon in all_icons:
         color = icon[5:25, 60:200].mean(axis=(0, 1))
-        if numpy.linalg.norm(color - BG_COLOR) < 5:
+        if numpy.linalg.norm(color - BG_COLOR1) < 10:
+            continue
+        if numpy.linalg.norm(color - BG_COLOR2) < 10:
             continue
         filtered_icons.append(icon)
     return filtered_icons
