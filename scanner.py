@@ -29,14 +29,13 @@ flags.DEFINE_enum('locale', 'auto', catalog.LOCALE_MAP.keys(),
 flags.DEFINE_bool('for_sale', None,
                   'If true, the scanner will skip items that are not for sale.')
 flags.DEFINE_enum('mode', 'auto', ['auto'] + list(SCANNERS.keys()),
-                  'The type of video to scan. Catalog refers to Nook shopping catalog '
-                  'and recipes refers to DIY list. Auto tries to detect from the video frames.')
+                  'The type of catalog to scan. Auto tries to detect from the media frames.')
 
 
 def scan_media(filename: str, mode: str = 'auto', locale: str = 'auto', for_sale: bool = False) -> ScanResult:
     if mode == 'auto':
         mode = _detect_media_type(filename)
-        logging.info('Detected video mode: %s', mode)
+        logging.info('Detected scan mode: %s', mode)
 
     if mode not in SCANNERS:
         raise RuntimeError('Invalid mode: %r' % mode)
@@ -53,7 +52,7 @@ def scan_media(filename: str, mode: str = 'auto', locale: str = 'auto', for_sale
 def _detect_media_type(filename: str) -> str:
     video_capture = cv2.VideoCapture(filename)
 
-    # Check the first ~3s of the video.
+    # Check the first 100 frames for a match.
     for _ in range(100):
         success, frame = video_capture.read()
         if not success or frame is None:
@@ -70,7 +69,7 @@ def _detect_media_type(filename: str) -> str:
             if scanner.detect(frame):
                 return mode
 
-    raise AssertionError('Video is not showing a known scan type.')
+    raise AssertionError('Media is not showing a known scan type.')
 
 
 def main(argv):
