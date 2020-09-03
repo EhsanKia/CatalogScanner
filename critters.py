@@ -29,14 +29,15 @@ class CritterType(enum.Enum):
 class CritterImage:
     """The image and data associated with a critter icon."""
 
-    def __init__(self, critter_name: str, icon_name: str, critter_type: CritterType):
+    def __init__(self, critter_name: str, critter_type: CritterType, icon_name: str):
         img_path = os.path.join('critters', 'generated', icon_name)
         self.img = cv2.imread(img_path)
         self.critter_name = critter_name
         self.critter_type = critter_type
+        self.icon_name = icon_name
 
     def __repr__(self):
-        return f'CritterIcon({self.item_name!r}, {self.icon_name!r}, {self.critter_type!r})'
+        return f'CritterIcon({self.critter_name!r}, {self.critter_type!r}, {self.icon_name!r})'
 
 
 class CritterIcon(numpy.ndarray):
@@ -224,7 +225,7 @@ def _get_critter_db() -> Dict[CritterType, List[CritterImage]]:
     critter_db = collections.defaultdict(list)
     for critter_name, icon_name, critter_type_str in critter_data:
         critter_type = CritterType.from_str(critter_type_str)
-        critter = CritterImage(critter_name, icon_name, critter_type)
+        critter = CritterImage(critter_name, critter_type, icon_name)
         critter_db[critter_type].append(critter)
     return critter_db
 
