@@ -67,7 +67,7 @@ def parse_video(filename: str) -> List[CritterImage]:
     """Parses a whole video and returns icons for all critters found."""
     all_icons: List[CritterImage] = []
     section_count: Dict[CritterType, int] = collections.defaultdict(int)
-    for i, (critter_type, frame) in enumerate(_read_frames(filename)):
+    for critter_type, frame in _read_frames(filename):
         section_count[critter_type] += 1
         for new_icon in _parse_frame(frame):
             critter_icon = new_icon.view(CritterIcon)
@@ -149,9 +149,9 @@ def _read_frames(filename: str) -> Iterator[Tuple[CritterType, numpy.ndarray]]:
             continue
 
         # Grab the last frame for each side and section combination.
-        if last_frame[560:630, :70, 2].min() > 235:
+        if last_frame[560:630, :70, 2].min() > 230:
             good_frames[critter_section, 0] = last_frame
-        elif last_frame[560:630, -70:, 2].min() > 235:
+        elif last_frame[560:630, -70:, 2].min() > 230:
             good_frames[critter_section, 1] = last_frame
 
         last_frame = frame
