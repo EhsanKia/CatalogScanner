@@ -11,7 +11,7 @@ import os
 from typing import Iterator, List
 
 # The expected color for the video background.
-BG_COLOR1 = (238, 217, 101)
+BG_COLOR1 = (240, 210, 100)
 BG_COLOR2 = (226, 119, 79)
 
 
@@ -31,9 +31,9 @@ class SongCover:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing the music list."""
     color = frame[:20, 1220:1250].mean(axis=(0, 1))
-    if numpy.linalg.norm(color - BG_COLOR1) < 10:
+    if numpy.linalg.norm(color - BG_COLOR1) < 15:
         return True
-    if numpy.linalg.norm(color - BG_COLOR2) < 10:
+    if numpy.linalg.norm(color - BG_COLOR2) < 15:
         return True
     return False
 
