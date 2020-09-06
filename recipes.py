@@ -48,9 +48,9 @@ class RecipeCard:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing DIY recipes."""
     color = frame[:20, 1200:1250].mean(axis=(0, 1))
-    if numpy.linalg.norm(color - WOOD_COLOR) < 5:
+    if numpy.linalg.norm(color - WOOD_COLOR) < 7:
         raise AssertionError('Workbench scanning is not supported.')
-    return numpy.linalg.norm(color - BG_COLOR) < 5
+    return numpy.linalg.norm(color - BG_COLOR) < 7
 
 
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
