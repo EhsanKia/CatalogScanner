@@ -110,10 +110,18 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     # Start vertical position for the 4 song covers.
     x_positions = [40, 327, 614, 900]
 
+    # The current backgroudn color.
+    bg_color = frame[:20, :20].mean(axis=(0, 1))
+
+    # Detect special case when less than one full row of song covers.
+    end_row_color = frame[100:200, 1000:1100].mean(axis=(0, 1))
+    if numpy.linalg.norm(end_row_color - bg_color) < 5:
+        yield [frame[15:275, x:x+260] for x in x_positions]
+        return
+
     # This code finds areas of the image that are blue (background color),
     # then it averages the frame across the Y-axis to find the area rows.
     # Lastly, it finds the y-positions marking the start/end of each row.
-    bg_color = frame[:20, :20].mean(axis=(0, 1))
     thresh = cv2.inRange(frame[:410], bg_color - 30, bg_color + 30)
     separators = numpy.diff(thresh.mean(axis=1) > 100).nonzero()[0]
     if len(separators) < 2:
@@ -159,9 +167,9 @@ def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
     filtered_icons = []
     for icon in all_icons:
         color = icon[5:25, 60:200].mean(axis=(0, 1))
-        if numpy.linalg.norm(color - BG_COLOR1) < 10:
+        if numpy.linalg.norm(color - BG_COLOR1) < 15:
             continue
-        if numpy.linalg.norm(color - BG_COLOR2) < 10:
+        if numpy.linalg.norm(color - BG_COLOR2) < 15:
             continue
         filtered_icons.append(icon)
     return filtered_icons
