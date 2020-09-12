@@ -115,7 +115,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
         assert icon[30:42, 10:22].mean() < 250, 'Cursor is blocking a reaction.'
 
         # If the cursor is hovering on the icon, shrink it to normalize size.
-        if icon[-1, -1, 1] > 230:
+        if icon[-3, -5, 1] > 230:
             icon = cv2.copyMakeBorder(
                 icon, top=8, bottom=8, left=8, right=8,
                 borderType=cv2.BORDER_CONSTANT, value=BG_COLOR)
