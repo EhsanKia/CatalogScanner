@@ -16,10 +16,10 @@ from absl import logging
 
 SCANNERS: Dict[str, Any] = {
     'catalog': catalog,
-    'critters': critters,
-    'music': music,
-    'reactions': reactions,
     'recipes': recipes,
+    'critters': critters,
+    'reactions': reactions,
+    'music': music,
     'storage': storage,
 }
 
