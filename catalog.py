@@ -158,9 +158,11 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         if not detect(frame):
             continue  # Skip frames where item list is not visible.
 
-        top_color = frame[20:40, 1120:1140].mean(axis=(0, 1))
-        assert numpy.linalg.norm(top_color - TOP_COLOR) < 6, \
-            'Video was not uploaded directly from the Switch.'
+        if filename.endswith('.mp4'):
+            # Checks for re-encoded video where the colors can shift.
+            top_color = frame[20:40, 1120:1140].mean(axis=(0, 1))
+            assert numpy.linalg.norm(top_color - TOP_COLOR) < 6, \
+                'Video was not uploaded directly from the Switch.'
 
         # Turn to grayscale and crop the region containing item name and price.
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
