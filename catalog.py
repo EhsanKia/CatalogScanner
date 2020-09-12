@@ -161,7 +161,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         if filename.endswith('.mp4'):
             # Checks for re-encoded video where the colors can shift.
             top_color = frame[20:40, 1120:1140].mean(axis=(0, 1))
-            assert numpy.linalg.norm(top_color - TOP_COLOR) < 6, \
+            assert numpy.linalg.norm(top_color - TOP_COLOR) < 8, \
                 'Video was not uploaded directly from the Switch.'
 
         # Turn to grayscale and crop the region containing item name and price.
@@ -308,5 +308,5 @@ def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
 
 
 if __name__ == "__main__":
-    results = scan('examples/catalog.mp4')
+    results = scan('examples/extra/catalog_encoded.mp4')
     print('\n'.join(results.items))
