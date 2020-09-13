@@ -87,7 +87,7 @@ def match_reactions(reaction_icons: List[ReactionImage]) -> List[str]:
     for icon in reaction_icons:
         best_match = _find_best_match(icon, reaction_db)
         matched_reactions.add(best_match.reaction_name)
-    return list(matched_reactions)
+    return sorted(matched_reactions)
 
 
 def translate_names(reaction_names: List[str], locale: str) -> List[str]:

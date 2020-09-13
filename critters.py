@@ -90,7 +90,7 @@ def match_critters(critter_icons: List[CritterImage]) -> List[str]:
     for icon in critter_icons:
         best_match = _find_best_match(icon, critter_db[icon.critter_type])
         matched_critters.add(best_match.critter_name)
-    return list(matched_critters)
+    return sorted(matched_critters)
 
 
 def translate_names(critter_names: List[str], locale: str) -> List[str]:

@@ -87,7 +87,7 @@ def match_recipes(recipe_cards: List[numpy.ndarray]) -> List[str]:
         card_type = _guess_card_type(card)
         best_match = _find_best_match(card, recipe_db[card_type])
         matched_recipes.add(best_match.item_name)
-    return list(matched_recipes)
+    return sorted(matched_recipes)
 
 
 def translate_names(recipe_names: List[str], locale: str) -> List[str]:
