@@ -150,9 +150,9 @@ def _read_frames(filename: str) -> Iterator[Tuple[CritterType, numpy.ndarray]]:
             continue
 
         # Grab the last frame for each side and section combination.
-        if last_frame[560:630, :70, 2].min() > 230:
+        if last_frame[570:600, :70, 2].min() > 230:
             good_frames[critter_section, 0] = last_frame
-        elif last_frame[560:630, -70:, 2].min() > 230:
+        elif last_frame[570:600, -70:, 2].min() > 230:
             good_frames[critter_section, 1] = last_frame
 
         last_frame = frame
@@ -253,5 +253,5 @@ def _find_best_match(icon: numpy.ndarray, critters: List[CritterImage]) -> Critt
 
 
 if __name__ == "__main__":
-    results = scan('examples/critters.mp4')
+    results = scan('examples/extra/critters_fail.mp4')
     print('\n'.join(results.items))
