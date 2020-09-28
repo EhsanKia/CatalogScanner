@@ -107,9 +107,9 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
         # Skip empty slots.
         center_color = frame[y-6:y+6, x-6:x+6].mean(axis=(0, 1))
         if numpy.linalg.norm(center_color - EMPTY_COLOR) < 5:
-            continue
+            break
         if numpy.linalg.norm(center_color - SELECT_COLOR) < 5:
-            continue
+            break
 
         icon = frame[y-32:y+32, x-32:x+32]
         assert icon[30:42, 10:22].mean() < 250, 'Cursor is blocking a reaction.'
