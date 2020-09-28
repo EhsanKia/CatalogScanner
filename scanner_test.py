@@ -1,4 +1,5 @@
 import json
+import os
 
 from absl.testing import absltest
 
@@ -75,6 +76,20 @@ class ScannerTest(absltest.TestCase):
         self.assertEqual(results.mode, ScanMode.MUSIC)
         self.assertEqual(results.items, self.ground_truth[self.name])
         self.assertEqual(results.locale, 'ja-jp')
+
+    def test_extra(self):
+        with open('testdata/extra.json', encoding='utf-8') as fp:
+            ground_truth = json.load(fp)
+
+        for filename in ground_truth:
+            filepath = os.path.join('examples/extra', filename)
+            try:
+                results = scanner.scan_media(filepath)
+                actual = results.items
+            except AssertionError as e:
+                actual = str(e)
+
+            self.assertEqual(actual, ground_truth[filename])
 
 
 if __name__ == "__main__":

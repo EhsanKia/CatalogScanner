@@ -5,6 +5,6 @@
 __pycache__/
 pythonenv*/
 build/
-examples/extra/
+examples/more/
 dist/
 *.code-workspace
