@@ -2,221 +2,231 @@
  [
   "Aggravation",
   "Outraged.png",
-  "Peppy"
+  "Peppy villagers"
  ],
  [
   "Agreement",
   "Nodding.png",
-  "Cranky"
+  "Cranky villagers"
  ],
  [
   "Amazed",
   "Shocked.png",
-  "Snooty"
+  "Snooty villagers"
  ],
  [
   "Apologetic",
   "Apologize.png",
-  "Big Sister"
+  "Big Sister villagers"
  ],
  [
   "Bashfulness",
   "Blushing.png",
-  "Lazy"
+  "Lazy villagers"
  ],
  [
   "Bewilderment",
   "Pardon.png",
-  "Cranky"
+  "Cranky villagers"
  ],
  [
   "Cold Chill",
   "ColdChill.png",
-  "Big Sister"
+  "Big Sister villagers"
  ],
  [
   "Confident",
   "Assent.png",
-  "Big Sister"
+  "Big Sister villagers"
  ],
  [
   "Curiosity",
   "QuestionMark.png",
-  "Peppy"
+  "Peppy villagers"
  ],
  [
   "Daydreaming",
   "AbsentMindedness.png",
-  "Normal"
+  "Normal villagers"
  ],
  [
   "Delight",
   "Clapping.png",
-  "All"
+  "All villagers"
  ],
  [
   "Disagreement",
   "Negative.png",
-  "Big Sister"
+  "Big Sister villagers"
  ],
  [
   "Distress",
   "Frantic.png",
-  "Jock"
+  "Jock villagers"
  ],
  [
   "Dozing",
   "Sleep.png",
-  "Smug"
+  "Smug villagers"
  ],
  [
   "Encouraging",
   "Cheering.png",
-  "Jock"
+  "Jock villagers"
  ],
  [
   "Fearful",
   "Shaking.png",
-  "Normal"
+  "Normal villagers"
  ],
  [
   "Flourish",
   "Dance.png",
-  "Jock"
+  "Jock villagers"
  ],
  [
   "Glee",
   "HappyDance.png",
-  "Normal"
+  "Normal villagers"
  ],
  [
   "Greetings",
   "Greeting.png",
-  "All"
+  "All villagers"
  ],
  [
   "Happiness",
   "Smiling.png",
-  "Peppy"
+  "Peppy villagers"
+ ],
+ [
+  "Haunt",
+  "AddScaring.png",
+  "Jack"
  ],
  [
   "Heartbreak",
   "BrokenHeart.png",
-  "Smug"
+  "Smug villagers"
  ],
  [
   "Inspiration",
   "IdeaBulb.png",
-  "Cranky"
+  "Cranky villagers"
  ],
  [
   "Intense",
   "Silent.png",
-  "Snooty"
+  "Snooty villagers"
  ],
  [
   "Joy",
   "HappyFlower.png",
-  "All"
+  "All villagers"
  ],
  [
   "Laughter",
   "Laughing.png",
-  "Big Sister"
+  "Big Sister villagers"
  ],
  [
   "Love",
   "Love.png",
-  "Snooty"
+  "Snooty villagers"
  ],
  [
   "Mischief",
   "Scheming.png",
-  "Peppy"
+  "Peppy villagers"
  ],
  [
   "Mistaken",
   "Oops.png",
-  "Lazy"
+  "Lazy villagers"
  ],
  [
   "Pleased",
   "Hello.png",
-  "Normal"
+  "Normal villagers"
  ],
  [
   "Pride",
   "SmugFace.png",
-  "Lazy"
+  "Lazy villagers"
  ],
  [
   "Resignation",
   "OhGeez.png",
-  "Smug"
+  "Smug villagers"
  ],
  [
   "Sadness",
   "SadSpiral.png",
-  "Normal"
+  "Normal villagers"
+ ],
+ [
+  "Scare",
+  "AddPrank.png",
+  "All villagers"
  ],
  [
   "Sheepishness",
   "WrySmile.png",
-  "Cranky"
+  "Cranky villagers"
  ],
  [
   "Shocked",
   "Surprised.png",
-  "Jock"
+  "Jock villagers"
  ],
  [
   "Showmanship",
   "Shaki.png",
-  "Smug"
+  "Smug villagers"
  ],
  [
   "Shyness",
   "Hesitate.png",
-  "Lazy"
+  "Lazy villagers"
  ],
  [
   "Sighing",
   "Sighing.png",
-  "Snooty"
+  "Snooty villagers"
  ],
  [
   "Sleepy",
   "Sleepy.png",
-  "Peppy"
+  "Peppy villagers"
  ],
  [
   "Smirking",
   "Grin.png",
-  "Smug"
+  "Smug villagers"
  ],
  [
   "Sneezing",
   "Sneezing.png",
-  "Jock"
+  "Jock villagers"
  ],
  [
   "Sorrow",
   "Crying.png",
-  "Lazy"
+  "Lazy villagers"
  ],
  [
   "Surprise",
   "Aha.png",
-  "All"
+  "All villagers"
  ],
  [
   "Thought",
   "Thinking.png",
-  "Snooty"
+  "Snooty villagers"
  ],
  [
   "Worry",
   "Worried.png",
-  "Cranky"
+  "Cranky villagers"
  ]
 ]

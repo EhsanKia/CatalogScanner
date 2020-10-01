@@ -319,6 +319,22 @@
   "zh-cn": "笑眯眯",
   "zh-tw": "笑瞇瞇"
  },
+ "Haunt": {
+  "de-eu": "Schocken",
+  "en-eu": "Haunt",
+  "en-us": "Haunt",
+  "es-eu": "Espanto",
+  "es-us": "Espanto",
+  "fr-eu": "Envoûtement",
+  "fr-us": "Envoûtement",
+  "it-eu": "Terrore",
+  "ja-jp": "こわがらせる",
+  "ko-kr": "겁주기",
+  "nl-eu": "Spoken",
+  "ru-eu": "Испуг",
+  "zh-cn": "惊吓",
+  "zh-tw": "嚇人"
+ },
  "Heartbreak": {
   "de-eu": "Herzschmerz",
   "en-eu": "Heartbreak",
@@ -510,6 +526,22 @@
   "ru-eu": "Грусть",
   "zh-cn": "失落",
   "zh-tw": "失落"
+ },
+ "Scare": {
+  "de-eu": "Erschrecken",
+  "en-eu": "Scare",
+  "en-us": "Scare",
+  "es-eu": "Susto",
+  "es-us": "Susto",
+  "fr-eu": "Épouvante",
+  "fr-us": "Épouvante",
+  "it-eu": "Spavento",
+  "ja-jp": "おどかす",
+  "ko-kr": "왁!",
+  "nl-eu": "Bang maken",
+  "ru-eu": "Устрашение",
+  "zh-cn": "吓唬",
+  "zh-tw": "驚嚇"
  },
  "Sheepishness": {
   "de-eu": "Schmunzeln",
