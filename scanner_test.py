@@ -1,6 +1,7 @@
 import json
 import os
 
+from absl import logging
 from absl.testing import absltest
 
 import scanner
@@ -82,6 +83,7 @@ class ScannerTest(absltest.TestCase):
             ground_truth = json.load(fp)
 
         for filename in ground_truth:
+            logging.info('Testing %r', filename)
             filepath = os.path.join('examples/extra', filename)
             try:
                 results = scanner.scan_media(filepath)
