@@ -50,7 +50,7 @@ SCRIPT_MAP: Dict[str, List[str]] = {
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing Nook Shopping catalog."""
     side_color = frame[140:150, -20:].mean(axis=(0, 1))
-    return numpy.linalg.norm(side_color - SIDE_COLOR) < 6
+    return numpy.linalg.norm(side_color - SIDE_COLOR) < 10
 
 
 def scan(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> ScanResult:
@@ -157,12 +157,6 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
 
         if not detect(frame):
             continue  # Skip frames where item list is not visible.
-
-        if filename.endswith('.mp4'):
-            # Checks for re-encoded video where the colors can shift.
-            top_color = frame[20:40, 1120:1140].mean(axis=(0, 1))
-            assert numpy.linalg.norm(top_color - TOP_COLOR) < 8, \
-                'Video was not uploaded directly from the Switch.'
 
         # Turn to grayscale and crop the region containing item name and price.
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
