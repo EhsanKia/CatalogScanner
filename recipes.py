@@ -25,6 +25,7 @@ CARD_TYPES: Dict[Tuple[int, int, int], str] = {
     (188, 188, 186): 'light gray',
     (108, 196, 242): 'orange',
     (184, 180, 243): 'pink',
+    (228, 180, 213): 'purple',
     (89, 75, 204): 'red',
     (163, 159, 160): 'silver',
     (229, 232, 231): 'white',

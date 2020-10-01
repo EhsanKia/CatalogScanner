@@ -2425,6 +2425,76 @@
   "brown"
  ],
  [
+  "spooky arch",
+  "FtrHwnArch.png",
+  "purple"
+ ],
+ [
+  "spooky candy set",
+  "FtrHwnSweets.png",
+  "purple"
+ ],
+ [
+  "spooky carriage",
+  "FtrHwnCarriage.png",
+  "purple"
+ ],
+ [
+  "spooky chair",
+  "FtrHwnChairS.png",
+  "purple"
+ ],
+ [
+  "spooky fence",
+  "ItemFenceHalloween.png",
+  "purple"
+ ],
+ [
+  "spooky garland",
+  "FtrHwnDecorationWall.png",
+  "purple"
+ ],
+ [
+  "spooky lantern",
+  "FtrHwnLantern.png",
+  "purple"
+ ],
+ [
+  "spooky lantern set",
+  "FtrHwnLanternset.png",
+  "purple"
+ ],
+ [
+  "spooky scarecrow",
+  "FtrHwnScarecrow.png",
+  "purple"
+ ],
+ [
+  "spooky standing lamp",
+  "FtrHwnStand.png",
+  "purple"
+ ],
+ [
+  "spooky table",
+  "FtrHwnTableL.png",
+  "purple"
+ ],
+ [
+  "spooky table setting",
+  "FtrHwnTablesetting.png",
+  "purple"
+ ],
+ [
+  "spooky tower",
+  "FtrHwnTower.png",
+  "purple"
+ ],
+ [
+  "spooky wand",
+  "ToolStickHalloween.png",
+  "purple"
+ ],
+ [
   "stack of books",
   "FtrBooks.png",
   "yellow"
@@ -2670,6 +2740,11 @@
   "brown"
  ],
  [
+  "tree-branch wand",
+  "ToolStickTree.png",
+  "brown"
+ ],
+ [
   "tree's bounty arch",
   "FtrNutArch.png",
   "brown"
@@ -2692,11 +2767,6 @@
  [
   "tree's bounty mobile",
   "FtrNutMobile.png",
-  "brown"
- ],
- [
-  "tree-branch wand",
-  "ToolStickTree.png",
   "brown"
  ],
  [
