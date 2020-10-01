@@ -122,6 +122,9 @@ def _read_frames(filename: str) -> Iterator[Tuple[CritterType, numpy.ndarray]]:
             frame_skip -= 1
             continue
 
+        if frame.shape[:2] == (1080, 1920):
+            frame = cv2.resize(frame, (1280, 720))
+
         assert frame.shape[:2] == (720, 1280), \
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
