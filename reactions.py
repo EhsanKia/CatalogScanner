@@ -7,7 +7,7 @@ import json
 import numpy
 import os
 
-from typing import Iterator, List
+from typing import Dict, Iterator, List, Optional
 
 # The expected color for the reactions background.
 BG_COLOR = (254, 221, 244)
@@ -60,7 +60,8 @@ def scan(image_file: str, locale: str = 'en-us') -> ScanResult:
 
 def parse_image(filename: str) -> List[ReactionImage]:
     """Parses a screenshot and returns icons for all reactions found."""
-    all_icons: List[ReactionImage] = []
+    icon_pages: Dict[int, List[ReactionImage]] = {}
+    assertion_error: Optional[AssertionError] = None
 
     cap = cv2.VideoCapture(filename)
     while True:
@@ -74,10 +75,16 @@ def parse_image(filename: str) -> List[ReactionImage]:
         if not detect(frame):
             continue  # Skip frames not containing reactions.
 
-        all_icons = list(_parse_frame(frame))
-        break
+        try:
+            new_icons = list(_parse_frame(frame))
+            icon_pages[len(new_icons)] = new_icons
+        except AssertionError as e:
+            assertion_error = e
 
-    return all_icons
+    if not icon_pages and assertion_error:
+        raise assertion_error
+
+    return itertools.chain.from_iterable(icon_pages.values())
 
 
 def match_reactions(reaction_icons: List[ReactionImage]) -> List[str]:
