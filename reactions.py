@@ -112,7 +112,8 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
             break
 
         icon = frame[y-32:y+32, x-32:x+32]
-        assert icon[30:42, 10:22].mean() < 250, 'Cursor is blocking a reaction.'
+        assert icon[34:42, 10:18].mean() < 250, 'Cursor is blocking a reaction.'
+        assert icon[-5:, :, 2].mean() > 200, 'Tooltip is blocking a reaction.'
 
         # If the cursor is hovering on the icon, shrink it to normalize size.
         if icon[-3, -5, 1] > 230:
