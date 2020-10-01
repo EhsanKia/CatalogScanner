@@ -13,8 +13,8 @@ from typing import Iterator, List
 BG_COLOR = (254, 221, 244)
 
 # The color of the middle dot on empty icons.
-SELECT_COLOR = (169, 182, 0)
-EMPTY_COLOR = (239, 200, 215)
+SELECT_COLOR = (166, 190, 7)
+EMPTY_COLOR = (237, 198, 215)
 
 # The position for all 44 reaction slots, listed manually.
 REACTION_POSITIONS = [
@@ -106,9 +106,9 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
     for x, y in REACTION_POSITIONS:
         # Skip empty slots.
         center_color = frame[y-6:y+6, x-6:x+6].mean(axis=(0, 1))
-        if numpy.linalg.norm(center_color - EMPTY_COLOR) < 5:
+        if numpy.linalg.norm(center_color - EMPTY_COLOR) < 10:
             break
-        if numpy.linalg.norm(center_color - SELECT_COLOR) < 5:
+        if numpy.linalg.norm(center_color - SELECT_COLOR) < 20:
             break
 
         icon = frame[y-32:y+32, x-32:x+32]
