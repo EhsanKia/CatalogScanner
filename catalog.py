@@ -169,13 +169,21 @@ def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray
     # Detect the dashed lines and iterate over pairs of dashed lines
     # Last line has dashes after but first line doesn't have dashes before,
     # therefore we prepend the list with zero for the starting line.
-    lines = [0] + list((frame[:, 0] < 200).nonzero()[0])
-    for y1, y2 in zip(lines, lines[1:]):
-        if not (40 < y2 - y1 < 60):
-            continue  # skip lines that are too close or far
+    y_lines = list((frame[:, 0] < 200).nonzero()[0])
+
+    # Normalize row lines by taking the average of all of them.
+    # We know they are 53.45px apart, so we find the best offset from given lines.
+    centers = [numpy.fmod(y, 53.45) for y in y_lines]
+    centroid = round(numpy.median(centers))
+    y_positions = numpy.arange(centroid, 480, 53.45).astype(int)
+
+    for y in y_positions:
+        if y < 40:
+            # Skip rows that are offscreen
+            continue
 
         # Cut row slightly below and above the dashed line
-        row = frame[y2 - 40:y2 - 5, :]
+        row = frame[y - 40:y - 5, :]
 
         # Skip items that are not for sale (price region is lighter)
         if for_sale and row[:, 430:].min() > 100:
