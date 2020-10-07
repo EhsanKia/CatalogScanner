@@ -1,6 +1,6 @@
 # CatalogScanner [![Python version](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Script to scan video of user scrolling through their AC:NH Nook Shop catalog or DIY recipes list.
+Script to scan video or screenshots of user scrolling through their AC:NH Nook Shop catalog, DIY recipes list, critters, song list, reactions and more.
 
 This is the source code for the Twitter bot [@CatalogScanner](https://twitter.com/CatalogScanner), which is an automated version of this.
 
@@ -41,7 +41,6 @@ By default, it will detect the media type (catalog, recipes, etc), but you can f
 
 You can use `--for_sale` to filter out items that are not purchasable,
 and you can use `--locale` to adjust the parsed language.
-
 By default, the script prints out the name of all the items found in your catalog video.
 
 ## Credits
