@@ -10,7 +10,7 @@ import os
 from typing import Dict, Iterator, List, Tuple
 
 # The expected color for the video background.
-BG_COLOR = (194, 223, 228)
+BG_COLOR = (194, 222, 228)
 WOOD_COLOR = (115, 175, 228)
 
 # Mapping from background colors (in BGR for cv2) to card type.
@@ -30,6 +30,7 @@ CARD_TYPES: Dict[Tuple[int, int, int], str] = {
     (163, 159, 160): 'silver',
     (229, 232, 231): 'white',
     (122, 225, 230): 'yellow',
+    BG_COLOR: 'blank',
 }
 
 
@@ -86,6 +87,8 @@ def match_recipes(recipe_cards: List[numpy.ndarray]) -> List[str]:
     recipe_db = _get_recipe_db()
     for card in recipe_cards:
         card_type = _guess_card_type(card)
+        if card_type == 'blank':
+            continue  # Skip blank card slots.
         best_match = _find_best_match(card, recipe_db[card_type])
         matched_recipes.add(best_match.item_name)
     return sorted(matched_recipes)
@@ -223,5 +226,5 @@ def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCa
 
 
 if __name__ == "__main__":
-    results = scan('examples/recipes.mp4')
+    results = scan('examples/extra/recipes_img.jpg')
     print('\n'.join(results.items))
