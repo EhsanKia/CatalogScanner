@@ -24,11 +24,11 @@ SCANNERS: Dict[str, Any] = {
 }
 
 FLAGS = flags.FLAGS
-flags.DEFINE_enum('locale', 'auto', catalog.LOCALE_MAP.keys(),
+flags.DEFINE_enum('locale', 'auto', catalog.LOCALE_MAP.list(catologue.LOCALE_MAP),
                   'The locale to use for parsing item names.')
-flags.DEFINE_bool('for_sale', None,
+flags.DEFINE_bool('for_sale', False,
                   'If true, the scanner will skip items that are not for sale.')
-flags.DEFINE_enum('mode', 'auto', ['auto'] + list(SCANNERS.keys()),
+flags.DEFINE_enum('mode', 'auto', ['auto'] + list(SCANNERS)),
                   'The type of catalog to scan. Auto tries to detect from the media frames.')
 
 
