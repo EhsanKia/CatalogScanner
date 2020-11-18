@@ -170,6 +170,8 @@ def _is_duplicate_cards(all_cards: List[numpy.ndarray], new_cards: List[numpy.nd
         if old_concat is None:
             continue
         if cv2.absdiff(new_concat, old_concat).mean() < 10:
+            # Replace the old set with the new set.
+            all_cards[ind] = new_cards
             return True
     return False
 
