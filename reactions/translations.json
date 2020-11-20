@@ -239,6 +239,22 @@
   "zh-cn": "加油～！",
   "zh-tw": "加油～！"
  },
+ "Excited": {
+  "de-eu": "Aufregung",
+  "en-eu": "Excited",
+  "en-us": "Excited",
+  "es-eu": "Alegría",
+  "es-us": "Alegría",
+  "fr-eu": "Enthousiasme",
+  "fr-us": "Enthousiasme",
+  "it-eu": "Entusiasmo",
+  "ja-jp": "ワクワク",
+  "ko-kr": "두근두근",
+  "nl-eu": "Voorpret",
+  "ru-eu": "Предвкушение",
+  "zh-cn": "期待",
+  "zh-tw": "期待"
+ },
  "Fearful": {
   "de-eu": "Angst",
   "en-eu": "Fearful",
@@ -350,6 +366,22 @@
   "ru-eu": "Разбитое сердце",
   "zh-cn": "心碎",
   "zh-tw": "心碎"
+ },
+ "Here You Go": {
+  "de-eu": "Bitte schön",
+  "en-eu": "Here You Go",
+  "en-us": "Here You Go",
+  "es-eu": "Para ti",
+  "es-us": "Para ti",
+  "fr-eu": "Et voilà !",
+  "fr-us": "Et voilà!",
+  "it-eu": "Ecco qua",
+  "ja-jp": "さぁどうぞ",
+  "ko-kr": "자 여기!",
+  "nl-eu": "Alsjeblieft",
+  "ru-eu": "Подарок",
+  "zh-cn": "请",
+  "zh-tw": "請"
  },
  "Inspiration": {
   "de-eu": "Inspiration",
@@ -623,6 +655,22 @@
   "zh-cn": "叹气",
   "zh-tw": "嘆氣"
  },
+ "Sit Down": {
+  "de-eu": "Hinsetzen",
+  "en-eu": "Sit Down",
+  "en-us": "Sit Down",
+  "es-eu": "Asiento",
+  "es-us": "Asiento",
+  "fr-eu": "S'asseoir",
+  "fr-us": "S'asseoir",
+  "it-eu": "Sedersi",
+  "ja-jp": "すわる",
+  "ko-kr": "앉기",
+  "nl-eu": "Zitten",
+  "ru-eu": "Сидение",
+  "zh-cn": "坐",
+  "zh-tw": "坐"
+ },
  "Sleepy": {
   "de-eu": "Ermüdung",
   "en-eu": "Sleepy",
@@ -671,6 +719,22 @@
   "zh-cn": "阿嚏",
   "zh-tw": "打噴嚏"
  },
+ "Sniff Sniff": {
+  "de-eu": "Schnüffeln",
+  "en-eu": "Sniff Sniff",
+  "en-us": "Sniff Sniff",
+  "es-eu": "Olfateo",
+  "es-us": "Olfateo",
+  "fr-eu": "Snif snif",
+  "fr-us": "Snif snif",
+  "it-eu": "Annusare",
+  "ja-jp": "クンクン",
+  "ko-kr": "킁킁",
+  "nl-eu": "Ruiken",
+  "ru-eu": "Принюхивание",
+  "zh-cn": "闻闻",
+  "zh-tw": "聞"
+ },
  "Sorrow": {
   "de-eu": "Leid",
   "en-eu": "Sorrow",
@@ -703,6 +767,38 @@
   "zh-cn": "啊！",
   "zh-tw": "啊！"
  },
+ "Ta-da": {
+  "de-eu": "Loben",
+  "en-eu": "Ta-da",
+  "en-us": "Ta-da",
+  "es-eu": "Entusiasmo",
+  "es-us": "Entusiasmo",
+  "fr-eu": "Ta-daaa !",
+  "fr-us": "Ta-daaa!",
+  "it-eu": "Lode",
+  "ja-jp": "たたえる",
+  "ko-kr": "대단해!",
+  "nl-eu": "Prijzen",
+  "ru-eu": "Вуаля",
+  "zh-cn": "夸奖",
+  "zh-tw": "誇獎"
+ },
+ "Take a Picture": {
+  "de-eu": "Fotografieren",
+  "en-eu": "Take a Picture",
+  "en-us": "Take a Picture",
+  "es-eu": "Fotografías",
+  "es-us": "Fotografías",
+  "fr-eu": "Photo",
+  "fr-us": "Photo",
+  "it-eu": "Foto",
+  "ja-jp": "パシャリ",
+  "ko-kr": "찰칵!",
+  "nl-eu": "Foto's maken",
+  "ru-eu": "Фотосъемка",
+  "zh-cn": "拍照",
+  "zh-tw": "拍照"
+ },
  "Thought": {
   "de-eu": "Denken",
   "en-eu": "Thought",
@@ -719,6 +815,38 @@
   "zh-cn": "思考",
   "zh-tw": "思考中"
  },
+ "Wave Goodbye": {
+  "de-eu": "Verabschieden",
+  "en-eu": "Wave Goodbye",
+  "en-us": "Wave Goodbye",
+  "es-eu": "Despedida",
+  "es-us": "Despedida",
+  "fr-eu": "Bye bye",
+  "fr-us": "Bye bye",
+  "it-eu": "Arrivederci",
+  "ja-jp": "バイバイ",
+  "ko-kr": "바이바이",
+  "nl-eu": "Uitzwaaien",
+  "ru-eu": "Прощание",
+  "zh-cn": "再见",
+  "zh-tw": "掰掰"
+ },
+ "Work Out": {
+  "de-eu": "Trainieren",
+  "en-eu": "Work Out",
+  "en-us": "Work Out",
+  "es-eu": "Gimnasia",
+  "es-us": "Gimnasia",
+  "fr-eu": "Gymnastique",
+  "fr-us": "Gymnastique",
+  "it-eu": "Allenamento",
+  "ja-jp": "たいそう",
+  "ko-kr": "체조",
+  "nl-eu": "Rekken en strekken",
+  "ru-eu": "Тренировка",
+  "zh-cn": "体操",
+  "zh-tw": "體操"
+ },
  "Worry": {
   "de-eu": "Sorge",
   "en-eu": "Worry",
@@ -734,5 +862,21 @@
   "ru-eu": "Расстройство",
   "zh-cn": "烦恼",
   "zh-tw": "煩惱"
+ },
+ "Yoga": {
+  "de-eu": "Yoga",
+  "en-eu": "Yoga",
+  "en-us": "Yoga",
+  "es-eu": "Yoga",
+  "es-us": "Yoga",
+  "fr-eu": "Yoga",
+  "fr-us": "Yoga",
+  "it-eu": "Yoga",
+  "ja-jp": "ヨガのポーズ",
+  "ko-kr": "요가",
+  "nl-eu": "Yoga",
+  "ru-eu": "Йога",
+  "zh-cn": "瑜伽姿势",
+  "zh-tw": "瑜珈姿勢"
  }
 }

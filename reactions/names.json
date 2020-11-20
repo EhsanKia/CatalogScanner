@@ -75,6 +75,11 @@
   "Jock villagers"
  ],
  [
+  "Excited",
+  "AddExcited.png",
+  "Hip Reaction Collection"
+ ],
+ [
   "Fearful",
   "Shaking.png",
   "Normal villagers"
@@ -108,6 +113,11 @@
   "Heartbreak",
   "BrokenHeart.png",
   "Smug villagers"
+ ],
+ [
+  "Here You Go",
+  "AddHereYouGo.png",
+  "Hip Reaction Collection"
  ],
  [
   "Inspiration",
@@ -195,6 +205,11 @@
   "Snooty villagers"
  ],
  [
+  "Sit Down",
+  "AddSitDown.png",
+  "Hip Reaction Collection"
+ ],
+ [
   "Sleepy",
   "Sleepy.png",
   "Peppy villagers"
@@ -210,6 +225,11 @@
   "Jock villagers"
  ],
  [
+  "Sniff Sniff",
+  "AddSmell.png",
+  "Hip Reaction Collection"
+ ],
+ [
   "Sorrow",
   "Crying.png",
   "Lazy villagers"
@@ -220,13 +240,38 @@
   "All villagers"
  ],
  [
+  "Ta-da",
+  "AddPraise.png",
+  "Hip Reaction Collection"
+ ],
+ [
+  "Take a Picture",
+  "AddTakePictures.png",
+  "Hip Reaction Collection"
+ ],
+ [
   "Thought",
   "Thinking.png",
   "Snooty villagers"
  ],
  [
+  "Wave Goodbye",
+  "AddWaveHands.png",
+  "Hip Reaction Collection"
+ ],
+ [
+  "Work Out",
+  "AddGymnastics.png",
+  "Hip Reaction Collection"
+ ],
+ [
   "Worry",
   "Worried.png",
   "Cranky villagers"
+ ],
+ [
+  "Yoga",
+  "AddYoga.png",
+  "Hip Reaction Collection"
  ]
 ]
