@@ -790,6 +790,11 @@
   "yellow"
  ],
  [
+  "falling-snow wall",
+  "RoomSpWallSnowy00.png",
+  "blue"
+ ],
+ [
   "fancy lily wreath",
   "FtrDoorOrnamentWreathYuriMix.png",
   "green"
@@ -805,6 +810,11 @@
   "green"
  ],
  [
+  "festive rug",
+  "RugSquareChristmasL00.png",
+  "white"
+ ],
+ [
   "festive top set",
   "FtrFestivaltop.png",
   "white"
@@ -812,6 +822,11 @@
  [
   "festive tree",
   "FtrTreeXmasS.png",
+  "white"
+ ],
+ [
+  "festive wrapping paper",
+  "WPaperOrnament.png",
   "white"
  ],
  [
@@ -998,6 +1013,11 @@
   "giant teddy bear",
   "FtrBearXL.png",
   "yellow"
+ ],
+ [
+  "gift pile",
+  "FtrCrsPresents.png",
+  "white"
  ],
  [
   "gold armor",
@@ -2650,6 +2670,11 @@
   "green"
  ],
  [
+  "summer-shell rug",
+  "RugOtherShellSnailM00.png",
+  "white"
+ ],
+ [
   "swinging bench",
   "FtrSwingWood.png",
   "brown"
@@ -2798,6 +2823,46 @@
   "tulip wreath",
   "FtrDoorOrnamentWreathTulip.png",
   "green"
+ ],
+ [
+  "Turkey Day casserole",
+  "FtrHarvestEnamelpod.png",
+  "cream"
+ ],
+ [
+  "Turkey Day chair",
+  "FtrHarvestChairS.png",
+  "cream"
+ ],
+ [
+  "Turkey Day decorations",
+  "FtrHarvestDecoration.png",
+  "cream"
+ ],
+ [
+  "Turkey Day garden stand",
+  "FtrHarvestStand.png",
+  "cream"
+ ],
+ [
+  "Turkey Day hearth",
+  "FtrHarvestFireplace.png",
+  "cream"
+ ],
+ [
+  "Turkey Day table",
+  "FtrHarvestTableL.png",
+  "cream"
+ ],
+ [
+  "Turkey Day table setting",
+  "FtrHarvestTablesetting.png",
+  "cream"
+ ],
+ [
+  "Turkey Day wheat decor",
+  "FtrHarvestWheat.png",
+  "cream"
  ],
  [
   "ukulele",
