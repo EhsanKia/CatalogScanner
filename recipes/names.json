@@ -1700,6 +1700,11 @@
   "white"
  ],
  [
+  "mermaid fence",
+  "ItemFenceMermaid.png",
+  "white"
+ ],
+ [
   "mermaid flooring",
   "RoomSpFloorMermaid00.png",
   "white"
@@ -2148,6 +2153,11 @@
   "raccoon figurine",
   "FtrOrnamentTanuki.png",
   "brick"
+ ],
+ [
+  "rainbow feather",
+  "FeatherRainbow.png",
+  "yellow"
  ],
  [
   "recycled boots",
@@ -2826,42 +2836,42 @@
  ],
  [
   "Turkey Day casserole",
-  "FtrHarvestEnamelpod.png",
+  "FtrHarvestEnamelpod_Remake_0_0.png",
   "cream"
  ],
  [
   "Turkey Day chair",
-  "FtrHarvestChairS.png",
+  "FtrHarvestChairS_Remake_0_0.png",
   "cream"
  ],
  [
   "Turkey Day decorations",
-  "FtrHarvestDecoration.png",
+  "FtrHarvestDecoration_Remake_0_0.png",
   "cream"
  ],
  [
   "Turkey Day garden stand",
-  "FtrHarvestStand.png",
+  "FtrHarvestStand_Remake_0_0.png",
   "cream"
  ],
  [
   "Turkey Day hearth",
-  "FtrHarvestFireplace.png",
+  "FtrHarvestFireplace_Remake_0_0.png",
   "cream"
  ],
  [
   "Turkey Day table",
-  "FtrHarvestTableL.png",
+  "FtrHarvestTableL_Remake_0_0.png",
   "cream"
  ],
  [
   "Turkey Day table setting",
-  "FtrHarvestTablesetting.png",
+  "FtrHarvestTablesetting_Remake_0_0.png",
   "cream"
  ],
  [
   "Turkey Day wheat decor",
-  "FtrHarvestWheat.png",
+  "FtrHarvestWheat_Remake_0_0.png",
   "cream"
  ],
  [
