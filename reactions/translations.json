@@ -111,6 +111,22 @@
   "zh-cn": "咻～",
   "zh-tw": "咻～"
  },
+ "Confetti": {
+  "de-eu": "Konfetti",
+  "en-eu": "Confetti",
+  "en-us": "Confetti",
+  "es-eu": "Confeti",
+  "es-us": "Confeti",
+  "fr-eu": "Confettis",
+  "fr-us": "Confettis",
+  "it-eu": "Coriandoli",
+  "ja-jp": "かみふぶき",
+  "ko-kr": "종이 꽃가루",
+  "nl-eu": "Confetti",
+  "ru-eu": "Конфетти",
+  "zh-cn": "撒纸片",
+  "zh-tw": "撒紙片"
+ },
  "Confident": {
   "de-eu": "Verlässlichkeit",
   "en-eu": "Confident",
@@ -271,6 +287,22 @@
   "zh-cn": "瑟瑟发抖",
   "zh-tw": "顫抖"
  },
+ "Feelin' It": {
+  "de-eu": "Rhythmus im Blut",
+  "en-eu": "Feelin' It",
+  "en-us": "Feelin' It",
+  "es-eu": "Coreografía",
+  "es-us": "Coreografía",
+  "fr-eu": "Samba",
+  "fr-us": "En rythme",
+  "it-eu": "Ritmo nel sangue",
+  "ja-jp": "リズムにのる",
+  "ko-kr": "리듬 타기",
+  "nl-eu": "Swingende heupenpas",
+  "ru-eu": "В ритме",
+  "zh-cn": "跟着节奏",
+  "zh-tw": "跟著節奏"
+ },
  "Flourish": {
   "de-eu": "Pirouette",
   "en-eu": "Flourish",
@@ -379,7 +411,7 @@
   "ja-jp": "さぁどうぞ",
   "ko-kr": "자 여기!",
   "nl-eu": "Alsjeblieft",
-  "ru-eu": "Подарок",
+  "ru-eu": "Вуаля",
   "zh-cn": "请",
   "zh-tw": "請"
  },
@@ -446,6 +478,22 @@
   "ru-eu": "Смех",
   "zh-cn": "笑哈哈",
   "zh-tw": "笑哈哈"
+ },
+ "Let's Go": {
+  "de-eu": "Aufforderung zum Tanz",
+  "en-eu": "Let's Go",
+  "en-us": "Let's Go",
+  "es-eu": "Vamos",
+  "es-us": "Vamos",
+  "fr-eu": "Avec moi !",
+  "fr-us": "Avec moi!",
+  "it-eu": "Coinvolgimento",
+  "ja-jp": "もりあげる",
+  "ko-kr": "분위기 업",
+  "nl-eu": "Swingende hinkpas",
+  "ru-eu": "Танцуем!",
+  "zh-cn": "炒热气氛",
+  "zh-tw": "炒熱氣氛"
  },
  "Love": {
   "de-eu": "Romantik",
@@ -779,7 +827,7 @@
   "ja-jp": "たたえる",
   "ko-kr": "대단해!",
   "nl-eu": "Prijzen",
-  "ru-eu": "Вуаля",
+  "ru-eu": "Похвала",
   "zh-cn": "夸奖",
   "zh-tw": "誇獎"
  },
@@ -814,6 +862,22 @@
   "ru-eu": "Размышление",
   "zh-cn": "思考",
   "zh-tw": "思考中"
+ },
+ "Viva": {
+  "de-eu": "Viva",
+  "en-eu": "Viva",
+  "en-us": "Viva",
+  "es-eu": "Viva",
+  "es-us": "Viva",
+  "fr-eu": "Viva !",
+  "fr-us": "Viva!",
+  "it-eu": "Viva",
+  "ja-jp": "ビバ！",
+  "ko-kr": "비바!",
+  "nl-eu": "Pavé-pas",
+  "ru-eu": "Вива!",
+  "zh-cn": "欢乐！",
+  "zh-tw": "歡樂！"
  },
  "Wave Goodbye": {
   "de-eu": "Verabschieden",
