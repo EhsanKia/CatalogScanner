@@ -2,5 +2,5 @@ absl-py==0.9.0
 dataclasses==0.7
 imagehash==4.1.0
 opencv-contrib-python==4.2.0.34
-Pillow==7.1.2
+Pillow==8.1.1
 pytesseract==0.3.4
