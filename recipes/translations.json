@@ -5379,8 +5379,8 @@
   "de-eu": "Gold-Glückskatze",
   "en-eu": "lucky gold cat",
   "en-us": "lucky gold cat",
-  "es-eu": "gato suerte oro",
-  "es-us": "gato suerte oro",
+  "es-eu": "gato de la suerte dorado",
+  "es-us": "gato de la suerte dorado",
   "fr-eu": "chat fétiche doré",
   "fr-us": "chat fétiche doré",
   "it-eu": "gatto fortuna oro",
@@ -7470,6 +7470,22 @@
   "ru-eu": "стена космолета",
   "zh-cn": "太空船墙",
   "zh-tw": "太空船牆"
+ },
+ "shamrock wand": {
+  "de-eu": "Kleeblattstab",
+  "en-eu": "shamrock wand",
+  "en-us": "shamrock wand",
+  "es-eu": "varita trébol",
+  "es-us": "varita trébol",
+  "fr-eu": "baguette trèfle",
+  "fr-us": "baguette trèfle",
+  "it-eu": "bacchetta trifoglio",
+  "ja-jp": "シャムロックステッキ",
+  "ko-kr": "성 패트릭 지팡이",
+  "nl-eu": "klaverstaf",
+  "ru-eu": "палочка с трилистником",
+  "zh-cn": "三叶草棒",
+  "zh-tw": "三葉草棒"
  },
  "shell arch": {
   "de-eu": "Muscheltor",
