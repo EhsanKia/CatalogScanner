@@ -20,6 +20,7 @@
     "reactions_full_blocking.jpg": "Cursor is blocking a reaction.", 
     "reactions_full.jpg": ["Aggravation", "Agreement", "Amazed", "Apologetic", "Bashfulness", "Bewilderment", "Cold Chill", "Confident", "Curiosity", "Daydreaming", "Delight", "Disagreement", "Distress", "Dozing", "Encouraging", "Fearful", "Flourish", "Glee", "Greetings", "Happiness", "Heartbreak", "Inspiration", "Intense", "Joy", "Laughter", "Love", "Mischief", "Mistaken", "Pleased", "Pride", "Resignation", "Sadness", "Sheepishness", "Shocked", "Showmanship", "Shyness", "Sighing", "Sleepy", "Smirking", "Sneezing", "Sorrow", "Surprise", "Thought", "Worry"], 
     "reactions_full2.jpg": ["Aggravation", "Agreement", "Amazed", "Apologetic", "Bashfulness", "Bewilderment", "Cold Chill", "Confident", "Curiosity", "Daydreaming", "Delight", "Disagreement", "Distress", "Dozing", "Encouraging", "Fearful", "Flourish", "Glee", "Greetings", "Happiness", "Heartbreak", "Inspiration", "Intense", "Joy", "Laughter", "Love", "Mischief", "Mistaken", "Pleased", "Pride", "Resignation", "Sadness", "Sheepishness", "Shocked", "Showmanship", "Shyness", "Sighing", "Sleepy", "Smirking", "Sneezing", "Sorrow", "Surprise", "Thought", "Worry"], 
+    "reactions_paged_blocking_%d.jpg": "Tooltip is blocking a reaction.",
     "reactions_tooltip.jpg": "Tooltip is blocking a reaction.", 
     "reactions_small.jpg": ["Apologetic", "Delight", "Greetings", "Joy", "Surprise"], 
     "reactions_small2.jpg": ["Delight", "Greetings", "Joy", "Surprise"], 
