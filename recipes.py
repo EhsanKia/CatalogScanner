@@ -233,5 +233,5 @@ def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCa
 
 
 if __name__ == "__main__":
-    results = scan('examples/extra/recipes_img.jpg')
+    results = scan('examples/recipes.mp4')
     print('\n'.join(results.items))
