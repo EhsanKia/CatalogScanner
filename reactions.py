@@ -81,7 +81,7 @@ def parse_image(filename: str) -> List[ReactionImage]:
         except AssertionError as e:
             assertion_error = e
 
-    if not icon_pages and assertion_error:
+    if assertion_error and (filename.endswith('.jpg') or not icon_pages):
         raise assertion_error
 
     return itertools.chain.from_iterable(icon_pages.values())
