@@ -10,7 +10,7 @@
   "it-eu": "Agente K.K.",
   "ja-jp": "けけけいじ",
   "ko-kr": "K.K.형사",
-  "nl-eu": "Agent K.K.",
+  "nl-eu": "⁠Agent K.K.",
   "ru-eu": "Агент К. К.",
   "zh-cn": "K.K.刑警",
   "zh-tw": "K.K.刑警"
@@ -26,8 +26,8 @@
   "it-eu": "K.K. Aloha",
   "ja-jp": "アロハけけ",
   "ko-kr": "알로하K.K.",
-  "nl-eu": "Aloha K.K.",
-  "ru-eu": "Алоха К. К.",
+  "nl-eu": "Aloha K.⁠K.",
+  "ru-eu": "Алох К. К.",
   "zh-cn": "夏威夷K.K.",
   "zh-tw": "夏威夷K.K."
  },
@@ -58,7 +58,7 @@
   "it-eu": "K.K. Bolle rosa",
   "ja-jp": "けけアイドル",
   "ko-kr": "K.K.아이돌",
-  "nl-eu": "K.K.-bubblegum",
+  "nl-eu": "K⁠.⁠K⁠.-⁠bubblegum",
   "ru-eu": "Бабблгам-поп К. К.",
   "zh-cn": "K.K.偶像",
   "zh-tw": "K.K.偶像"
@@ -74,7 +74,7 @@
   "it-eu": "K.K. Bar",
   "ja-jp": "けけパリ",
   "ko-kr": "K.K.파리",
-  "nl-eu": "Café K.K.",
+  "nl-eu": "Café K.⁠K.",
   "ru-eu": "Кафе К. К.",
   "zh-cn": "K.K.巴黎",
   "zh-tw": "K.K.巴黎"
@@ -90,7 +90,7 @@
   "it-eu": "K.K. Compagno",
   "ja-jp": "しょうわけけかよう",
   "ko-kr": "추억의 K.K.가요",
-  "nl-eu": "Kameraad K.K.",
+  "nl-eu": "Kameraad K.⁠K.",
   "ru-eu": "Товарищ К. К.",
   "zh-cn": "昭和K.K.歌谣",
   "zh-tw": "昭和K.K.歌謠"
@@ -106,7 +106,7 @@
   "it-eu": "K.K. DJ",
   "ja-jp": "ユーロビート",
   "ko-kr": "유로 비트",
-  "nl-eu": "DJ K.K.",
+  "nl-eu": "DJ K.⁠K.",
   "ru-eu": "DJ KK",
   "zh-cn": "欧陆节拍",
   "zh-tw": "歐陸節拍"
@@ -139,7 +139,7 @@
   "ja-jp": "さよなら",
   "ko-kr": "작별",
   "nl-eu": "Vaarwel",
-  "ru-eu": "Прощание",
+  "ru-eu": "Прощани",
   "zh-cn": "再会",
   "zh-tw": "再會"
  },
@@ -155,7 +155,7 @@
   "ja-jp": "もりのせいかつ",
   "ko-kr": "숲 속 생활",
   "nl-eu": "In het bos",
-  "ru-eu": "Лесная жизнь",
+  "ru-eu": "Лесн жизн",
   "zh-cn": "森林生活",
   "zh-tw": "森林生活"
  },
@@ -170,7 +170,7 @@
   "it-eu": "K.K. Cross",
   "ja-jp": "ゆけ!けけライダー",
   "ko-kr": "가자! K.K.라이더",
-  "nl-eu": "Super-K.K.",
+  "nl-eu": "Super-⁠K⁠.⁠K⁠.",
   "ru-eu": "Доброго пути, К. К.!",
   "zh-cn": "冲吧！K.K.摩托车手",
   "zh-tw": "衝吧！K.K.摩托車手"
@@ -218,8 +218,8 @@
   "it-eu": "K.K. Imperiale",
   "ja-jp": "けけチャイナ",
   "ko-kr": "K.K.차이나",
-  "nl-eu": "K.K. de wijze meester",
-  "ru-eu": "Величие К. К.",
+  "nl-eu": "K.⁠K. de wijze meester",
+  "ru-eu": "Величи К. К.",
   "zh-cn": "K.K.中华",
   "zh-tw": "K.K.中華"
  },
@@ -234,8 +234,8 @@
   "it-eu": "K.K. Superstar",
   "ja-jp": "けけハリウッド",
   "ko-kr": "K.K.할리우드",
-  "nl-eu": "K.K.-filmmuziek",
-  "ru-eu": "Приключения К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠filmmuziek",
+  "ru-eu": "Приключени К. К.",
   "zh-cn": "K.K.好莱坞",
   "zh-tw": "K.K.好萊塢"
  },
@@ -250,8 +250,8 @@
   "it-eu": "K.K. Aria",
   "ja-jp": "けけマリア",
   "ko-kr": "K.K.마리아",
-  "nl-eu": "K.K.-aria",
-  "ru-eu": "Ария К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠aria",
+  "ru-eu": "Ари К. К.",
   "zh-cn": "K.K.咏叹调",
   "zh-tw": "K.K.詠嘆調"
  },
@@ -266,8 +266,8 @@
   "it-eu": "K.K. Lento",
   "ja-jp": "けけバラッド",
   "ko-kr": "K.K.발라드",
-  "nl-eu": "K.K.-ballade",
-  "ru-eu": "Баллада К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠ballade",
+  "ru-eu": "Баллад К. К.",
   "zh-cn": "K.K.叙事歌谣",
   "zh-tw": "K.K.敘事歌謠"
  },
@@ -282,7 +282,7 @@
   "it-eu": "K.K. Bazar",
   "ja-jp": "けけロマ",
   "ko-kr": "K.K.로마",
-  "nl-eu": "K.K. op de bazaar",
+  "nl-eu": "K.⁠K. op de bazaar",
   "ru-eu": "Базар К. К.",
   "zh-cn": "K.K.吉普赛",
   "zh-tw": "K.K.吉普賽"
@@ -299,7 +299,7 @@
   "ja-jp": "きみのたんじょうび",
   "ko-kr": "그대의 생일",
   "nl-eu": "Fijne verjaardag",
-  "ru-eu": "День рождения К. К.",
+  "ru-eu": "Д рождения К. К.",
   "zh-cn": "你的生日",
   "zh-tw": "你的生日"
  },
@@ -314,7 +314,7 @@
   "it-eu": "K.K. Blues",
   "ja-jp": "けけブルース",
   "ko-kr": "K.K.블루스",
-  "nl-eu": "K.K.-blues",
+  "nl-eu": "K⁠.⁠K⁠.-⁠blues",
   "ru-eu": "Блюз К. К.",
   "zh-cn": "K.K.蓝调",
   "zh-tw": "K.K.藍調"
@@ -330,8 +330,8 @@
   "it-eu": "K.K. Bossa",
   "ja-jp": "けけボッサ",
   "ko-kr": "K.K.보사노바",
-  "nl-eu": "K.K.-bossanova",
-  "ru-eu": "Босанова К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠bossanova",
+  "ru-eu": "Босанов К. К.",
   "zh-cn": "K.K.巴萨诺瓦",
   "zh-tw": "K.K.巴薩諾瓦"
  },
@@ -346,7 +346,7 @@
   "it-eu": "K.K. Calipso",
   "ja-jp": "けけカリプソ",
   "ko-kr": "K.K.칼립소",
-  "nl-eu": "K.K.-calypso",
+  "nl-eu": "K⁠.⁠K⁠.-⁠calypso",
   "ru-eu": "Калипсо К. К.",
   "zh-cn": "K.K.卡利普索",
   "zh-tw": "K.K.卡利普索"
@@ -362,8 +362,8 @@
   "it-eu": "K.K. Assolo",
   "ja-jp": "トルコそんぐ",
   "ko-kr": "터키의 노래",
-  "nl-eu": "K.K. in de kasba",
-  "ru-eu": "Крепость К. К.",
+  "nl-eu": "K.⁠K. in de kasba",
+  "ru-eu": "Крепост К. К.",
   "zh-cn": "土耳其乐曲",
   "zh-tw": "土耳其樂曲"
  },
@@ -378,7 +378,7 @@
   "it-eu": "K.K. Corale",
   "ja-jp": "けけさんびか",
   "ko-kr": "K.K.찬송가",
-  "nl-eu": "K.K.-koraal",
+  "nl-eu": "K⁠.⁠K⁠.-⁠⁠koraal",
   "ru-eu": "Хорал К. К.",
   "zh-cn": "K.K.赞美诗歌",
   "zh-tw": "K.K.讚美詩歌"
@@ -394,7 +394,7 @@
   "it-eu": "K.K. Condor",
   "ja-jp": "ペルーのうた",
   "ko-kr": "페루의 노래",
-  "nl-eu": "K.K. bij de condors",
+  "nl-eu": "K.⁠K. bij de condors",
   "ru-eu": "Кондор К. К.",
   "zh-cn": "秘鲁之歌",
   "zh-tw": "秘魯之歌"
@@ -410,7 +410,7 @@
   "it-eu": "K.K. Country",
   "ja-jp": "けけカントリー",
   "ko-kr": "K.K.컨트리",
-  "nl-eu": "K.K.-country",
+  "nl-eu": "K⁠.⁠K⁠.-⁠country",
   "ru-eu": "Кантри К. К.",
   "zh-cn": "K.K.乡村",
   "zh-tw": "K.K.鄉村"
@@ -426,7 +426,7 @@
   "it-eu": "K.K. Cool",
   "ja-jp": "アーバンけけ",
   "ko-kr": "팝K.K.",
-  "nl-eu": "K.K.-club",
+  "nl-eu": "K⁠.⁠K⁠.-⁠club",
   "ru-eu": "Круиз К. К.",
   "zh-cn": "都市K.K.",
   "zh-tw": "都市K.K."
@@ -442,7 +442,7 @@
   "it-eu": "K.K. & Band",
   "ja-jp": "ドラムンベース",
   "ko-kr": "드럼앤베이스",
-  "nl-eu": "K.K.-drum-'n-bass",
+  "nl-eu": "K⁠.⁠K⁠.-⁠drum-'⁠n-bass",
   "ru-eu": "Драм-н-бэйс К. К.",
   "zh-cn": "鼓打贝斯",
   "zh-tw": "鼓打貝斯"
@@ -458,7 +458,7 @@
   "it-eu": "K.K. Canto",
   "ja-jp": "こわいうた",
   "ko-kr": "무서운 노래",
-  "nl-eu": "K.K. in het donker",
+  "nl-eu": "K.⁠K. in het donker",
   "ru-eu": "Реквием К. К.",
   "zh-cn": "惊悚歌",
   "zh-tw": "驚悚歌"
@@ -474,7 +474,7 @@
   "it-eu": "K.K. Disco",
   "ja-jp": "けけディスコ",
   "ko-kr": "K.K.디스코",
-  "nl-eu": "K.K.-disco",
+  "nl-eu": "K⁠.⁠K⁠.-⁠disco",
   "ru-eu": "Диско К. К.",
   "zh-cn": "K.K.迪斯科",
   "zh-tw": "K.K.迪斯可"
@@ -490,7 +490,7 @@
   "it-eu": "K.K. Dixie",
   "ja-jp": "けけディキシー",
   "ko-kr": "K.K.딕시",
-  "nl-eu": "K.K.-dixieland",
+  "nl-eu": "K⁠.⁠K⁠.-⁠dixieland",
   "ru-eu": "Дикси К. К.",
   "zh-cn": "K.K.迪克西",
   "zh-tw": "K.K.迪克西"
@@ -506,8 +506,8 @@
   "it-eu": "K.K. Festa",
   "ja-jp": "ハイサイけけ",
   "ko-kr": "혼저옵서예K.K.",
-  "nl-eu": "K.K.-boerendans",
-  "ru-eu": "Ярмарка К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠boerendans",
+  "ru-eu": "Ярмарк К. К.",
   "zh-cn": "冲绳K.K.",
   "zh-tw": "沖繩K.K."
  },
@@ -522,7 +522,7 @@
   "it-eu": "K.K. Flamenco",
   "ja-jp": "けけフラメンコ",
   "ko-kr": "K.K.플라멩코",
-  "nl-eu": "K.K.-flamenco",
+  "nl-eu": "K⁠.⁠K⁠.-⁠flamenco",
   "ru-eu": "Фламенко К. К.",
   "zh-cn": "K.K.佛朗明哥",
   "zh-tw": "K.K.佛朗明哥"
@@ -538,7 +538,7 @@
   "it-eu": "K.K. Folk",
   "ja-jp": "けけみんよう",
   "ko-kr": "K.K.민요",
-  "nl-eu": "K.K.-folk",
+  "nl-eu": "K⁠.⁠K⁠.-⁠folk",
   "ru-eu": "Фолк К. К.",
   "zh-cn": "K.K.民谣",
   "zh-tw": "K.K.民謠"
@@ -554,7 +554,7 @@
   "it-eu": "K.K. Fusion",
   "ja-jp": "けけフュージョン",
   "ko-kr": "K.K.퓨전",
-  "nl-eu": "K.K.-fusion",
+  "nl-eu": "K⁠.⁠K⁠.-⁠fusion",
   "ru-eu": "Фьюжен К. К.",
   "zh-cn": "K.K.融合爵士乐",
   "zh-tw": "K.K.融合爵士樂"
@@ -570,7 +570,7 @@
   "it-eu": "K.K. Groove",
   "ja-jp": "けけグルーヴ",
   "ko-kr": "K.K.그루브",
-  "nl-eu": "K.K.-groove",
+  "nl-eu": "K⁠.⁠K⁠.-⁠groove",
   "ru-eu": "Грув К. К.",
   "zh-cn": "K.K.律动",
   "zh-tw": "K.K.律動"
@@ -586,7 +586,7 @@
   "it-eu": "K.K. Gumbo",
   "ja-jp": "ニューオリンズそんぐ",
   "ko-kr": "딕시랜드 재즈",
-  "nl-eu": "K.K.-gumbo",
+  "nl-eu": "K⁠.⁠K⁠.-⁠gumbo",
   "ru-eu": "Гамбо К. К.",
   "zh-cn": "新奥尔良乐曲",
   "zh-tw": "新奧爾良樂曲"
@@ -602,7 +602,7 @@
   "it-eu": "K.K. House",
   "ja-jp": "けけハウス",
   "ko-kr": "K.K.하우스",
-  "nl-eu": "K.K.-house",
+  "nl-eu": "K⁠.⁠K⁠.-⁠house",
   "ru-eu": "Хаус К. К.",
   "zh-cn": "K.K.浩室",
   "zh-tw": "K.K.浩室"
@@ -634,7 +634,7 @@
   "it-eu": "K.K. Jazz",
   "ja-jp": "けけジャズ",
   "ko-kr": "K.K.재즈",
-  "nl-eu": "K.K.-jazz",
+  "nl-eu": "K⁠.⁠K⁠.-⁠jazz",
   "ru-eu": "Джаз К. К.",
   "zh-cn": "K.K.爵士乐",
   "zh-tw": "K.K.爵士樂"
@@ -650,8 +650,8 @@
   "it-eu": "K.K. Shamisen",
   "ja-jp": "けけじょんがら",
   "ko-kr": "K.K.샤미센 연주곡",
-  "nl-eu": "K.K.-jongara",
-  "ru-eu": "Джонгара К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠jongara",
+  "ru-eu": "Джонгар К. К.",
   "zh-cn": "K.K.三味线",
   "zh-tw": "K.K.三味線"
  },
@@ -666,8 +666,8 @@
   "it-eu": "K.K. Lacrime",
   "ja-jp": "けけえんか",
   "ko-kr": "K.K.트로트",
-  "nl-eu": "K.K.-klaagzang",
-  "ru-eu": "Жалобная песнь К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠klaagzang",
+  "ru-eu": "Жалобн песн К. К.",
   "zh-cn": "K.K.演歌",
   "zh-tw": "K.K.演歌"
  },
@@ -682,7 +682,7 @@
   "it-eu": "K.K. Amore",
   "ja-jp": "けけラヴソング",
   "ko-kr": "K.K.러브송",
-  "nl-eu": "K.K.-liefdeslied",
+  "nl-eu": "K⁠.⁠K⁠.-⁠liefdeslied",
   "ru-eu": "Романс К. К.",
   "zh-cn": "K.K.情歌",
   "zh-tw": "K.K.情歌"
@@ -698,8 +698,8 @@
   "it-eu": "K.K. Ninnananna",
   "ja-jp": "けけララバイ",
   "ko-kr": "K.K.자장가",
-  "nl-eu": "K.K.-slaapliedje",
-  "ru-eu": "Колыбельная К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠slaapliedje",
+  "ru-eu": "Колыбельн К. К.",
   "zh-cn": "K.K.摇篮曲",
   "zh-tw": "K.K.搖籃曲"
  },
@@ -714,7 +714,7 @@
   "it-eu": "K.K. Mambo",
   "ja-jp": "けけマンボ",
   "ko-kr": "K.K.맘보",
-  "nl-eu": "K.K.-mambo",
+  "nl-eu": "K⁠.⁠K⁠.-⁠mambo",
   "ru-eu": "Мамбо К. К.",
   "zh-cn": "K.K.曼波",
   "zh-tw": "K.K.曼波"
@@ -730,7 +730,7 @@
   "it-eu": "K.K. Maratona",
   "ja-jp": "けけガムラン",
   "ko-kr": "K.K.가믈란",
-  "nl-eu": "K.K.-gamelan",
+  "nl-eu": "K⁠.⁠K⁠.-⁠gamelan",
   "ru-eu": "Марафон К. К.",
   "zh-cn": "K.K.甘美朗",
   "zh-tw": "K.K.甘美朗"
@@ -746,7 +746,7 @@
   "it-eu": "K.K. Marcia",
   "ja-jp": "けけマーチ",
   "ko-kr": "K.K.행진곡",
-  "nl-eu": "K.K.-mars",
+  "nl-eu": "K⁠.⁠K⁠.-⁠mars",
   "ru-eu": "Марш К. К.",
   "zh-cn": "K.K.进行曲",
   "zh-tw": "K.K.進行曲"
@@ -762,7 +762,7 @@
   "it-eu": "K.K. Amico",
   "ja-jp": "セニョールけけ",
   "ko-kr": "세뇨르K.K.",
-  "nl-eu": "K.K.-mariachi",
+  "nl-eu": "K⁠.⁠K⁠.-⁠mariachi",
   "ru-eu": "Марьячи К. К.",
   "zh-cn": "墨西哥绅士K.K.",
   "zh-tw": "墨西哥紳士K.K."
@@ -778,7 +778,7 @@
   "it-eu": "K.K. Metal",
   "ja-jp": "けけメタル",
   "ko-kr": "K.K.메탈",
-  "nl-eu": "K.K.-metal",
+  "nl-eu": "K⁠.⁠K⁠.-⁠metal",
   "ru-eu": "Металл К. К.",
   "zh-cn": "K.K.金属摇滚",
   "zh-tw": "K.K.金屬搖滾"
@@ -794,8 +794,8 @@
   "it-eu": "K.K. Milonga",
   "ja-jp": "けけのミロンガ",
   "ko-kr": "K.K.밀롱가",
-  "nl-eu": "K.K.-milonga",
-  "ru-eu": "Милонга К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠milonga",
+  "ru-eu": "Милонг К. К.",
   "zh-cn": "K.K.米隆加",
   "zh-tw": "K.K.米隆加"
  },
@@ -810,8 +810,8 @@
   "it-eu": "K.K. Tramonto",
   "ja-jp": "けけボレロ",
   "ko-kr": "K.K.볼레로",
-  "nl-eu": "K.K.-bolero",
-  "ru-eu": "Задумчивый К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠bolero",
+  "ru-eu": "Задумчив К. К.",
   "zh-cn": "K.K.波蕾洛",
   "zh-tw": "K.K.波蕾洛"
  },
@@ -826,7 +826,7 @@
   "it-eu": "K.K. Maragià",
   "ja-jp": "けけマハラジャ",
   "ko-kr": "K.K.마하라자",
-  "nl-eu": "Maharadja K.K.",
+  "nl-eu": "⁠Maharadja K.K.",
   "ru-eu": "Оазис К. К.",
   "zh-cn": "K.K.印度王公",
   "zh-tw": "K.K.印度王公"
@@ -842,7 +842,7 @@
   "it-eu": "K.K. Parata",
   "ja-jp": "けけパレード",
   "ko-kr": "K.K.퍼레이드",
-  "nl-eu": "K.K.-parade",
+  "nl-eu": "K⁠.⁠K⁠.-⁠parade",
   "ru-eu": "Парад К. К.",
   "zh-cn": "K.K.嘉年华",
   "zh-tw": "K.K.嘉年華"
@@ -858,7 +858,7 @@
   "it-eu": "K.K. Ritmo",
   "ja-jp": "ラグタイム",
   "ko-kr": "래그타임",
-  "nl-eu": "K.K.-ragtime",
+  "nl-eu": "K⁠.⁠K⁠.-⁠ragtime",
   "ru-eu": "Регтайм К. К.",
   "zh-cn": "拉格泰姆音乐",
   "zh-tw": "拉格泰姆音樂"
@@ -874,7 +874,7 @@
   "it-eu": "K.K. Gran galà",
   "ja-jp": "けけおんど",
   "ko-kr": "K.K.축제",
-  "nl-eu": "K.K.-optocht",
+  "nl-eu": "K⁠.⁠K⁠.-⁠optocht",
   "ru-eu": "Ралли К. К.",
   "zh-cn": "K.K.大和祭典",
   "zh-tw": "K.K.大和祭典"
@@ -890,7 +890,7 @@
   "it-eu": "K.K. Reggae",
   "ja-jp": "けけレゲエ",
   "ko-kr": "K.K.레게",
-  "nl-eu": "K.K.-reggae",
+  "nl-eu": "K⁠.⁠K⁠.-⁠reggae",
   "ru-eu": "Регги К. К.",
   "zh-cn": "K.K.雷鬼",
   "zh-tw": "K.K.雷鬼"
@@ -906,7 +906,7 @@
   "it-eu": "K.K. Rock",
   "ja-jp": "けけロック",
   "ko-kr": "K.K.록",
-  "nl-eu": "K.K.-rock",
+  "nl-eu": "K⁠.⁠K⁠.-⁠rock",
   "ru-eu": "Рок К. К.",
   "zh-cn": "K.K.摇滚",
   "zh-tw": "K.K.搖滾"
@@ -922,7 +922,7 @@
   "it-eu": "K.K. Rockabilly",
   "ja-jp": "けけビリー",
   "ko-kr": "K.K.빌리",
-  "nl-eu": "K.K.-rockabilly",
+  "nl-eu": "K⁠.⁠K⁠.-⁠rockabilly",
   "ru-eu": "Рокабилли К. К.",
   "zh-cn": "K.K.乡村摇滚",
   "zh-tw": "K.K.鄉村搖滾"
@@ -938,7 +938,7 @@
   "it-eu": "K.K. Safari",
   "ja-jp": "けけアフロ",
   "ko-kr": "K.K.아프리카",
-  "nl-eu": "K.K. in de jungle",
+  "nl-eu": "K.⁠K. in de jungle",
   "ru-eu": "Сафари К. К.",
   "zh-cn": "K.K.非洲音乐",
   "zh-tw": "K.K.非洲音樂"
@@ -954,8 +954,8 @@
   "it-eu": "K.K. Salsa",
   "ja-jp": "けけサルサ",
   "ko-kr": "K.K.살사",
-  "nl-eu": "K.K.-salsa",
-  "ru-eu": "Сальса К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠salsa",
+  "ru-eu": "Сальс К. К.",
   "zh-cn": "K.K.萨尔萨",
   "zh-tw": "K.K.騷莎"
  },
@@ -970,8 +970,8 @@
   "it-eu": "K.K. Samba",
   "ja-jp": "けけサンバ",
   "ko-kr": "K.K.삼바",
-  "nl-eu": "K.K.-samba",
-  "ru-eu": "Самба К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠samba",
+  "ru-eu": "Самб К. К.",
   "zh-cn": "K.K.桑巴",
   "zh-tw": "K.K.森巴"
  },
@@ -986,7 +986,7 @@
   "it-eu": "K.K. Ska",
   "ja-jp": "けけスカ",
   "ko-kr": "K.K.스카",
-  "nl-eu": "K.K.-ska",
+  "nl-eu": "K⁠.⁠K⁠.-⁠ska",
   "ru-eu": "Ска К. К.",
   "zh-cn": "K.K.斯卡",
   "zh-tw": "K.K.斯卡"
@@ -1002,8 +1002,8 @@
   "it-eu": "K.K. Sonata",
   "ja-jp": "けけのソナタ",
   "ko-kr": "K.K.소나타",
-  "nl-eu": "K.K.-sonate",
-  "ru-eu": "Соната К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠sonate",
+  "ru-eu": "Сонат К. К.",
   "zh-cn": "K.K.奏鸣曲",
   "zh-tw": "K.K.奏鳴曲"
  },
@@ -1018,8 +1018,8 @@
   "it-eu": "K.K. Canzone",
   "ja-jp": "けけソング",
   "ko-kr": "K.K.의 노래",
-  "nl-eu": "K.K.-lied",
-  "ru-eu": "Песнь К. К.",
+  "nl-eu": "K⁠.⁠K⁠.-⁠lied",
+  "ru-eu": "Песн К. К.",
   "zh-cn": "K.K.乐曲",
   "zh-tw": "K.K.樂曲"
  },
@@ -1034,7 +1034,7 @@
   "it-eu": "K.K. Soul",
   "ja-jp": "けけソウル",
   "ko-kr": "K.K.소울",
-  "nl-eu": "K.K.-soul",
+  "nl-eu": "K⁠.⁠K⁠.-⁠soul",
   "ru-eu": "Соул К. К.",
   "zh-cn": "K.K.灵魂乐",
   "zh-tw": "K.K.靈魂樂"
@@ -1050,8 +1050,8 @@
   "it-eu": "K.K. Steppa",
   "ja-jp": "コサックそんぐ",
   "ko-kr": "까자크의 노래",
-  "nl-eu": "K.K. op de steppe",
-  "ru-eu": "Степь К. К.",
+  "nl-eu": "K.⁠K. op de steppe",
+  "ru-eu": "Степ К. К.",
   "zh-cn": "哥萨克乐曲",
   "zh-tw": "哥薩克樂曲"
  },
@@ -1067,7 +1067,7 @@
   "ja-jp": "おさんぽ",
   "ko-kr": "산책",
   "nl-eu": "Op straat",
-  "ru-eu": "Прогулка К. К.",
+  "ru-eu": "Прогулк К. К.",
   "zh-cn": "散散步",
   "zh-tw": "散散步"
  },
@@ -1082,7 +1082,7 @@
   "it-eu": "K.K. Swing",
   "ja-jp": "けけスウィング",
   "ko-kr": "K.K.스윙",
-  "nl-eu": "K.K.-swing",
+  "nl-eu": "K.K.-⁠swing",
   "ru-eu": "Свинг К. К.",
   "zh-cn": "K.K.摇摆乐",
   "zh-tw": "K.K.搖擺樂"
@@ -1098,7 +1098,7 @@
   "it-eu": "K.K. Synth",
   "ja-jp": "けけトロニカ",
   "ko-kr": "K.K.트로니카",
-  "nl-eu": "K.K.-synthpop",
+  "nl-eu": "K⁠.⁠K⁠.-⁠synthpop",
   "ru-eu": "Синти-поп К. К.",
   "zh-cn": "K.K.电子民谣",
   "zh-tw": "K.K.電子民謠"
@@ -1114,7 +1114,7 @@
   "it-eu": "K.K. Tango",
   "ja-jp": "けけタンゴ",
   "ko-kr": "K.K.탱고",
-  "nl-eu": "K.K.-tango",
+  "nl-eu": "K⁠.⁠K⁠.-⁠tango",
   "ru-eu": "Танго К. К.",
   "zh-cn": "K.K.探戈",
   "zh-tw": "K.K.探戈"
@@ -1130,7 +1130,7 @@
   "it-eu": "K.K. Techno",
   "ja-jp": "テクノビート",
   "ko-kr": "테크노 비트",
-  "nl-eu": "K.K.-technopop",
+  "nl-eu": "K⁠.⁠K⁠.-⁠technopop",
   "ru-eu": "Техно-поп К. К.",
   "zh-cn": "电音节奏",
   "zh-tw": "電音節奏"
@@ -1146,7 +1146,7 @@
   "it-eu": "K.K. Valzer",
   "ja-jp": "けけワルツ",
   "ko-kr": "K.K.왈츠",
-  "nl-eu": "K.K.-wals",
+  "nl-eu": "K⁠.⁠K⁠.-⁠wals",
   "ru-eu": "Вальс К. К.",
   "zh-cn": "K.K.圆舞曲",
   "zh-tw": "K.K.圓舞曲"
@@ -1162,7 +1162,7 @@
   "it-eu": "K.K. Western",
   "ja-jp": "けけウェスタン",
   "ko-kr": "K.K.웨스턴",
-  "nl-eu": "K.K.-western",
+  "nl-eu": "K⁠.⁠K⁠.-⁠western",
   "ru-eu": "Вестерн К. К.",
   "zh-cn": "K.K.西部",
   "zh-tw": "K.K.西部"
@@ -1178,7 +1178,7 @@
   "it-eu": "K.K. Studio",
   "ja-jp": "けけのエチュード",
   "ko-kr": "K.K.에튀드",
-  "nl-eu": "K.K.-etude",
+  "nl-eu": "K⁠.⁠K⁠.-⁠etude",
   "ru-eu": "Этюд К. К.",
   "zh-cn": "K.K.练习曲",
   "zh-tw": "K.K.練習曲"
@@ -1194,8 +1194,8 @@
   "it-eu": "K.K. Re",
   "ja-jp": "けけだいみょう",
   "ko-kr": "K.K.왕조",
-  "nl-eu": "Keizer K.K.",
-  "ru-eu": "Король К. К.",
+  "nl-eu": "Keizer K.⁠K.",
+  "ru-eu": "Корол К. К.",
   "zh-cn": "K.K.领主",
   "zh-tw": "K.K.領主"
  },
@@ -1210,7 +1210,7 @@
   "it-eu": "K.K. Felicità",
   "ja-jp": "アイリッシュそんぐ",
   "ko-kr": "아일랜드의 노래",
-  "nl-eu": "K.K. de Kelt",
+  "nl-eu": "K.⁠K. de Kelt",
   "ru-eu": "Счастливчик К. К.",
   "zh-cn": "爱尔兰乐曲",
   "zh-tw": "愛爾蘭樂曲"
@@ -1227,7 +1227,7 @@
   "ja-jp": "ふなうた2001",
   "ko-kr": "뱃노래2001",
   "nl-eu": "Zeelied",
-  "ru-eu": "Песня о море 2001",
+  "ru-eu": "Песн о море 2001",
   "zh-cn": "船歌2001",
   "zh-tw": "船歌2001"
  },
@@ -1243,7 +1243,7 @@
   "ja-jp": "アルペンそんぐ",
   "ko-kr": "알프스의 노래",
   "nl-eu": "Jodelaheho",
-  "ru-eu": "Горная песнь",
+  "ru-eu": "Горн песн",
   "zh-cn": "阿尔卑斯山乐曲",
   "zh-tw": "阿爾卑斯山樂曲"
  },
@@ -1258,7 +1258,7 @@
   "it-eu": "K.K. Sig. No",
   "ja-jp": "けけせんせい",
   "ko-kr": "K.K.선생님",
-  "nl-eu": "Meester K.K.",
+  "nl-eu": "Meester K.⁠K.",
   "ru-eu": "Господин К. К.",
   "zh-cn": "K.K.老师",
   "zh-tw": "K.K.老師"
@@ -1291,7 +1291,7 @@
   "ja-jp": "ナポリタン",
   "ko-kr": "토마토 스파게티",
   "nl-eu": "Napolitain",
-  "ru-eu": "Неаполитанское",
+  "ru-eu": "Неаполитанско",
   "zh-cn": "意大利面",
   "zh-tw": "義大利麵"
  },
@@ -1323,7 +1323,7 @@
   "ja-jp": "かんがえちゅう",
   "ko-kr": "생각 중",
   "nl-eu": "De denker",
-  "ru-eu": "Размышления",
+  "ru-eu": "Размышлени",
   "zh-cn": "思考中",
   "zh-tw": "思考中"
  },
@@ -1338,7 +1338,7 @@
   "it-eu": "K.K. Spericolato",
   "ja-jp": "けけのロケンロール",
   "ko-kr": "K.K.로큰롤",
-  "nl-eu": "K.K.-rock-'n-roll",
+  "nl-eu": "K⁠.⁠K⁠.-⁠rock-'⁠n-roll",
   "ru-eu": "К. К. в ударе",
   "zh-cn": "K.K.50年代摇滚",
   "zh-tw": "K.K.50年代搖滾"
@@ -1354,7 +1354,7 @@
   "it-eu": "K.K. Anima",
   "ja-jp": "けけゴスペル",
   "ko-kr": "K.K.가스펠",
-  "nl-eu": "K.K.-soulblues",
+  "nl-eu": "K⁠.⁠K⁠.-⁠soulblues",
   "ru-eu": "Соулфул К. К.",
   "zh-cn": "K.K.心灵音乐",
   "zh-tw": "K.K.心靈音樂"
@@ -1370,7 +1370,7 @@
   "it-eu": "K.K. Minimal",
   "ja-jp": "ミニマルおんがく",
   "ko-kr": "미니멀 음악",
-  "nl-eu": "K.K.-minimalisme",
+  "nl-eu": "K⁠.⁠K⁠.-⁠minimalisme",
   "ru-eu": "Космос К. К.",
   "zh-cn": "极简音乐",
   "zh-tw": "極簡音樂"
@@ -1387,7 +1387,7 @@
   "ja-jp": "はるのこもれび",
   "ko-kr": "봄날의 여유",
   "nl-eu": "Lentebloesems",
-  "ru-eu": "Весенний цвет",
+  "ru-eu": "Весенн цвет",
   "zh-cn": "春暖花开",
   "zh-tw": "春暖花開"
  },
@@ -1403,7 +1403,7 @@
   "ja-jp": "ブルーおにぎり",
   "ko-kr": "블루 삼각 김밥",
   "nl-eu": "Oude cupcakes",
-  "ru-eu": "Черствые капкейки",
+  "ru-eu": "Черствы капкейк",
   "zh-cn": "蓝色饭团",
   "zh-tw": "藍色飯糰"
  },
@@ -1419,7 +1419,7 @@
   "ja-jp": "にだんざか",
   "ko-kr": "오르막길",
   "nl-eu": "Heuvelopwaarts",
-  "ru-eu": "Крутой холм",
+  "ru-eu": "Круто холм",
   "zh-cn": "二段斜坡",
   "zh-tw": "二段斜坡"
  },
@@ -1434,7 +1434,7 @@
   "it-eu": "K.K. Surf",
   "ja-jp": "エレキそんぐ",
   "ko-kr": "일렉트릭 뮤직",
-  "nl-eu": "K.K.-surf",
+  "nl-eu": "K⁠.⁠K⁠.-⁠surf",
   "ru-eu": "Серф К. К.",
   "zh-cn": "电吉他乐曲",
   "zh-tw": "電吉他樂曲"
@@ -1450,7 +1450,7 @@
   "it-eu": "K.K. Funk",
   "ja-jp": "けけファンク",
   "ko-kr": "K.K.펑키",
-  "nl-eu": "K.K.-funk",
+  "nl-eu": "K⁠.⁠K⁠.-⁠funk",
   "ru-eu": "Фанк К. К.",
   "zh-cn": "K.K.放克",
   "zh-tw": "K.K.放克"
@@ -1515,7 +1515,7 @@
   "ja-jp": "みんなあつまれ",
   "ko-kr": "모두 모여봐요",
   "nl-eu": "Welkome horizon",
-  "ru-eu": "Светлые горизонты",
+  "ru-eu": "Светл горизонт",
   "zh-cn": "大家集合吧",
   "zh-tw": "大家集合吧"
  }

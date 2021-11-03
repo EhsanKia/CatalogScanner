@@ -1,8 +1,11 @@
 {
+ "1-Up Mushroom": [],
+ "2021 celebratory arch": [],
  "3D glasses": [
   "White",
   "Black"
  ],
+ "? Block": [],
  "A tee": [],
  "ACNH Nintendo Switch": [],
  "Agent K.K.": [],
@@ -78,15 +81,20 @@
  "Bunny Day bag": [],
  "Bunny Day basket": [],
  "Bunny Day bed": [],
+ "Bunny Day candy": [],
  "Bunny Day crown": [],
  "Bunny Day festive balloons": [],
  "Bunny Day flooring": [],
+ "Bunny Day garden flag": [],
  "Bunny Day glowy garland": [],
  "Bunny Day lamp": [],
  "Bunny Day merry balloons": [],
+ "Bunny Day planter box": [],
  "Bunny Day rug": [],
  "Bunny Day stool": [],
  "Bunny Day table": [],
+ "Bunny Day topiary": [],
+ "Bunny Day tree": [],
  "Bunny Day vanity": [],
  "Bunny Day wall": [],
  "Bunny Day wall clock": [],
@@ -101,8 +109,20 @@
   "Light blue",
   "Navy blue"
  ],
+ "Cinnamoroll flooring": [],
+ "Cinnamoroll hat": [],
+ "Cinnamoroll jacket": [],
+ "Cinnamoroll parasol": [],
+ "Cinnamoroll puffy blouse": [],
+ "Cinnamoroll rug": [],
+ "Cinnamoroll signage": [],
+ "Cinnamoroll sneakers": [],
+ "Cinnamoroll sofa": [],
+ "Cinnamoroll stool": [],
+ "Cinnamoroll table": [],
+ "Cinnamoroll tray": [],
+ "Cinnamoroll wall": [],
  "Comrade K.K.": [],
- "Coral Nook Inc. aloha shirt": [],
  "DAL apron": [],
  "DAL backpack": [],
  "DAL cap": [],
@@ -178,18 +198,118 @@
  "Drivin'": [],
  "Earth rug": [],
  "Farewell": [],
+ "Festivale accessory": [
+  "Red",
+  "Green",
+  "Blue",
+  "Purple"
+ ],
+ "Festivale balloon lamp": [
+  "Green",
+  "Red",
+  "Blue",
+  "Purple",
+  "Rainbow"
+ ],
+ "Festivale confetti machine": [
+  "Green",
+  "Red",
+  "Blue",
+  "Purple",
+  "Rainbow"
+ ],
+ "Festivale costume": [
+  "Red",
+  "Green",
+  "Blue",
+  "Purple"
+ ],
+ "Festivale drum": [
+  "Green",
+  "Red",
+  "Blue",
+  "Purple",
+  "Rainbow"
+ ],
+ "Festivale flag": [
+  "Green",
+  "Red",
+  "Blue",
+  "Purple",
+  "Rainbow"
+ ],
+ "Festivale float": [],
+ "Festivale garland": [
+  "Green",
+  "Red",
+  "Blue",
+  "Purple",
+  "Rainbow"
+ ],
+ "Festivale lamp": [
+  "Green",
+  "Red",
+  "Blue",
+  "Purple",
+  "Rainbow"
+ ],
+ "Festivale parasol": [
+  "Green",
+  "Red",
+  "Blue",
+  "Purple",
+  "Rainbow"
+ ],
+ "Festivale stage": [
+  "Green",
+  "Red",
+  "Blue",
+  "Purple",
+  "Rainbow"
+ ],
+ "Festivale stall": [
+  "Green",
+  "Red",
+  "Blue",
+  "Purple",
+  "Rainbow"
+ ],
+ "Festivale tank dress": [
+  "Red",
+  "Green",
+  "Blue",
+  "Purple"
+ ],
+ "Fire Flower": [],
  "Forest Life": [],
  "Gemini closet": [],
  "Go K.K. Rider": [],
- "Green Nook Inc. aloha shirt": [],
+ "Goal Pole": [],
  "HHA pennant": [],
  "HMD": [],
  "Hazure01": [],
  "Hazure02": [],
  "Hazure03": [],
+ "Hello Kitty bed": [],
+ "Hello Kitty chair": [],
+ "Hello Kitty clock": [],
+ "Hello Kitty drawers": [],
+ "Hello Kitty dress": [],
+ "Hello Kitty flooring": [],
+ "Hello Kitty hat": [],
+ "Hello Kitty planter": [],
+ "Hello Kitty rug": [],
+ "Hello Kitty shoes": [],
+ "Hello Kitty table": [],
+ "Hello Kitty tee": [],
+ "Hello Kitty wall": [],
+ "Hikoboshi outfit": [],
  "Hypno K.K.": [],
  "I Love You": [],
  "Imperial K.K.": [],
+ "Jack's face": [],
+ "Jack's portrait": [],
+ "Jack's robe": [],
  "Jingle wall": [],
  "K.K. Adventure": [],
  "K.K. Aria": [],
@@ -251,7 +371,35 @@
  "K.K. Waltz": [],
  "K.K. Western": [],
  "K.K. \u00c9tude": [],
+ "Kerokerokeroppi boots": [],
+ "Kerokerokeroppi bridge": [],
+ "Kerokerokeroppi doll": [],
+ "Kerokerokeroppi flooring": [],
+ "Kerokerokeroppi hallway": [],
+ "Kerokerokeroppi lantern": [],
+ "Kerokerokeroppi outfit": [],
+ "Kerokerokeroppi pin": [],
+ "Kerokerokeroppi rug": [],
+ "Kerokerokeroppi snack": [],
+ "Kerokerokeroppi socks": [],
+ "Kerokerokeroppi tank top": [],
+ "Kerokerokeroppi tray": [],
+ "Kerokerokeroppi wall": [],
+ "Kiki & Lala bed": [],
+ "Kiki & Lala clock": [],
+ "Kiki & Lala cloud maker": [],
+ "Kiki & Lala dress": [],
+ "Kiki & Lala flooring": [],
+ "Kiki & Lala pin": [],
+ "Kiki & Lala rug": [],
+ "Kiki & Lala shoes": [],
+ "Kiki & Lala socks": [],
+ "Kiki & Lala sofa": [],
+ "Kiki & Lala table": [],
+ "Kiki & Lala tee": [],
+ "Kiki & Lala wall": [],
  "King K.K.": [],
+ "King Tut mask": [],
  "LCD TV (20 in.)": [
   "Black",
   "White",
@@ -365,9 +513,16 @@
   "Ocean",
   "Twilight"
  ],
+ "Lakitu's Cloud rug": [],
  "Leo sculpture": [],
  "Libra scale": [],
  "Lucky K.K.": [],
+ "Luigi 'stache": [],
+ "Luigi hat": [],
+ "Luigi outfit": [],
+ "Luigi shoes": [],
+ "Luna's bed": [],
+ "Lunar New Year decoration": [],
  "M. sunset moth model": [],
  "MVP tee": [],
  "Mama bear": [
@@ -398,6 +553,10 @@
  ],
  "Mama panda": [],
  "Marine Song 2001": [],
+ "Mario 'stache": [],
+ "Mario hat": [],
+ "Mario outfit": [],
+ "Mario shoes": [],
  "Market Place decoration": [],
  "Mom's art": [
   "Still Life",
@@ -517,6 +676,18 @@
   "Natural",
   "White"
  ],
+ "My Melody bed": [],
+ "My Melody boots": [],
+ "My Melody chair": [],
+ "My Melody clock": [],
+ "My Melody dress": [],
+ "My Melody dresser": [],
+ "My Melody flooring": [],
+ "My Melody hood": [],
+ "My Melody rug": [],
+ "My Melody shirt": [],
+ "My Melody table": [],
+ "My Melody wall": [],
  "My Place": [],
  "Napoleonfish model": [],
  "Neapolitan": [],
@@ -530,6 +701,8 @@
   "Blue",
   "Purple"
  ],
+ "New Year's noodles": [],
+ "New Year's shimekazari": [],
  "New Year's silk hat": [
   "Red",
   "Pink",
@@ -545,6 +718,12 @@
   "Neon blue & neon red",
   "Gray"
  ],
+ "Nintendo Switch Lite": [
+  "Turquoise",
+  "Gray",
+  "Coral",
+  "Yellow"
+ ],
  "No. 1 shirt": [],
  "No. 2 shirt": [],
  "No. 3 shirt": [],
@@ -555,9 +734,11 @@
  "Nook Inc. blouson": [],
  "Nook Inc. botanical rug": [],
  "Nook Inc. cap": [],
+ "Nook Inc. doorplate": [],
  "Nook Inc. eye mask": [],
  "Nook Inc. flooring": [],
  "Nook Inc. knapsack": [],
+ "Nook Inc. poster": [],
  "Nook Inc. rug": [],
  "Nook Inc. silk rug": [],
  "Nook Inc. slippers": [],
@@ -569,7 +750,9 @@
  "OK Motors cap": [],
  "OK Motors jacket": [],
  "OK Motors sign": [],
+ "Olivier salad": [],
  "Only Me": [],
+ "Orihime outfit": [],
  "PJ outfit": [
   "Gray",
   "Red",
@@ -604,6 +787,13 @@
   "Tweed"
  ],
  "Papa panda": [],
+ "Phrygian cap": [
+  "Red",
+  "Orange",
+  "Green",
+  "Light blue",
+  "Purple"
+ ],
  "Pisces lamp": [],
  "Pocket modern camper": [
   "Ketchup and mustard",
@@ -621,8 +811,33 @@
   "Retro ride",
   "Southwestern flair"
  ],
+ "Pompompurin TV": [],
+ "Pompompurin bed": [],
+ "Pompompurin boots": [],
+ "Pompompurin chair": [],
+ "Pompompurin flooring": [],
+ "Pompompurin hat": [],
+ "Pompompurin outfit": [],
+ "Pompompurin pudding": [],
+ "Pompompurin rack": [],
+ "Pompompurin rug": [],
+ "Pompompurin table": [],
+ "Pompompurin tee": [],
+ "Pompompurin wall": [],
  "Pondering": [],
+ "Princess Peach crown": [],
+ "Princess Peach dress": [],
+ "Princess Peach shoes": [],
  "R. Brooke's birdwing model": [],
+ "RC helicopter": [
+  "Blue",
+  "Red",
+  "Yellow",
+  "Green",
+  "Pink",
+  "Light blue",
+  "Purple"
+ ],
  "Reese & Cyrus photo plate": [],
  "Renaissance dress": [
   "Red",
@@ -632,11 +847,21 @@
   "Blue",
   "Purple"
  ],
+ "Resetti model": [],
+ "Ring-Con": [],
  "Rockin' K.K.": [],
  "Rover's briefcase": [],
  "Sagittarius arrow": [],
  "Saharah's desert": [],
+ "Santa beard": [],
+ "Santa coat": [],
+ "Santa hat": [],
+ "Santa pants": [],
  "Scorpio lamp": [],
+ "Shell": [
+  "Green",
+  "Red"
+ ],
  "Soulful K.K.": [],
  "South Pole": [],
  "Space K.K.": [],
@@ -645,6 +870,8 @@
  "Statue of Liberty": [],
  "Steep Hill": [],
  "Stonehenge": [],
+ "Super Mushroom": [],
+ "Super Star": [],
  "Surfin' K.K.": [],
  "T. rex skull": [],
  "T. rex tail": [],
@@ -655,9 +882,47 @@
  ],
  "Taurus bathtub": [],
  "The K. Funk": [],
+ "Thwomp": [],
  "To the Edge": [],
  "Toad parasol": [],
  "Tower of Pisa": [],
+ "Toy Day sleigh": [],
+ "Toy Day stockings": [],
+ "Turkey Day casserole": [
+  "Fall harvest",
+  "Spring blooming"
+ ],
+ "Turkey Day chair": [
+  "Fall harvest",
+  "Spring blooming"
+ ],
+ "Turkey Day decorations": [
+  "Fall harvest",
+  "Spring blooming"
+ ],
+ "Turkey Day flooring": [],
+ "Turkey Day garden stand": [
+  "Fall harvest",
+  "Spring blooming"
+ ],
+ "Turkey Day hearth": [
+  "Fall harvest",
+  "Spring blooming"
+ ],
+ "Turkey Day rug": [],
+ "Turkey Day table": [
+  "Fall harvest",
+  "Spring blooming"
+ ],
+ "Turkey Day table setting": [
+  "Fall harvest",
+  "Spring blooming"
+ ],
+ "Turkey Day wall": [],
+ "Turkey Day wheat decor": [
+  "Fall harvest",
+  "Spring blooming"
+ ],
  "Two Days Ago": [],
  "V-neck sweater": [
   "Black",
@@ -674,8 +939,20 @@
  ],
  "Virgo harp": [],
  "Wandering": [],
+ "Wario 'stache": [],
+ "Wario hat": [],
+ "Wario outfit": [],
+ "Wario shoes": [],
  "Welcome Horizons": [],
- "Wobbling Zipper toy": [],
+ "Yoshi's Egg rug": [],
+ "Yule log": [
+  "Chocolate",
+  "Chestnut",
+  "Whipped-cream topping",
+  "Strawberry",
+  "Green tea"
+ ],
+ "Yut Nori": [],
  "abstract wall": [],
  "academy uniform": [
   "Gray",
@@ -749,6 +1026,7 @@
   "Blue",
   "Brown"
  ],
+ "aloha-edition carrying case": [],
  "alpinist dress": [
   "Red",
   "Green",
@@ -828,6 +1106,7 @@
   "Tailors",
   "Museum"
  ],
+ "animal nose": [],
  "animal-print coat": [
   "Pink",
   "Green",
@@ -996,6 +1275,7 @@
   "Black"
  ],
  "arowana model": [],
+ "art plaque": [],
  "artisanal bug cage": [],
  "artsy parquet flooring": [],
  "asteroid": [],
@@ -1034,6 +1314,7 @@
   "Blue",
   "Brown"
  ],
+ "aurora wall": [],
  "australopith": [],
  "autograph cards": [
   "Signature",
@@ -1179,6 +1460,10 @@
   "Green",
   "Blue",
   "Rainbow"
+ ],
+ "ballroom mask": [
+  "White",
+  "Black"
  ],
  "balmacaan coat": [
   "Avocado",
@@ -1465,6 +1750,7 @@
   "Green",
   "Blue"
  ],
+ "berliner": [],
  "berry-chocolates flooring": [],
  "betta model": [],
  "bicycle helmet": [
@@ -1580,6 +1866,8 @@
  "black-crown wall": [],
  "black-design kitchen mat": [],
  "blackboard wall": [],
+ "block": [],
+ "block flooring": [],
  "blossom dress": [
   "Pink",
   "Yellow",
@@ -1587,6 +1875,7 @@
   "Blue",
   "Purple"
  ],
+ "blossom lantern": [],
  "blossom tee": [
   "Pink",
   "Yellow",
@@ -1907,6 +2196,16 @@
  "brown-brick flooring": [],
  "brown-brick wall": [],
  "brown-crown wall": [],
+ "bubble-skirt party dress": [
+  "Red",
+  "Pink",
+  "Orange",
+  "Yellow",
+  "Green",
+  "Light blue",
+  "Blue",
+  "Purple"
+ ],
  "bubblegum": [
   "White",
   "Pink",
@@ -1917,6 +2216,7 @@
  "bug aloha shirt": [],
  "bug cage": [],
  "bug plaque": [],
+ "bulb bopper": [],
  "bulldog jacket": [
   "White",
   "Black",
@@ -2188,6 +2488,8 @@
   "Brown",
   "Beige"
  ],
+ "carnations": [],
+ "carp banner": [],
  "carp model": [],
  "cartoonist's set": [
   "Black",
@@ -2503,6 +2805,12 @@
  ],
  "chiton": [],
  "chocolate hallway wall": [],
+ "chocolate heart": [
+  "Milk chocolate",
+  "Dark chocolate",
+  "White chocolate",
+  "Strawberry chocolate"
+ ],
  "chocolate herringbone wall": [],
  "ciao tee": [],
  "cicada shell model": [],
@@ -2601,6 +2909,7 @@
   "Elegant"
  ],
  "coffee grinder": [],
+ "coin": [],
  "coin headpiece": [],
  "cold-country bunad": [
   "Red",
@@ -2758,6 +3067,7 @@
  ],
  "construction-site flooring": [],
  "construction-site wall": [],
+ "cool globe": [],
  "cool hyacinth crown": [],
  "cool hyacinth wreath": [],
  "cool pansy crown": [],
@@ -2773,6 +3083,7 @@
   "Green"
  ],
  "coprolite": [],
+ "coral Nook Inc. aloha shirt": [],
  "cordless phone": [
   "White",
   "Black",
@@ -2810,6 +3121,7 @@
   "Blue",
   "Blue"
  ],
+ "cornucopia": [],
  "corte skirt": [
   "Magenta",
   "Green",
@@ -2935,6 +3247,7 @@
   "White",
   "Black"
  ],
+ "cucumber horse": [],
  "cucumber pack": [],
  "cuffed pants": [
   "Gray",
@@ -3119,6 +3432,16 @@
  "dace model": [],
  "daisy meadow": [],
  "damselfly model": [],
+ "dance shoes": [
+  "Silver",
+  "Black",
+  "Pink",
+  "Orange",
+  "Gold",
+  "Green",
+  "Blue",
+  "Purple"
+ ],
  "dance warm-up pants": [
   "White",
   "Black",
@@ -3140,6 +3463,7 @@
   "Camel"
  ],
  "danger tank": [],
+ "dango": [],
  "dark bamboo rug": [],
  "dark cosmos crown": [],
  "dark herringbone flooring": [],
@@ -3494,6 +3818,13 @@
   "Cream"
  ],
  "dinnerware": [],
+ "dinosaur toy": [
+  "Gray",
+  "Brown",
+  "Green",
+  "Blue",
+  "Red"
+ ],
  "dinosaur track": [],
  "diplo chest": [],
  "diplo neck": [],
@@ -3555,6 +3886,15 @@
   "Black"
  ],
  "dojo wall": [],
+ "dollhouse": [
+  "Red",
+  "Brown",
+  "Blue",
+  "Orange",
+  "Green",
+  "Pink",
+  "Purple"
+ ],
  "dollhouse dress": [
   "Light blue",
   "Red",
@@ -3601,6 +3941,7 @@
   "Pink",
   "Blue"
  ],
+ "double Gloucester cheese": [],
  "double sofa": [
   "Red",
   "Yellow",
@@ -3879,6 +4220,7 @@
  "egg party dress": [],
  "egg party hat": [],
  "egg-sushi costume": [],
+ "eggplant cow": [],
  "eggshell": [],
  "eggy parasol": [],
  "eight-ball tee": [],
@@ -3983,6 +4325,10 @@
   "Red",
   "Green",
   "Purple"
+ ],
+ "elegant masquerade mask": [
+  "Red",
+  "Blue"
  ],
  "elephant slide": [
   "Blue",
@@ -4175,6 +4521,7 @@
  ],
  "fairy-tale umbrella": [],
  "fake nose": [],
+ "falling-snow wall": [],
  "fan": [
   "White",
   "Black",
@@ -4314,7 +4661,9 @@
   "Green",
   "Beige"
  ],
+ "festival zongzi": [],
  "festive dress": [],
+ "festive rug": [],
  "festive top set": [],
  "festive tree": [
   "Colorful",
@@ -4324,6 +4673,7 @@
   "Gold",
   "White"
  ],
+ "festive wreath": [],
  "festive-tree dress": [
   "Green & white",
   "Green & red",
@@ -4375,6 +4725,8 @@
   "White"
  ],
  "firewood": [],
+ "fireworks-show wall": [],
+ "first-anniversary cake": [],
  "fischerhemd": [],
  "fish doorplate": [
   "Light blue",
@@ -4471,6 +4823,22 @@
   "Mint",
   "Light blue"
  ],
+ "flashy animal boots": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
+ ],
+ "flashy animal costume": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
+ ],
  "flashy cardigan": [
   "Red",
   "Blue"
@@ -4499,6 +4867,22 @@
   "Green",
   "Blue",
   "Fuchsia"
+ ],
+ "flashy pointy-ear animal hat": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
+ ],
+ "flashy round-ear animal hat": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
  ],
  "flashy slacks": [
   "White",
@@ -4541,6 +4925,7 @@
   "Light blue",
   "Blue"
  ],
+ "floating block": [],
  "floating-biotope planter": [
   "Brown",
   "Artistic",
@@ -4657,6 +5042,7 @@
   "White",
   "Colorful"
  ],
+ "flower bopper": [],
  "flower sandals": [
   "White",
   "Black",
@@ -4761,6 +5147,7 @@
   "Turquoise",
   "Blue"
  ],
+ "football rug": [],
  "football shirt": [
   "White",
   "Black",
@@ -4795,6 +5182,7 @@
   "Purple",
   "Beige"
  ],
+ "forsythia": [],
  "fortune-cookie cart": [],
  "fortune-telling set": [
   "Purple",
@@ -5255,6 +5643,15 @@
  ],
  "giant trevally model": [],
  "giant water bug model": [],
+ "gift pile": [
+  "Red & green",
+  "Colorful",
+  "Cute",
+  "Cool",
+  "Chic",
+  "Elegant",
+  "Natural"
+ ],
  "gilet and shirt": [
   "Gray",
   "Black",
@@ -5393,6 +5790,7 @@
  "grape dress": [],
  "grape hat": [],
  "grape umbrella": [],
+ "grape-harvest basket": [],
  "grass skirt": [],
  "grass standee": [
   "Spring",
@@ -5411,6 +5809,7 @@
  "gray-striped wall": [],
  "great purple emperor model": [],
  "great white shark model": [],
+ "green Nook Inc. aloha shirt": [],
  "green blossoming wall": [],
  "green checked rug": [],
  "green chic umbrella": [],
@@ -5639,6 +6038,7 @@
   "Blue",
   "Purple"
  ],
+ "heart bopper": [],
  "heart doorplate": [
   "Pink",
   "Blue",
@@ -5666,6 +6066,14 @@
  "heart sweater": [
   "Red",
   "Pink"
+ ],
+ "heart-shaped bouquet": [
+  "Red",
+  "Pink",
+  "Yellow",
+  "Purple",
+  "White",
+  "Black"
  ],
  "hearth": [],
  "heavy-curtain wall": [],
@@ -5739,6 +6147,7 @@
   "Brown"
  ],
  "highway flooring": [],
+ "hinaningyo": [],
  "hip-wrap shirt": [
   "Yellow",
   "Blue",
@@ -5779,9 +6188,22 @@
  "honeycomb flooring": [],
  "honeycomb wall": [],
  "honeycomb-tile wall": [],
+ "horizontal-striped tights": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
+ ],
  "horned atlas model": [],
  "horned dynastid model": [],
  "horned elephant model": [],
+ "horned-ogre mask": [
+  "Red",
+  "Green",
+  "Blue"
+ ],
  "horse mackerel model": [],
  "hose reel": [
   "Silver",
@@ -5951,6 +6373,22 @@
  "impish costume": [
   "Black",
   "Red"
+ ],
+ "impish horns": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
+ ],
+ "impish wings": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
  ],
  "incense burner": [
   "Rose",
@@ -6229,11 +6667,13 @@
   "Dark blue",
   "Fuchsia"
  ],
+ "kadomatsu": [],
  "kaffiyeh": [
   "White",
   "Black",
   "Red"
  ],
+ "kagamimochi": [],
  "kandoora": [
   "White",
   "Gray",
@@ -6299,6 +6739,16 @@
   "Cherry blossom",
   "Chick",
   "Frog"
+ ],
+ "kids' tent": [
+  "White",
+  "Pink",
+  "Black",
+  "Stripes",
+  "Floral",
+  "Blue",
+  "Brown",
+  "Colorful"
  ],
  "killifish model": [],
  "kilt": [
@@ -6524,12 +6974,17 @@
   "Gold",
   "Gold"
  ],
+ "large Mushroom Platform": [
+  "Red",
+  "Blue",
+  "Green"
+ ],
  "large cardboard boxes": [],
  "lattice wall": [],
  "lava flooring": [],
  "lawn chair": [
   "Blue",
-  "Red & white & blue",
+  "Red, white & blue",
   "Pink",
   "Yellow",
   "Green",
@@ -7150,6 +7605,22 @@
   "Red",
   "Blue"
  ],
+ "mage's boots": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
+ ],
+ "mage's dress": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
+ ],
  "mage's hat": [
   "Black",
   "White",
@@ -7162,9 +7633,33 @@
   "Red",
   "Blue"
  ],
+ "mage's striped hat": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
+ ],
  "magic kit": [
   "Red",
   "Blue"
+ ],
+ "magic-academy hood": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
+ ],
+ "magic-academy robe": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
+  "Purple"
  ],
  "magic-circle rug": [],
  "magical dress": [
@@ -7234,6 +7729,7 @@
   "Blue",
   "Beige"
  ],
+ "marigold decoration": [],
  "marimba": [],
  "marine pop flooring": [],
  "marine pop wall": [],
@@ -7356,6 +7852,7 @@
   "Red",
   "Green"
  ],
+ "midwinter sweater": [],
  "migratory locust model": [],
  "miko attire": [
   "Vermilion",
@@ -7382,6 +7879,12 @@
   "Green",
   "Blue",
   "Pink"
+ ],
+ "mini circuit": [
+  "Red & white",
+  "Blue & yellow",
+  "Black & silver",
+  "Pink & purple"
  ],
  "mini fridge": [
   "White",
@@ -7510,6 +8013,8 @@
   "White"
  ],
  "moon": [],
+ "moon cakes": [],
+ "moon rug": [],
  "moray eel model": [],
  "morning coat": [],
  "morning-glory yukata": [
@@ -7681,6 +8186,7 @@
  ],
  "mush umbrella": [],
  "mush wall": [],
+ "mushroom mural": [],
  "mushroom wreath": [],
  "music stand": [
   "Brown",
@@ -7738,6 +8244,7 @@
   "Purple"
  ],
  "neutral corner": [],
+ "newsprint helmet": [],
  "ni hao tee": [],
  "nibble fish model": [],
  "night-vision goggles": [],
@@ -7838,6 +8345,27 @@
   "Orange",
   "White"
  ],
+ "nuptial bell": [
+  "White",
+  "Blue",
+  "Brown"
+ ],
+ "nuptial doorplate": [
+  "White",
+  "White",
+  "White",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Red & white",
+  "Red & white",
+  "Red & white"
+ ],
+ "nuptial ring pillow": [
+  "White",
+  "Blue",
+  "Red & white"
+ ],
  "nurse's cap": [
   "White",
   "Pink",
@@ -7886,6 +8414,11 @@
   "Blue"
  ],
  "office wall": [],
+ "ogre costume": [
+  "Red",
+  "Green",
+  "Blue"
+ ],
  "oil barrel": [
   "Light green",
   "Blue",
@@ -7910,6 +8443,7 @@
   "Red",
   "Yellow"
  ],
+ "okame mask": [],
  "old commoner's kimono": [
   "Red",
   "Golden yellow",
@@ -8573,6 +9107,7 @@
   "Purple",
   "Brown"
  ],
+ "pipe": [],
  "piranha model": [],
  "pirate bandanna": [
   "Black",
@@ -8786,7 +9321,7 @@
  ],
  "podium": [],
  "police cap": [],
- "polka-dot mini skirt": [
+ "polka-dot miniskirt": [
   "Gray",
   "Pink",
   "Blue",
@@ -8874,6 +9409,12 @@
   "Dark brown"
  ],
  "pop-eyed goldfish model": [],
+ "pop-up book": [
+  "The ocean blue",
+  "The Mesozoic world",
+  "Savannah",
+  "Flowers"
+ ],
  "pop-up toaster": [
   "White",
   "Yellow",
@@ -9000,6 +9541,25 @@
   "Brown",
   "Black"
  ],
+ "prom crown": [
+  "Silver",
+  "Gold"
+ ],
+ "prom flooring": [],
+ "prom sash": [
+  "White",
+  "Black",
+  "Red",
+  "Gold",
+  "Green",
+  "Blue",
+  "Purple"
+ ],
+ "prom tiara": [
+  "Silver",
+  "Gold"
+ ],
+ "prom wall": [],
  "protein shaker bottle": [
   "Plain",
   "Vanilla flavored",
@@ -9062,6 +9622,16 @@
   "Blue",
   "Purple"
  ],
+ "puppy plushie": [
+  "Beige",
+  "Red",
+  "Lemon & white",
+  "Spotted",
+  "Black",
+  "Tricolored",
+  "Gray & white",
+  "Pink"
+ ],
  "purple Persian rug": [],
  "purple camo flooring": [],
  "purple camo wall": [],
@@ -9123,6 +9693,14 @@
   "Green",
   "Light blue",
   "Blue",
+  "Purple"
+ ],
+ "raggedy outfit": [
+  "White",
+  "Black",
+  "Red",
+  "Orange",
+  "Green",
   "Purple"
  ],
  "raglan shirt": [
@@ -9388,6 +9966,8 @@
   "Silver",
   "Silver"
  ],
+ "reindeer costume": [],
+ "reindeer hat": [],
  "reindeer sweater": [
   "Red",
   "Green",
@@ -9676,6 +10256,7 @@
   "Pop"
  ],
  "rocky-mountain flooring": [],
+ "rodeo-style springy ride-on": [],
  "rosalia batesi beetle model": [],
  "rose bed": [
   "Red",
@@ -10003,6 +10584,16 @@
  ],
  "sepia puzzle flooring": [],
  "sepia puzzle wall": [],
+ "sequin dress": [
+  "White",
+  "Black",
+  "Red",
+  "Pink",
+  "Yellow",
+  "Green",
+  "Blue",
+  "Purple"
+ ],
  "sequin leggings": [
   "White",
   "Black",
@@ -10022,6 +10613,14 @@
   "White & silver",
   "Red",
   "Black"
+ ],
+ "set of stockings": [
+  "Colorful",
+  "Cute",
+  "Cool",
+  "Chic",
+  "Elegant",
+  "Natural"
  ],
  "seven-ball tee": [],
  "sewing machine": [
@@ -10060,6 +10659,12 @@
   "Brown",
   "Beige"
  ],
+ "shamrock doorplate": [],
+ "shamrock hat": [],
+ "shamrock rug": [],
+ "shamrock shoes": [],
+ "shamrock suit": [],
+ "shamrock sunglasses": [],
  "shanty mat": [],
  "shark-tooth pattern": [],
  "shattered glasses": [],
@@ -10178,6 +10783,8 @@
   "Light purple"
  ],
  "ship deck": [],
+ "ship-wheel door decoration": [],
+ "shiromuku": [],
  "shirt with camera": [
   "Black",
   "Light blue"
@@ -10604,6 +11211,14 @@
   "Red",
   "White"
  ],
+ "slip dress": [
+  "Gray",
+  "Black",
+  "Red",
+  "Orange",
+  "Yellow",
+  "Blue"
+ ],
  "slip-on loafers": [
   "White",
   "Black",
@@ -10642,6 +11257,11 @@
   "Blue"
  ],
  "sloppy rug": [],
+ "small Mushroom Platform": [
+  "Yellow",
+  "Pink",
+  "Green"
+ ],
  "small cardboard boxes": [],
  "small silk hat": [
   "Black",
@@ -10761,6 +11381,7 @@
   "White",
   "Natural & green"
  ],
+ "songpyeon": [],
  "soothing tearoom wall": [],
  "soup kettle": [
   "Corn soup",
@@ -10825,6 +11446,93 @@
  "spino skull": [],
  "spino tail": [],
  "spino torso": [],
+ "spooky arch": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky candy set": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky carriage": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky chair": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky flooring": [],
+ "spooky garland": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky lantern": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky lantern set": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky rug": [],
+ "spooky scarecrow": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky standing lamp": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky table": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky table setting": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky tower": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky tree": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky trick lamp": [
+  "Orange",
+  "Yellow",
+  "Green",
+  "Monochrome"
+ ],
+ "spooky wall": [],
  "sports cap": [
   "White & red",
   "White & blue",
@@ -10989,6 +11697,7 @@
   "Green"
  ],
  "standing toilet": [],
+ "star bopper": [],
  "star clock": [
   "Yellow",
   "Green",
@@ -11337,14 +12046,16 @@
   "Avocado",
   "Beige"
  ],
- "summer-solstice crown": [],
+ "summer-shell rug": [],
  "summit wall": [],
  "sumo ring": [],
+ "sunflower crown": [],
  "sunflower dress": [
   "White",
   "Orange",
   "Navy blue"
  ],
+ "sunflower rug": [],
  "sunny parasol": [],
  "superhero mask": [],
  "superhero uniform": [
@@ -11369,6 +12080,7 @@
   "Purple"
  ],
  "surgeonfish model": [],
+ "surichwi tteok": [],
  "surveillance camera": [],
  "sushi chef hat": [
   "White",
@@ -11705,6 +12417,13 @@
   "Black",
   "Red"
  ],
+ "thank-you Dad apron": [
+  "Black",
+  "Red",
+  "Green",
+  "Blue",
+  "Brown"
+ ],
  "thank-you Dad mug": [],
  "thank-you Mom mug": [],
  "thick-stripes shirt": [
@@ -11874,6 +12593,16 @@
   "Pink"
  ],
  "tin bucket": [],
+ "tin robot": [
+  "Silver",
+  "Blue",
+  "Red",
+  "Orange",
+  "Yellow",
+  "Green",
+  "Pink",
+  "Black"
+ ],
  "tiny library": [
   "Natural",
   "Red",
@@ -12152,6 +12881,7 @@
  ],
  "tropical rug": [],
  "tropical vista": [],
+ "tsunokakushi": [],
  "tube socks": [
   "Red",
   "Orange",
@@ -12251,6 +12981,7 @@
   "Green",
   "Navy blue"
  ],
+ "twelve-grape dish": [],
  "two-ball tee": [],
  "two-tone pants": [
   "Monotone",
@@ -12411,6 +13142,16 @@
   "Orange",
   "Avocado",
   "Blue"
+ ],
+ "vibrant tuxedo": [
+  "Monotone",
+  "Red",
+  "Orange",
+  "Yellow",
+  "Green",
+  "Blue",
+  "Purple",
+  "Brown"
  ],
  "video camera": [
   "Black",
@@ -12699,6 +13440,7 @@
  ],
  "white botanical-tile wall": [],
  "white delicate-blooms wall": [],
+ "white hakama with crest": [],
  "white hallway wall": [],
  "white heart rug": [],
  "white honeycomb tile": [],
@@ -12732,6 +13474,11 @@
   "Strategy meeting",
   "Brainstorming meeting",
   "Fact-finding meeting"
+ ],
+ "whoopee cushion": [
+  "Red",
+  "Green",
+  "Yellow"
  ],
  "wide chino pants": [
   "Gray",
@@ -12779,7 +13526,6 @@
   "Red",
   "Blue"
  ],
- "winter-solstice sweater": [],
  "wizard's cap": [
   "Blue",
   "Purple"
@@ -12788,6 +13534,7 @@
   "Blue",
   "Purple"
  ],
+ "wobbling Zipper toy": [],
  "wood-burning stove": [],
  "wood-egg outfit": [],
  "wood-egg shell": [],
@@ -13364,6 +14111,7 @@
   "Purple",
   "Brown"
  ],
+ "zodiac ox figurine": [],
  "zori": [
   "Aqua",
   "White",
@@ -13380,5 +14128,6 @@
   "Yellow",
   "Green",
   "Navy blue"
- ]
+ ],
+ "\u03c0 pie": []
 }
