@@ -7,39 +7,22 @@ import json
 import numpy
 import os
 
-from typing import Dict, Iterator, List, Tuple
+from typing import Dict, Iterable, List, Tuple
 
 # The expected color for the video background.
 BG_COLOR = (194, 222, 228)
 WOOD_COLOR = (115, 175, 228)
+KITCHEN_COLOR = (160, 167, 246)
 
-# Mapping from background colors (in BGR for cv2) to card type.
-CARD_TYPES: Dict[Tuple[int, int, int], str] = {
-    (173, 220, 229): 'beige',
-    (232, 215, 188): 'blue',
-    (109, 158, 183): 'brick',
-    (61, 103, 143): 'brown',
-    (187, 242, 247): 'cream',
-    (109, 107, 106): 'dark gray',
-    (118, 200, 211): 'gold',
-    (124, 226, 154): 'green',
-    (188, 188, 186): 'light gray',
-    (108, 196, 242): 'orange',
-    (184, 180, 243): 'pink',
-    (228, 180, 213): 'purple',
-    (89, 75, 204): 'red',
-    (163, 159, 160): 'silver',
-    (229, 232, 231): 'white',
-    (122, 225, 230): 'yellow',
-    BG_COLOR: 'blank',
-}
+# Color offset due to video encoding.
+COLOR_OFFSET = (3, 2, 5)
 
 
 class RecipeCard:
     """The image and data associated with a given recipe."""
 
-    def __init__(self, item_name, card_type):
-        img_path = os.path.join('recipes', 'generated', item_name + '.png')
+    def __init__(self, item_name, filename, card_type):
+        img_path = os.path.join('recipes', 'generated', f'{filename}.png')
         self.img = cv2.imread(img_path)
         self.item_name = item_name
         self.card_type = card_type
@@ -50,9 +33,11 @@ class RecipeCard:
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing DIY recipes."""
-    color = frame[:20, 1200:1250].mean(axis=(0, 1))
+    color = frame[:20, 1200:1240].mean(axis=(0, 1))
     if numpy.linalg.norm(color - WOOD_COLOR) < 7:
         raise AssertionError('Workbench scanning is not supported.')
+    if numpy.linalg.norm(color - KITCHEN_COLOR) < 7:
+        raise AssertionError('Kitchen scanning is not supported.')
     return numpy.linalg.norm(color - BG_COLOR) < 7
 
 
@@ -85,12 +70,12 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
 def match_recipes(recipe_cards: List[numpy.ndarray]) -> List[str]:
     """Matches icons against database of recipe images, finding best matches."""
     matched_recipes = set()
-    recipe_db = _get_recipe_db()
     for card in recipe_cards:
-        card_type = _guess_card_type(card)
-        if card_type == 'blank':
+        # Check if the card is just the background color.
+        if numpy.linalg.norm(card.mean(axis=(0, 1)) - BG_COLOR) < 5:
             continue  # Skip blank card slots.
-        best_match = _find_best_match(card, recipe_db[card_type])
+        possible_recipes = list(_get_candidate_recipes(card))
+        best_match = _find_best_match(card, possible_recipes)
         matched_recipes.add(best_match.item_name)
     return sorted(matched_recipes)
 
@@ -106,7 +91,7 @@ def translate_names(recipe_names: List[str], locale: str) -> List[str]:
     return [translations[name][locale] for name in recipe_names]
 
 
-def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
+def _read_frames(filename: str) -> Iterable[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region."""
     cap = cv2.VideoCapture(filename)
     while True:
@@ -125,7 +110,7 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     cap.release()
 
 
-def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
+def _parse_frame(frame: numpy.ndarray) -> Iterable[List[numpy.ndarray]]:
     """Parses an individual frame and extracts cards from the recipe list."""
     # Start/end horizontal position for the 5 recipe cards.
     x_positions = [(11, 123), (148, 260), (286, 398), (423, 535), (560, 672)]
@@ -134,7 +119,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     # then it averages the frame across the Y-axis to find the area rows.
     # Lastly, it finds the y-positions marking the start/end of each row.
     thresh = cv2.inRange(frame, (185, 215, 218), (210, 230, 237))
-    separators = numpy.diff(thresh.mean(axis=1) > 190).nonzero()[0]
+    separators = numpy.diff(thresh.mean(axis=1) > 195).nonzero()[0]
 
     # We do a first pass finding all sensible y positions.
     y_positions = []
@@ -178,36 +163,38 @@ def _is_duplicate_cards(all_cards: List[numpy.ndarray], new_cards: List[numpy.nd
 
 
 @functools.lru_cache()
-def _get_recipe_db() -> Dict[str, List[RecipeCard]]:
+def _get_recipe_db() -> Dict[int, List[RecipeCard]]:
     """Fetches the item database for a given locale, with caching."""
     with open(os.path.join('recipes', 'names.json')) as fp:
         recipes_data = json.load(fp)
 
     recipe_db = collections.defaultdict(list)
-    for item_name, _, card_type in recipes_data:
-        recipe = RecipeCard(item_name, card_type)
-        recipe_db[card_type].append(recipe)
-
-    # Merge orange, pink and yellow since they are often mixed up.
-    merged = recipe_db['orange'] + recipe_db['gold'] + recipe_db['yellow']
-    recipe_db['orange'] = recipe_db['gold'] = recipe_db['yellow'] = merged
-
-    # Merge beige and cream as they are also very close
-    merged = recipe_db['beige'] + recipe_db['cream']
-    recipe_db['beige'] = recipe_db['cream'] = merged
-
+    for item_name, filename, card_color in recipes_data:
+        recipe = RecipeCard(item_name, filename, card_color)
+        recipe_db[card_color].append(recipe)
     return recipe_db
 
 
-def _guess_card_type(card: numpy.ndarray) -> str:
-    """Guessed the recipe type by the card's background color."""
-    # Cut a small piece from the corner and calculate the average color.
-    bg_color = card[106:, 60:70, :].mean(axis=(0, 1))
+@functools.lru_cache()
+def _get_color_db() -> Dict[int, Tuple[int, int, int]]:
+    """Fetches the item database for a given locale, with caching."""
+    with open(os.path.join('recipes', 'colors.json')) as fp:
+        colors_data = json.load(fp)
+    return {int(color_id): tuple(reversed(rgb))
+            for color_id, rgb in colors_data.items()}
 
-    # Find the closest match in the list of known card types.
-    distance_func = lambda x: numpy.linalg.norm(numpy.array(x) - bg_color)
-    best_match = min(CARD_TYPES.keys(), key=distance_func)
-    return CARD_TYPES[best_match]
+
+all_diffs = []
+def _get_candidate_recipes(card: numpy.ndarray) -> Iterable[RecipeCard]:
+    """Guesses the recipe color and returns all recipes the card could be"""
+    color_db = _get_color_db()
+    recipe_db = _get_recipe_db()
+
+    # Cut a small piece from the corner and calculate the average color.
+    bg_color = card[103:107, 62:66, :].mean(axis=(0, 1)) + COLOR_OFFSET
+    for color_id, color in color_db.items():
+        if numpy.linalg.norm(bg_color - color) < 20:
+            yield from recipe_db[color_id]
 
 
 def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCard:
