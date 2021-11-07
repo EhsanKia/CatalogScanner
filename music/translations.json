@@ -27,7 +27,7 @@
   "ja-jp": "アロハけけ",
   "ko-kr": "알로하K.K.",
   "nl-eu": "Aloha K.⁠K.",
-  "ru-eu": "Алох К. К.",
+  "ru-eu": "Алоха К. К.",
   "zh-cn": "夏威夷K.K.",
   "zh-tw": "夏威夷K.K."
  },
@@ -78,6 +78,22 @@
   "ru-eu": "Кафе К. К.",
   "zh-cn": "K.K.巴黎",
   "zh-tw": "K.K.巴黎"
+ },
+ "Chillwave": {
+  "de-eu": "Chillwave",
+  "en-eu": "Chillwave",
+  "en-us": "Chillwave",
+  "es-eu": "Tota-sintes",
+  "es-us": "Tota-sintes",
+  "fr-eu": "Chillwave Kéké",
+  "fr-us": "Chillwave Kéké",
+  "it-eu": "K.K. Chillwave",
+  "ja-jp": "チルウェイヴ",
+  "ko-kr": "칠웨이브",
+  "nl-eu": "K⁠.⁠K⁠.-⁠chillwave",
+  "ru-eu": "Чиллвейв",
+  "zh-cn": "冷波",
+  "zh-tw": "冷波"
  },
  "Comrade K.K.": {
   "de-eu": "K.K. Freundelied",
@@ -139,7 +155,7 @@
   "ja-jp": "さよなら",
   "ko-kr": "작별",
   "nl-eu": "Vaarwel",
-  "ru-eu": "Прощани",
+  "ru-eu": "Прощание",
   "zh-cn": "再会",
   "zh-tw": "再會"
  },
@@ -155,7 +171,7 @@
   "ja-jp": "もりのせいかつ",
   "ko-kr": "숲 속 생활",
   "nl-eu": "In het bos",
-  "ru-eu": "Лесн жизн",
+  "ru-eu": "Лесная жизнь",
   "zh-cn": "森林生活",
   "zh-tw": "森林生活"
  },
@@ -219,7 +235,7 @@
   "ja-jp": "けけチャイナ",
   "ko-kr": "K.K.차이나",
   "nl-eu": "K.⁠K. de wijze meester",
-  "ru-eu": "Величи К. К.",
+  "ru-eu": "Величие К. К.",
   "zh-cn": "K.K.中华",
   "zh-tw": "K.K.中華"
  },
@@ -235,7 +251,7 @@
   "ja-jp": "けけハリウッド",
   "ko-kr": "K.K.할리우드",
   "nl-eu": "K⁠.⁠K⁠.-⁠filmmuziek",
-  "ru-eu": "Приключени К. К.",
+  "ru-eu": "Приключения К. К.",
   "zh-cn": "K.K.好莱坞",
   "zh-tw": "K.K.好萊塢"
  },
@@ -251,7 +267,7 @@
   "ja-jp": "けけマリア",
   "ko-kr": "K.K.마리아",
   "nl-eu": "K⁠.⁠K⁠.-⁠aria",
-  "ru-eu": "Ари К. К.",
+  "ru-eu": "Ария К. К.",
   "zh-cn": "K.K.咏叹调",
   "zh-tw": "K.K.詠嘆調"
  },
@@ -267,9 +283,25 @@
   "ja-jp": "けけバラッド",
   "ko-kr": "K.K.발라드",
   "nl-eu": "K⁠.⁠K⁠.-⁠ballade",
-  "ru-eu": "Баллад К. К.",
+  "ru-eu": "Баллада К. К.",
   "zh-cn": "K.K.叙事歌谣",
   "zh-tw": "K.K.敘事歌謠"
+ },
+ "K.K. Bashment": {
+  "de-eu": "K.K. Dancehall",
+  "en-eu": "K.K. Bashment",
+  "en-us": "K.K. Bashment",
+  "es-eu": "Tota-dancehall",
+  "es-us": "Tota-dancehall",
+  "fr-eu": "Dancehall Kéké",
+  "fr-us": "Dancehall Kéké",
+  "it-eu": "K.K. Dancehall",
+  "ja-jp": "けけバッシュメント",
+  "ko-kr": "K.K.배시먼트",
+  "nl-eu": "K⁠.⁠K⁠.-⁠dancehall",
+  "ru-eu": "Дэнсхолл К. К.",
+  "zh-cn": "K.K.舞场雷鬼",
+  "zh-tw": "K.K.舞場雷鬼"
  },
  "K.K. Bazaar": {
   "de-eu": "K.K. Basar",
@@ -299,7 +331,7 @@
   "ja-jp": "きみのたんじょうび",
   "ko-kr": "그대의 생일",
   "nl-eu": "Fijne verjaardag",
-  "ru-eu": "Д рождения К. К.",
+  "ru-eu": "День рождения К. К.",
   "zh-cn": "你的生日",
   "zh-tw": "你的生日"
  },
@@ -331,9 +363,25 @@
   "ja-jp": "けけボッサ",
   "ko-kr": "K.K.보사노바",
   "nl-eu": "K⁠.⁠K⁠.-⁠bossanova",
-  "ru-eu": "Босанов К. К.",
+  "ru-eu": "Босанова К. К.",
   "zh-cn": "K.K.巴萨诺瓦",
   "zh-tw": "K.K.巴薩諾瓦"
+ },
+ "K.K. Break": {
+  "de-eu": "K.K. Break",
+  "en-eu": "K.K. Break",
+  "en-us": "K.K. Break",
+  "es-eu": "Tota-break",
+  "es-us": "Tota-break",
+  "fr-eu": "Break Kéké",
+  "fr-us": "Break Kéké",
+  "it-eu": "K.K. Break",
+  "ja-jp": "けけブレイク",
+  "ko-kr": "K.K.브레이크",
+  "nl-eu": "K⁠.⁠K⁠.-⁠break",
+  "ru-eu": "Брейк К. К.",
+  "zh-cn": "K.K.地板舞",
+  "zh-tw": "K.K.地板舞"
  },
  "K.K. Calypso": {
   "de-eu": "K.K. Calypso",
@@ -363,7 +411,7 @@
   "ja-jp": "トルコそんぐ",
   "ko-kr": "터키의 노래",
   "nl-eu": "K.⁠K. in de kasba",
-  "ru-eu": "Крепост К. К.",
+  "ru-eu": "Крепость К. К.",
   "zh-cn": "土耳其乐曲",
   "zh-tw": "土耳其樂曲"
  },
@@ -382,6 +430,22 @@
   "ru-eu": "Хорал К. К.",
   "zh-cn": "K.K.赞美诗歌",
   "zh-tw": "K.K.讚美詩歌"
+ },
+ "K.K. Chorinho": {
+  "de-eu": "K.K. Chorinho",
+  "en-eu": "K.K. Chorinho",
+  "en-us": "K.K. Chorinho",
+  "es-eu": "Tota-chorinho",
+  "es-us": "Tota-chorinho",
+  "fr-eu": "Chorinho Kéké",
+  "fr-us": "Chorinho Kéké",
+  "it-eu": "K.K. Chorinho",
+  "ja-jp": "けけショーロ",
+  "ko-kr": "K.K.쇼로",
+  "nl-eu": "K⁠.⁠K⁠.-⁠chorinho",
+  "ru-eu": "Шориньо К. К.",
+  "zh-cn": "K.K.咻乐",
+  "zh-tw": "K.K.咻樂"
  },
  "K.K. Condor": {
   "de-eu": "K.K. Kondor",
@@ -495,6 +559,22 @@
   "zh-cn": "K.K.迪克西",
   "zh-tw": "K.K.迪克西"
  },
+ "K.K. Dub": {
+  "de-eu": "K.K. Dub",
+  "en-eu": "K.K. Dub",
+  "en-us": "K.K. Dub",
+  "es-eu": "Tota-dub",
+  "es-us": "Tota-dub",
+  "fr-eu": "Dub Kéké",
+  "fr-us": "Dub Kéké",
+  "it-eu": "K.K. Dub",
+  "ja-jp": "けけダブ",
+  "ko-kr": "K.K.덥",
+  "nl-eu": "K⁠.⁠K⁠.-⁠dub",
+  "ru-eu": "Даб К. К.",
+  "zh-cn": "K.K.混搭音乐",
+  "zh-tw": "K.K.混搭音樂"
+ },
  "K.K. Faire": {
   "de-eu": "K.K. Jahrmarkt",
   "en-eu": "K.K. Faire",
@@ -507,7 +587,7 @@
   "ja-jp": "ハイサイけけ",
   "ko-kr": "혼저옵서예K.K.",
   "nl-eu": "K⁠.⁠K⁠.-⁠boerendans",
-  "ru-eu": "Ярмарк К. К.",
+  "ru-eu": "Ярмарка К. К.",
   "zh-cn": "冲绳K.K.",
   "zh-tw": "沖繩K.K."
  },
@@ -542,6 +622,22 @@
   "ru-eu": "Фолк К. К.",
   "zh-cn": "K.K.民谣",
   "zh-tw": "K.K.民謠"
+ },
+ "K.K. Fugue": {
+  "de-eu": "K.K. Fuge",
+  "en-eu": "K.K. Fugue",
+  "en-us": "K.K. Fugue",
+  "es-eu": "Tota-fuga",
+  "es-us": "Tota-fuga",
+  "fr-eu": "Fugue de Kéké",
+  "fr-us": "Fugue de Kéké",
+  "it-eu": "K.K. Fuga",
+  "ja-jp": "けけフーガ",
+  "ko-kr": "K.K.푸가",
+  "nl-eu": "K⁠.⁠K⁠.-⁠fuga",
+  "ru-eu": "Фуга К. К.",
+  "zh-cn": "K.K.赋格曲",
+  "zh-tw": "K.K.賦格曲"
  },
  "K.K. Fusion": {
   "de-eu": "K.K. Fusion",
@@ -590,6 +686,22 @@
   "ru-eu": "Гамбо К. К.",
   "zh-cn": "新奥尔良乐曲",
   "zh-tw": "新奧爾良樂曲"
+ },
+ "K.K. Hop": {
+  "de-eu": "K.K. Hop",
+  "en-eu": "K.K. Hop",
+  "en-us": "K.K. Hop",
+  "es-eu": "Tota-hop",
+  "es-us": "Tota-hop",
+  "fr-eu": "Rap de Kéké",
+  "fr-us": "Rap de Kéké",
+  "it-eu": "K.K. Rap",
+  "ja-jp": "けけホップ",
+  "ko-kr": "K.K.홉",
+  "nl-eu": "K⁠.⁠K⁠.-⁠hiphop",
+  "ru-eu": "Хоп К. К.",
+  "zh-cn": "K.K.嘻哈",
+  "zh-tw": "K.K.嘻哈"
  },
  "K.K. House": {
   "de-eu": "K.K. House",
@@ -651,9 +763,25 @@
   "ja-jp": "けけじょんがら",
   "ko-kr": "K.K.샤미센 연주곡",
   "nl-eu": "K⁠.⁠K⁠.-⁠jongara",
-  "ru-eu": "Джонгар К. К.",
+  "ru-eu": "Джонгара К. К.",
   "zh-cn": "K.K.三味线",
   "zh-tw": "K.K.三味線"
+ },
+ "K.K. Khoomei": {
+  "de-eu": "K.K. Khöömei",
+  "en-eu": "K.K. Khoomei",
+  "en-us": "K.K. Khoomei",
+  "es-eu": "Tota-khöömei",
+  "es-us": "Tota-khöömei",
+  "fr-eu": "Khöömii Kéké",
+  "fr-us": "Khöömii Kéké",
+  "it-eu": "K.K. Khoomei",
+  "ja-jp": "けけホーミー",
+  "ko-kr": "K.K.후미",
+  "nl-eu": "K⁠.⁠K⁠.-⁠keelzang",
+  "ru-eu": "Хоомей К. К.",
+  "zh-cn": "K.K.喉音",
+  "zh-tw": "K.K.喉音"
  },
  "K.K. Lament": {
   "de-eu": "K.K. Klagelied",
@@ -667,7 +795,7 @@
   "ja-jp": "けけえんか",
   "ko-kr": "K.K.트로트",
   "nl-eu": "K⁠.⁠K⁠.-⁠klaagzang",
-  "ru-eu": "Жалобн песн К. К.",
+  "ru-eu": "Жалобная песнь К. К.",
   "zh-cn": "K.K.演歌",
   "zh-tw": "K.K.演歌"
  },
@@ -687,6 +815,22 @@
   "zh-cn": "K.K.情歌",
   "zh-tw": "K.K.情歌"
  },
+ "K.K. Lovers": {
+  "de-eu": "K.K. Lovers",
+  "en-eu": "K.K. Lovers",
+  "en-us": "K.K. Lovers",
+  "es-eu": "Tota-amores",
+  "es-us": "Tota-amores",
+  "fr-eu": "Romantique Kéké",
+  "fr-us": "Romantique Kéké",
+  "it-eu": "K.K. Serenata",
+  "ja-jp": "けけラヴァーズ",
+  "ko-kr": "K.K.러버스",
+  "nl-eu": "K⁠.⁠K⁠.-lovers",
+  "ru-eu": "Лаверс-рок К. К.",
+  "zh-cn": "K.K.爱人们",
+  "zh-tw": "K.K.愛人們"
+ },
  "K.K. Lullaby": {
   "de-eu": "K.K. Schlaflied",
   "en-eu": "K.K. Lullaby",
@@ -699,7 +843,7 @@
   "ja-jp": "けけララバイ",
   "ko-kr": "K.K.자장가",
   "nl-eu": "K⁠.⁠K⁠.-⁠slaapliedje",
-  "ru-eu": "Колыбельн К. К.",
+  "ru-eu": "Колыбельная К. К.",
   "zh-cn": "K.K.摇篮曲",
   "zh-tw": "K.K.搖籃曲"
  },
@@ -795,7 +939,7 @@
   "ja-jp": "けけのミロンガ",
   "ko-kr": "K.K.밀롱가",
   "nl-eu": "K⁠.⁠K⁠.-⁠milonga",
-  "ru-eu": "Милонг К. К.",
+  "ru-eu": "Милонга К. К.",
   "zh-cn": "K.K.米隆加",
   "zh-tw": "K.K.米隆加"
  },
@@ -811,7 +955,7 @@
   "ja-jp": "けけボレロ",
   "ko-kr": "K.K.볼레로",
   "nl-eu": "K⁠.⁠K⁠.-⁠bolero",
-  "ru-eu": "Задумчив К. К.",
+  "ru-eu": "Задумчивый К. К.",
   "zh-cn": "K.K.波蕾洛",
   "zh-tw": "K.K.波蕾洛"
  },
@@ -846,6 +990,22 @@
   "ru-eu": "Парад К. К.",
   "zh-cn": "K.K.嘉年华",
   "zh-tw": "K.K.嘉年華"
+ },
+ "K.K. Polka": {
+  "de-eu": "K.K. Polka",
+  "en-eu": "K.K. Polka",
+  "en-us": "K.K. Polka",
+  "es-eu": "Tota-polka",
+  "es-us": "Tota-polka",
+  "fr-eu": "Polka de Kéké",
+  "fr-us": "Polka de Kéké",
+  "it-eu": "K.K. Polka",
+  "ja-jp": "けけポルカ",
+  "ko-kr": "K.K.폴카",
+  "nl-eu": "K⁠.⁠K⁠.-⁠polka",
+  "ru-eu": "Полька К. К.",
+  "zh-cn": "K.K.波尔卡舞曲",
+  "zh-tw": "K.K.波爾卡舞曲"
  },
  "K.K. Ragtime": {
   "de-eu": "K.K. Ragtime",
@@ -894,6 +1054,22 @@
   "ru-eu": "Регги К. К.",
   "zh-cn": "K.K.雷鬼",
   "zh-tw": "K.K.雷鬼"
+ },
+ "K.K. Robot Synth": {
+  "de-eu": "K.K. Synthi",
+  "en-eu": "K.K. Robot Synth",
+  "en-us": "K.K. Robot Synth",
+  "es-eu": "Tota-loid",
+  "es-us": "Tota-loid",
+  "fr-eu": "Cyber-Kéké",
+  "fr-us": "Cyber-Kéké",
+  "it-eu": "K.K. Robot",
+  "ja-jp": "けけロイド",
+  "ko-kr": "K.K.로이드",
+  "nl-eu": "K⁠.⁠K⁠.-⁠loid",
+  "ru-eu": "Робо-синти К. К.",
+  "zh-cn": "K.K.电子合成音",
+  "zh-tw": "K.K.電子合成音"
  },
  "K.K. Rock": {
   "de-eu": "K.K. Rock",
@@ -955,7 +1131,7 @@
   "ja-jp": "けけサルサ",
   "ko-kr": "K.K.살사",
   "nl-eu": "K⁠.⁠K⁠.-⁠salsa",
-  "ru-eu": "Сальс К. К.",
+  "ru-eu": "Сальса К. К.",
   "zh-cn": "K.K.萨尔萨",
   "zh-tw": "K.K.騷莎"
  },
@@ -971,7 +1147,7 @@
   "ja-jp": "けけサンバ",
   "ko-kr": "K.K.삼바",
   "nl-eu": "K⁠.⁠K⁠.-⁠samba",
-  "ru-eu": "Самб К. К.",
+  "ru-eu": "Самба К. К.",
   "zh-cn": "K.K.桑巴",
   "zh-tw": "K.K.森巴"
  },
@@ -991,6 +1167,22 @@
   "zh-cn": "K.K.斯卡",
   "zh-tw": "K.K.斯卡"
  },
+ "K.K. Slack-Key": {
+  "de-eu": "K.K. Slack-Key",
+  "en-eu": "K.K. Slack-Key",
+  "en-us": "K.K. Slack-Key",
+  "es-eu": "Tota-kī hō'alu",
+  "es-us": "Tota-kī hō'alu",
+  "fr-eu": "Ki ho'alu Kéké",
+  "fr-us": "Ki ho'alu Kéké",
+  "it-eu": "K.K. Slack-Key",
+  "ja-jp": "けけスラッキー",
+  "ko-kr": "K.K.슬랙키",
+  "nl-eu": "K.K.-slack-key",
+  "ru-eu": "Слэк-ки К. К.",
+  "zh-cn": "K.K.Slack-Key吉他",
+  "zh-tw": "K.K. Slack-Key吉他"
+ },
  "K.K. Sonata": {
   "de-eu": "K.K. Sonate",
   "en-eu": "K.K. Sonata",
@@ -1003,7 +1195,7 @@
   "ja-jp": "けけのソナタ",
   "ko-kr": "K.K.소나타",
   "nl-eu": "K⁠.⁠K⁠.-⁠sonate",
-  "ru-eu": "Сонат К. К.",
+  "ru-eu": "Соната К. К.",
   "zh-cn": "K.K.奏鸣曲",
   "zh-tw": "K.K.奏鳴曲"
  },
@@ -1019,7 +1211,7 @@
   "ja-jp": "けけソング",
   "ko-kr": "K.K.의 노래",
   "nl-eu": "K⁠.⁠K⁠.-⁠lied",
-  "ru-eu": "Песн К. К.",
+  "ru-eu": "Песнь К. К.",
   "zh-cn": "K.K.乐曲",
   "zh-tw": "K.K.樂曲"
  },
@@ -1051,7 +1243,7 @@
   "ja-jp": "コサックそんぐ",
   "ko-kr": "까자크의 노래",
   "nl-eu": "K.⁠K. op de steppe",
-  "ru-eu": "Степ К. К.",
+  "ru-eu": "Степь К. К.",
   "zh-cn": "哥萨克乐曲",
   "zh-tw": "哥薩克樂曲"
  },
@@ -1067,7 +1259,7 @@
   "ja-jp": "おさんぽ",
   "ko-kr": "산책",
   "nl-eu": "Op straat",
-  "ru-eu": "Прогулк К. К.",
+  "ru-eu": "Прогулка К. К.",
   "zh-cn": "散散步",
   "zh-tw": "散散步"
  },
@@ -1195,7 +1387,7 @@
   "ja-jp": "けけだいみょう",
   "ko-kr": "K.K.왕조",
   "nl-eu": "Keizer K.⁠K.",
-  "ru-eu": "Корол К. К.",
+  "ru-eu": "Король К. К.",
   "zh-cn": "K.K.领主",
   "zh-tw": "K.K.領主"
  },
@@ -1227,7 +1419,7 @@
   "ja-jp": "ふなうた2001",
   "ko-kr": "뱃노래2001",
   "nl-eu": "Zeelied",
-  "ru-eu": "Песн о море 2001",
+  "ru-eu": "Песня о море 2001",
   "zh-cn": "船歌2001",
   "zh-tw": "船歌2001"
  },
@@ -1243,7 +1435,7 @@
   "ja-jp": "アルペンそんぐ",
   "ko-kr": "알프스의 노래",
   "nl-eu": "Jodelaheho",
-  "ru-eu": "Горн песн",
+  "ru-eu": "Горная песнь",
   "zh-cn": "阿尔卑斯山乐曲",
   "zh-tw": "阿爾卑斯山樂曲"
  },
@@ -1291,7 +1483,7 @@
   "ja-jp": "ナポリタン",
   "ko-kr": "토마토 스파게티",
   "nl-eu": "Napolitain",
-  "ru-eu": "Неаполитанско",
+  "ru-eu": "Неаполитанское",
   "zh-cn": "意大利面",
   "zh-tw": "義大利麵"
  },
@@ -1323,7 +1515,7 @@
   "ja-jp": "かんがえちゅう",
   "ko-kr": "생각 중",
   "nl-eu": "De denker",
-  "ru-eu": "Размышлени",
+  "ru-eu": "Размышления",
   "zh-cn": "思考中",
   "zh-tw": "思考中"
  },
@@ -1387,7 +1579,7 @@
   "ja-jp": "はるのこもれび",
   "ko-kr": "봄날의 여유",
   "nl-eu": "Lentebloesems",
-  "ru-eu": "Весенн цвет",
+  "ru-eu": "Весенний цвет",
   "zh-cn": "春暖花开",
   "zh-tw": "春暖花開"
  },
@@ -1403,7 +1595,7 @@
   "ja-jp": "ブルーおにぎり",
   "ko-kr": "블루 삼각 김밥",
   "nl-eu": "Oude cupcakes",
-  "ru-eu": "Черствы капкейк",
+  "ru-eu": "Черствые капкейки",
   "zh-cn": "蓝色饭团",
   "zh-tw": "藍色飯糰"
  },
@@ -1419,7 +1611,7 @@
   "ja-jp": "にだんざか",
   "ko-kr": "오르막길",
   "nl-eu": "Heuvelopwaarts",
-  "ru-eu": "Круто холм",
+  "ru-eu": "Крутой холм",
   "zh-cn": "二段斜坡",
   "zh-tw": "二段斜坡"
  },
@@ -1515,7 +1707,7 @@
   "ja-jp": "みんなあつまれ",
   "ko-kr": "모두 모여봐요",
   "nl-eu": "Welkome horizon",
-  "ru-eu": "Светл горизонт",
+  "ru-eu": "Светлые горизонты",
   "zh-cn": "大家集合吧",
   "zh-tw": "大家集合吧"
  }
