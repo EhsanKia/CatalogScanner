@@ -1,4 +1,20 @@
 {
+ "Act Natural": {
+  "de-eu": "Natürliches Posieren",
+  "en-eu": "Act Natural",
+  "en-us": "Act Natural",
+  "es-eu": "Pose natural",
+  "es-us": "Pose natural",
+  "fr-eu": "Poses naturelles",
+  "fr-us": "Poses naturelles",
+  "it-eu": "Pose naturali",
+  "ja-jp": "しなやかにキメる",
+  "ko-kr": "부드러운 포즈",
+  "nl-eu": "Ontspannen poses",
+  "ru-eu": "Естественная поза",
+  "zh-cn": "优雅姿势",
+  "zh-tw": "優雅姿勢"
+ },
  "Aggravation": {
   "de-eu": "Wut",
   "en-eu": "Aggravation",
@@ -30,6 +46,22 @@
   "ru-eu": "Согласие",
   "zh-cn": "点头",
   "zh-tw": "點頭"
+ },
+ "Airplane": {
+  "de-eu": "Flugzeugtanz",
+  "en-eu": "Airplane",
+  "en-us": "Airplane",
+  "es-eu": "Avión",
+  "es-us": "Avión",
+  "fr-eu": "Avion",
+  "fr-us": "Avion",
+  "it-eu": "Aeroplano",
+  "ja-jp": "ひこうきダンス",
+  "ko-kr": "비행기 댄스",
+  "nl-eu": "Vliegtuig",
+  "ru-eu": "Самолетик",
+  "zh-cn": "飞机翼舞动",
+  "zh-tw": "飛機翼舞動"
  },
  "Amazed": {
   "de-eu": "Erstaunen",
@@ -63,6 +95,38 @@
   "zh-cn": "鞠躬",
   "zh-tw": "鞠躬"
  },
+ "Arm Circles": {
+  "de-eu": "Armkreisen",
+  "en-eu": "Arm Circles",
+  "en-us": "Arm Circles",
+  "es-eu": "Mariposa",
+  "es-us": "Mariposa",
+  "fr-eu": "Cercles avec les bras",
+  "fr-us": "Cercles avec les bras",
+  "it-eu": "Rotazioni delle braccia",
+  "ja-jp": "うでまわし",
+  "ko-kr": "팔 돌리기",
+  "nl-eu": "Armcirkels",
+  "ru-eu": "Вращение руками",
+  "zh-cn": "转动手臂",
+  "zh-tw": "轉動前臂"
+ },
+ "Arm-Swing Dance": {
+  "de-eu": "Armschwenke-Tanz",
+  "en-eu": "Arm-Swing Dance",
+  "en-us": "Arm-Swing Dance",
+  "es-eu": "Braceo alterno",
+  "es-us": "Braceo alterno",
+  "fr-eu": "Battements de bras",
+  "fr-us": "Déhanché disco",
+  "it-eu": "Danza delle braccia",
+  "ja-jp": "うでふりダンス",
+  "ko-kr": "팔 흔들기 댄스",
+  "nl-eu": "Armzwaaien",
+  "ru-eu": "Махи руками",
+  "zh-cn": "摆手舞动",
+  "zh-tw": "擺手舞動"
+ },
  "Bashfulness": {
   "de-eu": "Schüchternheit",
   "en-eu": "Bashfulness",
@@ -79,6 +143,22 @@
   "zh-cn": "害羞",
   "zh-tw": "害羞"
  },
+ "Behold": {
+  "de-eu": "Präsentieren",
+  "en-eu": "Behold",
+  "en-us": "Behold",
+  "es-eu": "Indicación",
+  "es-us": "Indicación",
+  "fr-eu": "Admirez !",
+  "fr-us": "Admirez!",
+  "it-eu": "Ammirate!",
+  "ja-jp": "コチラです",
+  "ko-kr": "이쪽이야!",
+  "nl-eu": "Presenteren",
+  "ru-eu": "Гляди-ка!",
+  "zh-cn": "在这里",
+  "zh-tw": "在這裡"
+ },
  "Bewilderment": {
   "de-eu": "Überraschung",
   "en-eu": "Bewilderment",
@@ -94,6 +174,22 @@
   "ru-eu": "Недоумение",
   "zh-cn": "嗯？",
   "zh-tw": "嗯？"
+ },
+ "Body Twists": {
+  "de-eu": "Rumpfdrehen",
+  "en-eu": "Body Twists",
+  "en-us": "Body Twists",
+  "es-eu": "Caderas",
+  "es-us": "Caderas",
+  "fr-eu": "Souplesse du tronc",
+  "fr-us": "Souplesse du tronc",
+  "it-eu": "Rotazioni del corpo",
+  "ja-jp": "からだひねり",
+  "ko-kr": "몸통 운동",
+  "nl-eu": "Staande draai",
+  "ru-eu": "Повороты туловища",
+  "zh-cn": "扭转身体",
+  "zh-tw": "扭轉身體"
  },
  "Cold Chill": {
   "de-eu": "Schaudern",
@@ -223,6 +319,22 @@
   "zh-cn": "紧张",
   "zh-tw": "緊張"
  },
+ "Double Wave": {
+  "de-eu": "Tschüssi",
+  "en-eu": "Double Wave",
+  "en-us": "Double Wave",
+  "es-eu": "Doble saludo",
+  "es-us": "Doble saludo",
+  "fr-eu": "Au revoir à deux mains",
+  "fr-us": "Au revoir à deux mains",
+  "it-eu": "Doppio saluto",
+  "ja-jp": "りょうてバイバイ",
+  "ko-kr": "양손 바이바이",
+  "nl-eu": "Enthousiast groeten",
+  "ru-eu": "Двойная волна",
+  "zh-cn": "挥手再见",
+  "zh-tw": "兩手掰掰"
+ },
  "Dozing": {
   "de-eu": "Einnicken",
   "en-eu": "Dozing",
@@ -238,6 +350,22 @@
   "ru-eu": "Дремота",
   "zh-cn": "睡着了",
   "zh-tw": "睡著了"
+ },
+ "Eager": {
+  "de-eu": "Zu Befehl",
+  "en-eu": "Eager",
+  "en-us": "Eager",
+  "es-eu": "Motivación",
+  "es-us": "Motivación",
+  "fr-eu": "Motivation",
+  "fr-us": "Motivation",
+  "it-eu": "Ci penso io!",
+  "ja-jp": "がんばるぞ",
+  "ko-kr": "파이팅!",
+  "nl-eu": "Gemotiveerd",
+  "ru-eu": "Полная готовность",
+  "zh-cn": "我会加油的",
+  "zh-tw": "我會加油的"
  },
  "Encouraging": {
   "de-eu": "Anfeuern",
@@ -303,6 +431,22 @@
   "zh-cn": "跟着节奏",
   "zh-tw": "跟著節奏"
  },
+ "Flex": {
+  "de-eu": "Muskelspielen",
+  "en-eu": "Flex",
+  "en-us": "Flex",
+  "es-eu": "Musculitos",
+  "es-us": "Lucir musculatura",
+  "fr-eu": "Biscotos",
+  "fr-us": "Biscoteaux",
+  "it-eu": "Muscoli in mostra",
+  "ja-jp": "ムキムキ",
+  "ko-kr": "불끈불끈",
+  "nl-eu": "Spierbundel",
+  "ru-eu": "Напряжение мышц",
+  "zh-cn": "健美姿势",
+  "zh-tw": "健美姿勢"
+ },
  "Flourish": {
   "de-eu": "Pirouette",
   "en-eu": "Flourish",
@@ -350,6 +494,54 @@
   "ru-eu": "Приветствие",
   "zh-cn": "你好！",
   "zh-tw": "嗨！"
+ },
+ "Groove Left": {
+  "de-eu": "Seitwärtstanz rechts",
+  "en-eu": "Groove Left",
+  "en-us": "Groove Left",
+  "es-eu": "Braceo izquierdo",
+  "es-us": "Braceo izquierdo",
+  "fr-eu": "Groove à gauche",
+  "fr-us": "Groove à gauche",
+  "it-eu": "Danza a sinistra",
+  "ja-jp": "ひだりむきダンス",
+  "ko-kr": "왼쪽 댄스",
+  "nl-eu": "Dans naar links",
+  "ru-eu": "Подскоки влево в ритм",
+  "zh-cn": "向左舞动",
+  "zh-tw": "向左舞動"
+ },
+ "Groove Right": {
+  "de-eu": "Seitwärtstanz links",
+  "en-eu": "Groove Right",
+  "en-us": "Groove Right",
+  "es-eu": "Braceo derecho",
+  "es-us": "Braceo derecho",
+  "fr-eu": "Groove à droite",
+  "fr-us": "Groove à droite",
+  "it-eu": "Danza a destra",
+  "ja-jp": "みぎむきダンス",
+  "ko-kr": "오른쪽 댄스",
+  "nl-eu": "Dans naar rechts",
+  "ru-eu": "Подскоки вправо в ритм",
+  "zh-cn": "向右舞动",
+  "zh-tw": "向右舞動"
+ },
+ "Grooving Hop": {
+  "de-eu": "Hüpftanz",
+  "en-eu": "Grooving Hop",
+  "en-us": "Grooving Hop",
+  "es-eu": "Salto rítmico",
+  "es-us": "Saltito",
+  "fr-eu": "Poing en l'air",
+  "fr-us": "Sauts groovy",
+  "it-eu": "Salto ritmato",
+  "ja-jp": "タテのりジャンプ",
+  "ko-kr": "제자리 점프",
+  "nl-eu": "Vuist in de lucht",
+  "ru-eu": "Подскоки в ритм",
+  "zh-cn": "上下跳动",
+  "zh-tw": "上下跳動"
  },
  "Happiness": {
   "de-eu": "Zufriedenheit",
@@ -415,6 +607,22 @@
   "zh-cn": "请",
   "zh-tw": "請"
  },
+ "Hula": {
+  "de-eu": "Hula",
+  "en-eu": "Hula",
+  "en-us": "Hula",
+  "es-eu": "Hula",
+  "es-us": "Hula",
+  "fr-eu": "Hula",
+  "fr-us": "Hula",
+  "it-eu": "Hula",
+  "ja-jp": "フラダンス",
+  "ko-kr": "훌라 댄스",
+  "nl-eu": "Hoelahoela",
+  "ru-eu": "Хула",
+  "zh-cn": "草裙舞",
+  "zh-tw": "草裙舞"
+ },
  "Inspiration": {
   "de-eu": "Inspiration",
   "en-eu": "Inspiration",
@@ -447,6 +655,38 @@
   "zh-cn": "瞪",
   "zh-tw": "瞪"
  },
+ "Island Stomp": {
+  "de-eu": "Stepper-Tanz",
+  "en-eu": "Island Stomp",
+  "en-us": "Island Stomp",
+  "es-eu": "Venid a mí",
+  "es-us": "Paso isleño",
+  "fr-eu": "Marche sur place",
+  "fr-us": "Pas insulaire",
+  "it-eu": "Marcia sul posto",
+  "ja-jp": "あしぶみダンス",
+  "ko-kr": "제자리 스텝",
+  "nl-eu": "Pas op de plaats",
+  "ru-eu": "Островной притоп",
+  "zh-cn": "踏脚舞动",
+  "zh-tw": "踏腳舞動"
+ },
+ "Jammin'": {
+  "de-eu": "Mitwippen",
+  "en-eu": "Jammin'",
+  "en-us": "Jammin'",
+  "es-eu": "Vaivén",
+  "es-us": "Al ritmo",
+  "fr-eu": "En rythme",
+  "fr-us": "En rythme",
+  "it-eu": "A ritmo",
+  "ja-jp": "おんがくにのる",
+  "ko-kr": "어깨춤",
+  "nl-eu": "Op het ritme",
+  "ru-eu": "Ритмично",
+  "zh-cn": "听音乐摇摆",
+  "zh-tw": "聽音樂搖擺"
+ },
  "Joy": {
   "de-eu": "Freude",
   "en-eu": "Joy",
@@ -462,6 +702,22 @@
   "ru-eu": "Радость",
   "zh-cn": "开心",
   "zh-tw": "開心"
+ },
+ "Jump": {
+  "de-eu": "Springen",
+  "en-eu": "Jump",
+  "en-us": "Jump",
+  "es-eu": "Salto",
+  "es-us": "Salto",
+  "fr-eu": "Sauts sur place",
+  "fr-us": "Sauts sur place",
+  "it-eu": "Salti",
+  "ja-jp": "りょうあしとび",
+  "ko-kr": "뜀뛰기",
+  "nl-eu": "Springen",
+  "ru-eu": "Прыжок",
+  "zh-cn": "双脚跳",
+  "zh-tw": "雙腳跳"
  },
  "Laughter": {
   "de-eu": "Lachen",
@@ -494,6 +750,22 @@
   "ru-eu": "Танцуем!",
   "zh-cn": "炒热气氛",
   "zh-tw": "炒熱氣氛"
+ },
+ "Listening Ears": {
+  "de-eu": "Wahrnehmung",
+  "en-eu": "Listening Ears",
+  "en-us": "Listening Ears",
+  "es-eu": "Escucha",
+  "es-us": "Oídos atentos",
+  "fr-eu": "Oreilles attentives",
+  "fr-us": "Oreilles attentives",
+  "it-eu": "In ascolto",
+  "ja-jp": "みみをすます",
+  "ko-kr": "귀 기울이기",
+  "nl-eu": "Luisteren",
+  "ru-eu": "Внимательные уши",
+  "zh-cn": "聆听",
+  "zh-tw": "聆聽"
  },
  "Love": {
   "de-eu": "Liebe",
@@ -559,6 +831,22 @@
   "zh-cn": "对吧！",
   "zh-tw": "對吧！"
  },
+ "Posture Warm-Up": {
+  "de-eu": "Aufwärmen",
+  "en-eu": "Posture Warm-Up",
+  "en-us": "Posture Warm-Up",
+  "es-eu": "Brazos",
+  "es-us": "Brazos",
+  "fr-eu": "Échauffement",
+  "fr-us": "Échauffement",
+  "it-eu": "Riscaldamento",
+  "ja-jp": "せすじのばし",
+  "ko-kr": "숨쉬기 운동",
+  "nl-eu": "Warming-up",
+  "ru-eu": "Разминка",
+  "zh-cn": "伸展背部",
+  "zh-tw": "伸展背部"
+ },
  "Pride": {
   "de-eu": "Stolz",
   "en-eu": "Pride",
@@ -607,6 +895,22 @@
   "zh-cn": "失落",
   "zh-tw": "失落"
  },
+ "Say Cheese": {
+  "de-eu": "Bitte lächeln",
+  "en-eu": "Say Cheese",
+  "en-us": "Say Cheese",
+  "es-eu": "Patataaa",
+  "es-us": "¡Foto!",
+  "fr-eu": "Ouistiti !",
+  "fr-us": "Ouistiti!",
+  "it-eu": "Un bel sorriso!",
+  "ja-jp": "はいチーズ",
+  "ko-kr": "김치～!",
+  "nl-eu": "Lach naar het vogeltje",
+  "ru-eu": "Улыбка в объектив",
+  "zh-cn": "笑一个",
+  "zh-tw": "笑一個"
+ },
  "Scare": {
   "de-eu": "Erschrecken",
   "en-eu": "Scare",
@@ -638,6 +942,22 @@
   "ru-eu": "Насмешка",
   "zh-cn": "苦笑",
   "zh-tw": "苦笑"
+ },
+ "Shimmy": {
+  "de-eu": "Chill-Tanz",
+  "en-eu": "Shimmy",
+  "en-us": "Shimmy",
+  "es-eu": "Contoneo",
+  "es-us": "Meneo",
+  "fr-eu": "Gauche-droite",
+  "fr-us": "Métronome",
+  "it-eu": "Destra-sinistra",
+  "ja-jp": "みぎひだりダンス",
+  "ko-kr": "좌우 댄스",
+  "nl-eu": "Links-rechts",
+  "ru-eu": "Шимми",
+  "zh-cn": "左右舞动",
+  "zh-tw": "左右舞動"
  },
  "Shocked": {
   "de-eu": "Schock",
@@ -686,6 +1006,38 @@
   "ru-eu": "Застенчивость",
   "zh-cn": "不好意思",
   "zh-tw": "不好意思"
+ },
+ "Side Bends": {
+  "de-eu": "Seitbeugen",
+  "en-eu": "Side Bends",
+  "en-us": "Side Bends",
+  "es-eu": "Estiramiento",
+  "es-us": "Flexión lateral",
+  "fr-eu": "Souplesse latérale",
+  "fr-us": "Souplesse latérale",
+  "it-eu": "Piegamenti laterali",
+  "ja-jp": "よこのばし",
+  "ko-kr": "옆구리 운동",
+  "nl-eu": "Zijwaarts rekken",
+  "ru-eu": "Наклоны в стороны",
+  "zh-cn": "体侧伸展",
+  "zh-tw": "側邊伸展"
+ },
+ "Side-to-Side": {
+  "de-eu": "Tip-Tap-Tanz",
+  "en-eu": "Side-to-Side",
+  "en-us": "Side-to-Side",
+  "es-eu": "Balanceo",
+  "es-us": "Balanceo",
+  "fr-eu": "Pas de côté",
+  "fr-us": "Pas de côté",
+  "it-eu": "Passi di lato",
+  "ja-jp": "ステップダンス",
+  "ko-kr": "좌우 스텝",
+  "nl-eu": "Zijwaartse stappen",
+  "ru-eu": "Сайд-ту-сайд",
+  "zh-cn": "左右踏步舞动",
+  "zh-tw": "左右踏步舞動"
  },
  "Sighing": {
   "de-eu": "Enttäuschung",
@@ -783,6 +1135,22 @@
   "zh-cn": "闻闻",
   "zh-tw": "聞"
  },
+ "Soak It In": {
+  "de-eu": "Relax-Tanz",
+  "en-eu": "Soak It In",
+  "en-us": "Soak It In",
+  "es-eu": "Deleite",
+  "es-us": "Disfrute",
+  "fr-eu": "Bras en l'air",
+  "fr-us": "Bras en l'air",
+  "it-eu": "Relax",
+  "ja-jp": "あびる",
+  "ko-kr": "주목!",
+  "nl-eu": "Een met de wereld",
+  "ru-eu": "Погружение",
+  "zh-cn": "享受",
+  "zh-tw": "享受"
+ },
  "Sorrow": {
   "de-eu": "Leid",
   "en-eu": "Sorrow",
@@ -798,6 +1166,22 @@
   "ru-eu": "Плач",
   "zh-cn": "大哭",
   "zh-tw": "大哭"
+ },
+ "Stretch": {
+  "de-eu": "Strecken",
+  "en-eu": "Stretch",
+  "en-us": "Stretch",
+  "es-eu": "Desperezo",
+  "es-us": "Estiramiento",
+  "fr-eu": "Étirement",
+  "fr-us": "Étirement",
+  "it-eu": "Stretching",
+  "ja-jp": "のびをする",
+  "ko-kr": "기지개",
+  "nl-eu": "Uitrekken",
+  "ru-eu": "Растяжка",
+  "zh-cn": "伸懒腰",
+  "zh-tw": "伸懶腰"
  },
  "Surprise": {
   "de-eu": "Unglaube",
@@ -863,6 +1247,54 @@
   "zh-cn": "思考",
   "zh-tw": "思考中"
  },
+ "Turnip Patch": {
+  "de-eu": "Rübenfeld-Tanz",
+  "en-eu": "Turnip Patch",
+  "en-us": "Turnip Patch",
+  "es-eu": "Lados alternos",
+  "es-us": "Lados alternos",
+  "fr-eu": "Rameur",
+  "fr-us": "Rameur",
+  "it-eu": "Avanti-indietro",
+  "ja-jp": "うでのばしダンス",
+  "ko-kr": "쭉쭉 댄스",
+  "nl-eu": "Strekdans",
+  "ru-eu": "Репка",
+  "zh-cn": "伸手臂舞动",
+  "zh-tw": "伸手臂舞動"
+ },
+ "Twisty Dance": {
+  "de-eu": "Twist",
+  "en-eu": "Twisty Dance",
+  "en-us": "Twisty Dance",
+  "es-eu": "Twist",
+  "es-us": "Twist",
+  "fr-eu": "Twist",
+  "fr-us": "Twist",
+  "it-eu": "Twist",
+  "ja-jp": "ツイストダンス",
+  "ko-kr": "트위스트 댄스",
+  "nl-eu": "Twist",
+  "ru-eu": "Твист",
+  "zh-cn": "扭扭舞",
+  "zh-tw": "扭扭舞"
+ },
+ "Upper-Body Circles": {
+  "de-eu": "Oberkörperkreisen",
+  "en-eu": "Upper-Body Circles",
+  "en-us": "Upper-Body Circles",
+  "es-eu": "Círculos",
+  "es-us": "Círculos",
+  "fr-eu": "Rotation du tronc",
+  "fr-us": "Rotation du tronc",
+  "it-eu": "Rotazioni del busto",
+  "ja-jp": "じょうたいまわし",
+  "ko-kr": "상체 돌리기",
+  "nl-eu": "Grote cirkels",
+  "ru-eu": "Вращение туловища",
+  "zh-cn": "转动上半身",
+  "zh-tw": "轉動上半身"
+ },
  "Viva": {
   "de-eu": "Viva",
   "en-eu": "Viva",
@@ -894,6 +1326,38 @@
   "ru-eu": "Прощание",
   "zh-cn": "再见",
   "zh-tw": "掰掰"
+ },
+ "Wide Arm Stretch": {
+  "de-eu": "Armstrecken",
+  "en-eu": "Wide Arm Stretch",
+  "en-us": "Wide Arm Stretch",
+  "es-eu": "Inclinación",
+  "es-us": "Inclinación",
+  "fr-eu": "Expansion du thorax",
+  "fr-us": "Expansion du thorax",
+  "it-eu": "Apertura del torace",
+  "ja-jp": "むねそらし",
+  "ko-kr": "등배 운동",
+  "nl-eu": "Diagonaal strekken",
+  "ru-eu": "Наклоны / разведение рук",
+  "zh-cn": "扩胸",
+  "zh-tw": "展開胸口"
+ },
+ "Work It": {
+  "de-eu": "Cooles Posieren",
+  "en-eu": "Work It",
+  "en-us": "Work It",
+  "es-eu": "Pose de modelo",
+  "es-us": "Modelaje",
+  "fr-eu": "Poses tendance",
+  "fr-us": "Poses tendance",
+  "it-eu": "Pose fashion",
+  "ja-jp": "クールにキメる",
+  "ko-kr": "쿨한 포즈",
+  "nl-eu": "Coole poses",
+  "ru-eu": "Позируем!",
+  "zh-cn": "酷感姿势",
+  "zh-tw": "酷感姿勢"
  },
  "Work Out": {
   "de-eu": "Trainieren",
