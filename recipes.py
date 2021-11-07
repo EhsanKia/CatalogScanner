@@ -184,7 +184,6 @@ def _get_color_db() -> Dict[int, Tuple[int, int, int]]:
             for color_id, rgb in colors_data.items()}
 
 
-all_diffs = []
 def _get_candidate_recipes(card: numpy.ndarray) -> Iterable[RecipeCard]:
     """Guesses the recipe color and returns all recipes the card could be"""
     color_db = _get_color_db()
