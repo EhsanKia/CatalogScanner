@@ -22,7 +22,7 @@ class RecipeCard:
     """The image and data associated with a given recipe."""
 
     def __init__(self, item_name, filename, card_type):
-        img_path = os.path.join('recipes', 'generated', f'{filename}.png')
+        img_path = os.path.join('recipes', 'generated', filename)
         self.img = cv2.imread(img_path)
         self.item_name = item_name
         self.card_type = card_type
