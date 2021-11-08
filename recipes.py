@@ -190,9 +190,15 @@ def _get_candidate_recipes(card: numpy.ndarray) -> Iterable[RecipeCard]:
     recipe_db = _get_recipe_db()
 
     # Cut a small piece from the corner and calculate the average color.
-    bg_color = card[103:107, 62:66, :].mean(axis=(0, 1)) + COLOR_OFFSET
-    for color_id, color in color_db.items():
-        if numpy.linalg.norm(bg_color - color) < 20:
+    bg_color = card[105:108, 62:66, :].mean(axis=(0, 1)) + COLOR_OFFSET
+
+    # Calculate how close each color is to the card's background color.
+    distance_func = lambda x: numpy.linalg.norm(bg_color - color_db[x])
+    color_distances = sorted((distance_func(c), c) for c in color_db)
+    for distance, color_id in color_distances:
+        # Stop if the candidate is much worse than best candidate.
+        if distance - color_distances[0][0] > 10:
+            break
             yield from recipe_db[color_id]
 
 
