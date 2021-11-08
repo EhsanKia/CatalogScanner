@@ -209,9 +209,12 @@ def _get_candidate_recipes(card: numpy.ndarray) -> Iterable[RecipeCard]:
 
 def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCard:
     """Finds the closest matching recipe for the given card."""
+    if len(recipes) == 1:
+        return recipes[0]
+
     fast_similarity_metric = lambda r: cv2.absdiff(card, r.img).mean()
     similarities = list(map(fast_similarity_metric, recipes))
-    sim1, sim2 = numpy.partition(similarities, kth=2)[:2]
+    sim1, sim2 = numpy.partition(similarities, kth=min(2, len(recipes) - 1))[:2]
 
     # If the match seems obvious, return the quick result.
     if abs(sim1 - sim2) > 3:
@@ -220,7 +223,7 @@ def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCa
     # Otherwise, we use a slower matching, which tries various shifts.
     def slow_similarity_metric(recipe):
         diffs = []
-        for y in [-1, 0, 1]:
+        for y in [-2, -1, 0, 1, 2]:
             shifted = numpy.roll(card, y, axis=0)
             diffs.append(cv2.absdiff(shifted, recipe.img).sum())
         return min(diffs)  # Return lowest diff across shifts.
