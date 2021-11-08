@@ -168,6 +168,11 @@ def _get_recipe_db() -> Dict[int, List[RecipeCard]]:
     with open(os.path.join('recipes', 'names.json')) as fp:
         recipes_data = json.load(fp)
 
+    # Some recipes have alternate images, append those to the list.
+    recipes_data.extend(
+        (name, filename.replace('_0_0', '_1_0'), color)
+        for name, filename, color in recipes_data if filename.endswith('_0_0.png'))
+
     recipe_db = collections.defaultdict(list)
     for item_name, filename, card_color in recipes_data:
         recipe = RecipeCard(item_name, filename, card_color)
