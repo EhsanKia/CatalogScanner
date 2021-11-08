@@ -14,8 +14,6 @@ BG_COLOR = (194, 222, 228)
 WOOD_COLOR = (115, 175, 228)
 KITCHEN_COLOR = (160, 167, 246)
 
-# Color offset due to video encoding.
-COLOR_OFFSET = (3, 2, 5)
 
 
 class RecipeCard:
@@ -72,8 +70,10 @@ def match_recipes(recipe_cards: List[numpy.ndarray]) -> List[str]:
     matched_recipes = set()
     for card in recipe_cards:
         # Check if the card is just the background color.
-        if numpy.linalg.norm(card.mean(axis=(0, 1)) - BG_COLOR) < 5:
+        card_center_color = card[28:84, 28:84].mean(axis=(0, 1))
+        if numpy.linalg.norm(card_center_color - BG_COLOR) < 3:
             continue  # Skip blank card slots.
+
         possible_recipes = list(_get_candidate_recipes(card))
         best_match = _find_best_match(card, possible_recipes)
         matched_recipes.add(best_match.item_name)
@@ -195,7 +195,7 @@ def _get_candidate_recipes(card: numpy.ndarray) -> Iterable[RecipeCard]:
     recipe_db = _get_recipe_db()
 
     # Cut a small piece from the corner and calculate the average color.
-    bg_color = card[105:108, 62:66, :].mean(axis=(0, 1)) + COLOR_OFFSET
+    bg_color = card[104:107, 62:66, :].mean(axis=(0, 1))
 
     # Calculate how close each color is to the card's background color.
     distance_func = lambda x: numpy.linalg.norm(bg_color - color_db[x])
