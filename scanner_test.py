@@ -1,7 +1,6 @@
 import json
 import os
 
-from absl import logging
 from absl.testing import absltest, parameterized
 
 import scanner
@@ -88,15 +87,15 @@ class ScannerTest(absltest.TestCase):
 class ScannerExtraTest(parameterized.TestCase):
 
     @parameterized.named_parameters(
-        (k.split('.')[0], k, v) for k, v in EXTRA_GROUND_TRUTH.items())
-    def test_extra(self, filename, expected):
+        (k.split('.')[0], k) for k in EXTRA_GROUND_TRUTH)
+    def test_extra(self, filename):
         filepath = os.path.join('examples/extra', filename)
         try:
             results = scanner.scan_media(filepath)
             actual = results.items
         except AssertionError as e:
             actual = str(e)
-        self.assertEqual(actual, expected)
+        self.assertEqual(EXTRA_GROUND_TRUTH[filename], actual)
 
 
 if __name__ == "__main__":

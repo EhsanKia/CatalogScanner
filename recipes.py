@@ -14,19 +14,24 @@ BG_COLOR = (194, 222, 228)
 WOOD_COLOR = (115, 175, 228)
 KITCHEN_COLOR = (160, 167, 246)
 
+# Items that look very alike and can be mixed up.
+CONFUSED_ITEMS = {
+    'concrete pillar': 'marble pillar',
+    'marble pillar': 'concrete pillar',
+}
 
 
 class RecipeCard:
     """The image and data associated with a given recipe."""
 
-    def __init__(self, item_name, filename, card_type):
+    def __init__(self, item_name, filename, color_id):
         img_path = os.path.join('recipes', 'generated', filename)
         self.img = cv2.imread(img_path)
-        self.item_name = item_name
-        self.card_type = card_type
+        self.name = item_name
+        self.color_id = color_id
 
     def __repr__(self):
-        return f'RecipeCard({self.item_name!r}, {self.card_type!r})'
+        return f'RecipeCard({self.name!r}, {self.color_id!r})'
 
 
 def detect(frame: numpy.ndarray) -> bool:
@@ -71,12 +76,19 @@ def match_recipes(recipe_cards: List[numpy.ndarray]) -> List[str]:
     for card in recipe_cards:
         # Check if the card is just the background color.
         card_center_color = card[28:84, 28:84].mean(axis=(0, 1))
-        if numpy.linalg.norm(card_center_color - BG_COLOR) < 3:
+        if numpy.linalg.norm(card_center_color - BG_COLOR) < 5:
             continue  # Skip blank card slots.
 
         possible_recipes = list(_get_candidate_recipes(card))
         best_match = _find_best_match(card, possible_recipes)
-        matched_recipes.add(best_match.item_name)
+        item_name = best_match.name
+
+        # If the item is already in our list, it might be confused with a similar item.
+        if item_name in matched_recipes and item_name in CONFUSED_ITEMS:
+            item_name = CONFUSED_ITEMS[item_name]
+
+        matched_recipes.add(item_name)
+
     return sorted(matched_recipes)
 
 
@@ -204,7 +216,7 @@ def _get_candidate_recipes(card: numpy.ndarray) -> Iterable[RecipeCard]:
         # Stop if the candidate is much worse than best candidate.
         if distance - color_distances[0][0] > 10:
             break
-            yield from recipe_db[color_id]
+        yield from recipe_db[color_id]
 
 
 def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCard:
@@ -233,5 +245,5 @@ def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCa
 
 
 if __name__ == "__main__":
-    results = scan('examples/recipes.mp4')
+    results = scan('examples/extra/recipes_img.jpg')
     print('\n'.join(results.items))
