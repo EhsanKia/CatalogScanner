@@ -7,6 +7,7 @@ import json
 import logging
 import numpy
 import pytesseract
+import random
 import unicodedata
 
 from PIL import Image
@@ -67,7 +68,7 @@ def scan(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> Scan
     )
 
 
-def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
+def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     """Parses a whole video and returns an image containing all the items found."""
     unfinished_page = False
     item_scroll_count = 0
@@ -93,24 +94,30 @@ def parse_video(filename: str, for_sale: bool = False) -> numpy.ndarray:
     assert all_rows, 'No items found, invalid video?'
 
     # Concatenate all rows into a single image.
-    all_rows = _dedupe_rows(all_rows)
-    return cv2.vconcat(all_rows)
+    return _dedupe_rows(all_rows)
 
 
-def run_ocr(item_rows: numpy.ndarray, lang: str = 'eng') -> Set[str]:
+def run_ocr(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
     """Runs tesseract OCR on an image of item names and returns all items found."""
-    # For larger catalogs, shrink size to avoid Tesseract's 32k limit.
-    # Accuracy still remains good for most scripts.
-    if item_rows.shape[0] > 32765:
-        item_rows = cv2.resize(item_rows, None, fx=0.5, fy=0.5)
+    if not item_rows:
+        return set()  # Recursive base case.
 
+    # For larger catalogs, recursively split scans to avoid Tesseract's 32k limit.
+    # Each row is 35px high; 900 x 35 = 31.5k which is below the limit.
+    item_rows, remaining_rows = item_rows[:900], item_rows[900:]
+
+    logging.info('Running Tesseract on %s rows', len(item_rows))
     parsed_text = pytesseract.image_to_string(
-        Image.fromarray(item_rows), lang=lang, config=_get_tesseract_config(lang))
+        Image.fromarray(cv2.vconcat(item_rows)),
+        lang=lang, config=_get_tesseract_config(lang))
 
     # Split the results and remove empty lines.
-    clean_items = {_cleanup_name(item, lang)
+    clean_names = {_cleanup_name(item, lang)
                    for item in parsed_text.split('\n')}
-    return clean_items - {''}  # Remove empty lines
+
+    # Add recursive results and remove empty lines.
+    remaining_names = run_ocr(remaining_rows, lang)
+    return (clean_names | remaining_names) - {''}
 
 
 def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
@@ -274,14 +281,16 @@ def _get_item_db(locale: str) -> Set[str]:
         return set(json.load(fp))
 
 
-def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
+def _detect_locale(item_rows: List[numpy.ndarray], locale: str) -> str:
     """Detects the right locale for the given items if required."""
     if locale != 'auto':
         # If locale is already specified, return as is.
         return locale
 
-    # Convert to Pillow image and truncate overly long images.
-    image = Image.fromarray(item_rows[:9800, :])
+    # Sample a subset of the rows and convert to Pillow image.
+    if len(item_rows) > 300:
+        item_rows = random.sample(item_rows, 300)
+    image = Image.fromarray(cv2.vconcat(item_rows))
 
     try:
         osd_data = pytesseract.image_to_osd(image, output_type=pytesseract.Output.DICT)
@@ -297,7 +306,9 @@ def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
         return possible_locales[0]
 
     # Otherwise, run OCR on the first few items and try to find the best matching locale.
-    item_names = run_ocr(item_rows[:30 * 35, :], lang='script/Latin')
+    if len(item_rows) > 30:
+        item_rows = random.sample(item_rows, 30)
+    item_names = run_ocr(cv2.vconcat(item_rows), lang='script/Latin')
 
     def match_score_func(locale):
         """Computes how many items match for a given locale."""
@@ -310,5 +321,5 @@ def _detect_locale(item_rows: numpy.ndarray, locale: str) -> str:
 
 
 if __name__ == "__main__":
-    results = scan('examples/extra/catalog_encoded.mp4')
+    results = scan('examples/catalog.mp4')
     print('\n'.join(results.items))
