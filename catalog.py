@@ -308,7 +308,7 @@ def _detect_locale(item_rows: List[numpy.ndarray], locale: str) -> str:
     # Otherwise, run OCR on the first few items and try to find the best matching locale.
     if len(item_rows) > 30:
         item_rows = random.sample(item_rows, 30)
-    item_names = run_ocr(cv2.vconcat(item_rows), lang='script/Latin')
+    item_names = run_ocr(item_rows, lang='script/Latin')
 
     def match_score_func(locale):
         """Computes how many items match for a given locale."""
