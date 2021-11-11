@@ -59,12 +59,13 @@ def scan(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> Scan
     item_rows = parse_video(video_file, for_sale)
     locale = _detect_locale(item_rows, locale)
     item_names = run_ocr(item_rows, lang=LOCALE_MAP[locale])
-    results = match_items(item_names, locale)
+    results, unmatched = match_items(item_names, locale)
 
     return ScanResult(
         mode=ScanMode.CATALOG,
         items=results,
         locale=locale,
+        unmatched=unmatched,
     )
 
 
@@ -120,7 +121,7 @@ def run_ocr(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
     return (clean_names | remaining_names) - {''}
 
 
-def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
+def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str], List[str]]:
     """Matches a list of names against a database of items, finding best matches."""
     no_match_items = []
     matched_items = set()
@@ -135,7 +136,7 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
         matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.5)
         if not matches:
             no_match_items.append(item)
-            assert len(no_match_items) <= 25, \
+            assert len(no_match_items) <= 0.2 * len(item_names), \
                 'Failed to match multiple items, wrong language?'
             continue
 
@@ -148,7 +149,7 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> List[str]:
     if no_match_items:
         logging.warning('Failed to match %d items: %s', len(no_match_items), no_match_items)
 
-    return sorted(matched_items)
+    return sorted(matched_items), no_match_items
 
 
 def _read_frames(filename: str) -> Iterator[numpy.ndarray]:

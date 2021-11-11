@@ -18,3 +18,4 @@ class ScanResult:
     mode: ScanMode
     items: List[str]
     locale: str
+    unmatched: List[str] = dataclasses.field(default_factory=list)
