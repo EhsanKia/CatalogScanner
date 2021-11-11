@@ -131,7 +131,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterable[List[numpy.ndarray]]:
     # then it averages the frame across the Y-axis to find the area rows.
     # Lastly, it finds the y-positions marking the start/end of each row.
     thresh = cv2.inRange(frame, (185, 215, 218), (210, 230, 237))
-    separators = numpy.diff(thresh.mean(axis=1) > 195).nonzero()[0]
+    separators = numpy.nonzero(numpy.diff(thresh.mean(axis=1) > 195))[0]
 
     # We do a first pass finding all sensible y positions.
     y_positions = []
@@ -197,8 +197,8 @@ def _get_color_db() -> Dict[int, Tuple[int, int, int]]:
     """Fetches the item database for a given locale, with caching."""
     with open(os.path.join('recipes', 'colors.json')) as fp:
         colors_data = json.load(fp)
-    return {int(color_id): tuple(reversed(rgb))
-            for color_id, rgb in colors_data.items()}
+    return {int(color_id): (b, g, r)
+            for color_id, (r, g, b) in colors_data.items()}
 
 
 def _get_candidate_recipes(card: numpy.ndarray) -> Iterable[RecipeCard]:
@@ -245,5 +245,5 @@ def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCa
 
 
 if __name__ == "__main__":
-    results = scan('examples/extra/recipes_img.jpg')
+    results = scan('examples/recipes.mp4')
     print('\n'.join(results.items))

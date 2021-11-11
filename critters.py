@@ -64,9 +64,9 @@ def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
     )
 
 
-def parse_video(filename: str) -> List[CritterImage]:
+def parse_video(filename: str) -> List[CritterIcon]:
     """Parses a whole video and returns icons for all critters found."""
-    all_icons: List[CritterImage] = []
+    all_icons: List[CritterIcon] = []
     section_count: Dict[CritterType, int] = collections.defaultdict(int)
     for critter_type, frame in _read_frames(filename):
         section_count[critter_type] += 1
@@ -83,7 +83,7 @@ def parse_video(filename: str) -> List[CritterImage]:
     return _remove_blanks(all_icons)
 
 
-def match_critters(critter_icons: List[CritterImage]) -> List[str]:
+def match_critters(critter_icons: List[CritterIcon]) -> List[str]:
     """Matches icons against database of critter images, finding best matches."""
     matched_critters = set()
     critter_db = _get_critter_db()
@@ -209,7 +209,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
         yield frame[y+8:y+88, x+16:x+96]
 
 
-def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
+def _remove_blanks(all_icons: List[CritterIcon]) -> List[CritterIcon]:
     """Remove all icons that show empty critter boxes."""
     filtered_icons = []
     for icon in all_icons:
@@ -256,5 +256,5 @@ def _find_best_match(icon: numpy.ndarray, critters: List[CritterImage]) -> Critt
 
 
 if __name__ == "__main__":
-    results = scan('examples/extra/critters_badpage.mp4')
+    results = scan('examples/critters.mp4')
     print('\n'.join(results.items))

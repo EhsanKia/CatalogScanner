@@ -123,7 +123,7 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     # then it averages the frame across the Y-axis to find the area rows.
     # Lastly, it finds the y-positions marking the start/end of each row.
     thresh = cv2.inRange(frame[:410], bg_color - 30, bg_color + 30)
-    separators = numpy.diff(thresh.mean(axis=1) > 100).nonzero()[0]
+    separators = numpy.nonzero(numpy.diff(thresh.mean(axis=1) > 100))[0]
     if len(separators) < 2:
         return
 

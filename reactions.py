@@ -58,9 +58,9 @@ def scan(image_file: str, locale: str = 'en-us') -> ScanResult:
     )
 
 
-def parse_image(filename: str) -> List[ReactionImage]:
+def parse_image(filename: str) -> List[numpy.ndarray]:
     """Parses a screenshot and returns icons for all reactions found."""
-    icon_pages: Dict[int, List[ReactionImage]] = {}
+    icon_pages: Dict[int, List[numpy.ndarray]] = {}
     assertion_error: Optional[AssertionError] = None
 
     cap = cv2.VideoCapture(filename)
@@ -84,10 +84,10 @@ def parse_image(filename: str) -> List[ReactionImage]:
     if assertion_error and (filename.endswith('.jpg') or not icon_pages):
         raise assertion_error
 
-    return itertools.chain.from_iterable(icon_pages.values())
+    return [icon for page in icon_pages.values() for icon in page]
 
 
-def match_reactions(reaction_icons: List[ReactionImage]) -> List[str]:
+def match_reactions(reaction_icons: List[numpy.ndarray]) -> List[str]:
     """Matches icons against database of reactions images, finding best matches."""
     matched_reactions = set()
     reaction_db = _get_reaction_db()

@@ -8,10 +8,11 @@ import logging
 import numpy
 import pytesseract
 import random
+import typing
 import unicodedata
 
 from PIL import Image
-from typing import Dict, Iterator, List, Set
+from typing import Dict, Iterator, List, Set, Tuple
 
 # The expected color for the video background.
 TOP_COLOR = (110, 233, 238)
@@ -111,6 +112,7 @@ def run_ocr(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
     parsed_text = pytesseract.image_to_string(
         Image.fromarray(cv2.vconcat(item_rows)),
         lang=lang, config=_get_tesseract_config(lang))
+    assert isinstance(parsed_text, str), 'Tesseract returned bytes'
 
     # Split the results and remove empty lines.
     clean_names = {_cleanup_name(item, lang)
@@ -294,7 +296,8 @@ def _detect_locale(item_rows: List[numpy.ndarray], locale: str) -> str:
     image = Image.fromarray(cv2.vconcat(item_rows))
 
     try:
-        osd_data = pytesseract.image_to_osd(image, output_type=pytesseract.Output.DICT)
+        osd_data = typing.cast(Dict[str, str], pytesseract.image_to_osd(
+            image, output_type=pytesseract.Output.DICT))
     except pytesseract.TesseractError:
         return 'en-us'
 
