@@ -2,7 +2,9 @@ import json
 import os
 
 from absl.testing import absltest, parameterized
+from unittest import mock
 
+import catalog
 import scanner
 from common import ScanMode
 
@@ -19,17 +21,31 @@ GROUND_TRUTH, EXTRA_GROUND_TRUTH = _fetch_ground_truth()
 
 class ScannerTest(absltest.TestCase):
 
+    def setUp(self):
+        self.maxDiff = None
+        return super().setUp()
+
     @property
     def name(self):
         return self.id().split('.')[-1]
+    
+    def inject_catalog_words(self, words, locale='en-us'):
+        """Inject words that are no longer in the db in newer versions."""
+        db = catalog._get_item_db(locale) | set(words)
+        get_item_mock = mock.patch.object(
+            catalog, '_get_item_db', return_value=db)
+        get_item_mock.start()
+        self.addCleanup(get_item_mock.stop)
 
     def test_catalog(self):
+        self.inject_catalog_words(['Writing desk', 'Teacup ride'])
         results = scanner.scan_media('examples/catalog.mp4')
         self.assertEqual(results.mode, ScanMode.CATALOG)
         self.assertEqual(results.items, GROUND_TRUTH[self.name])
         self.assertEqual(results.locale, 'en-us')
 
     def test_catalog_forsale(self):
+        self.inject_catalog_words(['Writing desk', 'Teacup ride'])
         results = scanner.scan_media('examples/catalog.mp4', for_sale=True)
         self.assertEqual(results.mode, ScanMode.CATALOG)
         self.assertEqual(results.items, GROUND_TRUTH[self.name])
