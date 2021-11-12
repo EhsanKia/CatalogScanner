@@ -102,8 +102,7 @@ class ScannerTest(absltest.TestCase):
 
 class ScannerExtraTest(parameterized.TestCase):
 
-    @parameterized.named_parameters(
-        (k.split('.')[0], k) for k in EXTRA_GROUND_TRUTH)
+    @parameterized.parameters(EXTRA_GROUND_TRUTH)
     def test_extra(self, filename):
         filepath = os.path.join('examples/extra', filename)
         try:

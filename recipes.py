@@ -12,7 +12,7 @@ from typing import Dict, Iterable, List, Tuple
 # The expected color for the video background.
 BG_COLOR = (194, 222, 228)
 WOOD_COLOR = (115, 175, 228)
-KITCHEN_COLOR = (160, 167, 246)
+KITCHEN_COLOR = (160, 163, 243)
 
 # Items that look very alike and can be mixed up.
 CONFUSED_ITEMS = {
@@ -37,11 +37,11 @@ class RecipeCard:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing DIY recipes."""
     color = frame[:20, 1200:1240].mean(axis=(0, 1))
-    if numpy.linalg.norm(color - WOOD_COLOR) < 7:
+    if numpy.linalg.norm(color - WOOD_COLOR) < 10:
         raise AssertionError('Workbench scanning is not supported.')
-    if numpy.linalg.norm(color - KITCHEN_COLOR) < 7:
+    if numpy.linalg.norm(color - KITCHEN_COLOR) < 10:
         raise AssertionError('Kitchen scanning is not supported.')
-    return numpy.linalg.norm(color - BG_COLOR) < 7
+    return numpy.linalg.norm(color - BG_COLOR) < 10
 
 
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
