@@ -156,6 +156,7 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
 
 def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region in grayscale."""
+    scroll_position = []
     cap = cv2.VideoCapture(filename)
     while True:
         ret, frame = cap.read()
@@ -168,8 +169,18 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         if not detect(frame):
             continue  # Skip frames where item list is not visible.
 
-        # Turn to grayscale and crop the region containing item name and price.
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # Crop scrollbar region and detect scroll position.
+        scrollbar = gray[160:570, 1235:1245].mean(axis=1)
+        scroll_position.append(numpy.argmax(scrollbar < 150))
+
+        # Warn if the user is scrolling inconsistently.
+        scroll_deltas = [0, *numpy.diff(scroll_position)]
+        if min(scroll_deltas) < -3 and max(scroll_deltas) > 3:
+            raise AssertionError('Video is scrolling inconsistently.')
+
+        # Crop the region containing item name and price.
         yield gray[150:630, 635:1220]
     cap.release()
 
