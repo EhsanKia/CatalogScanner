@@ -16,7 +16,11 @@ from typing import Dict, Iterator, List, Set, Tuple
 
 # The expected color for the video background.
 TOP_COLOR = (110, 233, 238)
-SIDE_COLOR = (178, 252, 254)
+SIDE_COLOR = (180, 253, 254)
+
+# Bad background colors
+WARDELL_COLOR = (211, 214, 248)
+NOOK_MILES_COLOR = (243, 207, 200)
 
 # Mapping supported AC:NH locales to tesseract languages.
 LOCALE_MAP: Dict[str, str] = {
@@ -51,7 +55,11 @@ SCRIPT_MAP: Dict[str, List[str]] = {
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing Nook Shopping catalog."""
-    side_color = frame[140:150, -20:].mean(axis=(0, 1))
+    side_color = frame[150:160, -20:].mean(axis=(0, 1))
+    if numpy.linalg.norm(side_color - WARDELL_COLOR) < 10:
+        raise AssertionError('Wardell catalog is not supported.')
+    if numpy.linalg.norm(side_color - NOOK_MILES_COLOR) < 10:
+        raise AssertionError('Nook Miles catalog is not supported.')
     return numpy.linalg.norm(side_color - SIDE_COLOR) < 10
 
 
