@@ -28,7 +28,7 @@ class ScannerTest(absltest.TestCase):
     @property
     def name(self):
         return self.id().split('.')[-1]
-    
+
     def inject_catalog_words(self, words, locale='en-us'):
         """Inject words that are no longer in the db in newer versions."""
         db = catalog._get_item_db(locale) | set(words)

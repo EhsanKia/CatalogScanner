@@ -13,6 +13,7 @@ from typing import Iterator, List
 # The expected color for the video background.
 BG_COLOR1 = (240, 210, 100)
 BG_COLOR2 = (226, 119, 79)
+BG_COLOR3 = (49, 60, 102)
 
 
 class SongCover:
@@ -34,6 +35,8 @@ def detect(frame: numpy.ndarray) -> bool:
     if numpy.linalg.norm(color - BG_COLOR1) < 15:
         return True
     if numpy.linalg.norm(color - BG_COLOR2) < 15:
+        return True
+    if numpy.linalg.norm(color - BG_COLOR3) < 15:
         return True
     return False
 
@@ -170,6 +173,8 @@ def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
         if numpy.linalg.norm(color - BG_COLOR1) < 15:
             continue
         if numpy.linalg.norm(color - BG_COLOR2) < 15:
+            continue
+        if numpy.linalg.norm(color - BG_COLOR3) < 15:
             continue
         filtered_icons.append(icon)
     return filtered_icons
