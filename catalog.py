@@ -164,7 +164,7 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
 
 def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region in grayscale."""
-    scroll_position = []
+    scroll_positions = []
     cap = cv2.VideoCapture(filename)
     while True:
         ret, frame = cap.read()
@@ -175,17 +175,15 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
             'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
         if not detect(frame):
+            scroll_positions = []  # Reset scroll positions on catalog change.
             continue  # Skip frames where item list is not visible.
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        # Crop scrollbar region and detect scroll position.
+        # Crop scrollbar region and get scroll position, then warn about bad scrolling.
         scrollbar = gray[160:570, 1235:1245].mean(axis=1)
-        scroll_position.append(numpy.argmax(scrollbar < 150))
-
-        # Warn if the user is scrolling inconsistently.
-        scroll_deltas = [0, *numpy.diff(scroll_position)]
-        if min(scroll_deltas) < -3 and max(scroll_deltas) > 3:
+        scroll_positions.append(numpy.argmax(scrollbar < 150))
+        if _is_inconsistent_scroll(scroll_positions):
             raise AssertionError('Video is scrolling inconsistently.')
 
         # Crop the region containing item name and price.
@@ -244,6 +242,14 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
     if cv2.absdiff(all_rows[-3], new_rows[-2]).mean() < 4:
         return True
     return False
+
+
+def _is_inconsistent_scroll(scroll_positions: List[int]) -> bool:
+    """Detect when the user is not scrolling in a consistent direction."""
+    scroll_deltas = typing.cast(numpy.ndarray, numpy.diff(scroll_positions))
+    downscroll_count = numpy.count_nonzero(scroll_deltas > 0)
+    upscroll_count = numpy.count_nonzero(scroll_deltas < 0)
+    return downscroll_count > 10 and upscroll_count > 10
 
 
 def _dedupe_rows(all_rows: List[numpy.ndarray]) -> List[numpy.ndarray]:
