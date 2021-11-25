@@ -14,6 +14,7 @@ from typing import Iterator, List
 BG_COLOR1 = (240, 210, 100)
 BG_COLOR2 = (226, 119, 79)
 BG_COLOR3 = (49, 60, 102)
+BG_COLOR4 = (83, 117, 173)
 
 
 class SongCover:
@@ -32,11 +33,7 @@ class SongCover:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing the music list."""
     color = frame[:20, 1220:1250].mean(axis=(0, 1))
-    if numpy.linalg.norm(color - BG_COLOR1) < 15:
-        return True
-    if numpy.linalg.norm(color - BG_COLOR2) < 15:
-        return True
-    if numpy.linalg.norm(color - BG_COLOR3) < 15:
+    if _is_background(color):
         return True
     return False
 
@@ -170,14 +167,22 @@ def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
     filtered_icons = []
     for icon in all_icons:
         color = icon[5:25, 60:200].mean(axis=(0, 1))
-        if numpy.linalg.norm(color - BG_COLOR1) < 15:
-            continue
-        if numpy.linalg.norm(color - BG_COLOR2) < 15:
-            continue
-        if numpy.linalg.norm(color - BG_COLOR3) < 15:
+        if _is_background(color):
             continue
         filtered_icons.append(icon)
     return filtered_icons
+
+
+def _is_background(color: numpy.ndarray) -> bool:
+    if numpy.linalg.norm(color - BG_COLOR1) < 15:
+        return True
+    if numpy.linalg.norm(color - BG_COLOR2) < 15:
+        return True
+    if numpy.linalg.norm(color - BG_COLOR3) < 15:
+        return True
+    if numpy.linalg.norm(color - BG_COLOR4) < 15:
+        return True
+    return False
 
 
 @functools.lru_cache()
