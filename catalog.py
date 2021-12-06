@@ -197,6 +197,8 @@ def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray
     # Last line has dashes after but first line doesn't have dashes before,
     # therefore we prepend the list with zero for the starting line.
     y_lines = list((frame[:, 0] < 200).nonzero()[0])
+    if not y_lines:
+        return
 
     # Normalize row lines by taking the average of all of them.
     # We know they are 53.45px apart, so we find the best offset from given lines.
