@@ -1,0 +1,14 @@
+# flyctl launch added from .gitignore
+**\.git
+**\.mypy_cache
+**\.venv
+**\.vscode
+**\__pycache__
+**\pythonenv*
+**\build
+**\examples\more
+**\dist
+**\*.code-workspace
+**\.env
+**\catalog-scanner.json
+fly.toml
