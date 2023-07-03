@@ -8,3 +8,4 @@ build/
 examples/more/
 dist/
 *.code-workspace
+catalog-scanner.json
