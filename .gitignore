@@ -8,5 +8,4 @@ build/
 examples/more/
 dist/
 *.code-workspace
-.env
 catalog-scanner.json
