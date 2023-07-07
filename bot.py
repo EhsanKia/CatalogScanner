@@ -48,12 +48,12 @@ def upload_to_datastore(result, discord_user_id=None):
 
 async def handle_message(ctx: discord.ApplicationContext, attachment: discord.Attachment):
     # Attachment.content_type returns a {type}/{file_format} string
-    attch_type = attachment.content_type.split('/')
-    if attch_type[0] != 'video':
-        await ctx.respond('The attachment needs to be a valid video file', ephemeral=True)
+    attch_type = attachment.content_type.split('/')[0]
+    if attch_type != 'video' and attch_type != 'image':
+        await ctx.respond(f'${constants.ERROR_EMOJI} The attachment needs to be a valid video or image file', ephemeral=True)
         return
-
-    await ctx.respond('Scan started, your results will be ready soon...', ephemeral=True)
+    
+    await ctx.respond(f'${constants.SCANNING_EMOJI} Scan started, your results will be ready soon!', ephemeral=True)
     file = await attachment.to_file()
     path = 'dump'
     if not os.path.exists(path):
@@ -64,32 +64,32 @@ async def handle_message(ctx: discord.ApplicationContext, attachment: discord.At
     try:
         result = scanner.scan_media(temp_file)
     except Exception as e:
-        print(f'Failed to scan video {e}')
-        await ctx.respond('Failed to scan video. Make sure you have a valid video file.', ephemeral=True)
+        print(f'Failed to scan media {e}')
+        ctx.interaction.edit_original_response(content=f'${constants.ERROR_EMOJI} Failed to scan media. Make sure you have a valid ${attch_type} file')
 
     with contextlib.suppress(FileNotFoundError):
         os.remove(temp_file)
 
     catalog = upload_to_datastore(result, ctx.user.id)
     url = 'https://nook.lol/{}'.format(catalog['hash'])
-    await ctx.interaction.edit_original_response(content=f"Found {len(result.items)} items in your video.\nResults: {url}")
+    await ctx.interaction.edit_original_response(content=f'${constants.SUCCESS_EMOJI} Found {len(result.items)} items in your ${attch_type}\nResults: {url}')
 
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as a bot {bot.user.name}")
-    print(f"discord.py API version: {discord.__version__}")
-    print(f"Python version: {platform.python_version()}")
-    print(f"Running on: {platform.system()} {platform.release()} ({os.name})")
-    print("-------------------")
+    print(f'Logged in as a bot {bot.user.name}')
+    print(f'discord.py API version: {discord.__version__}')
+    print(f'Python version: {platform.python_version()}')
+    print(f'Running on: {platform.system()} {platform.release()} ({os.name})')
+    print('-------------------')
 
 
-@bot.slash_command(name="scan", description="Extracts your Animal Crossing catalog items and DIY recipes from a recorded video.")
-@option("attachment", discord.Attachment, description="The video to scan", required=True)
+@bot.slash_command(name='scan', description='Extracts your Animal Crossing catalog items and DIY recipes from a recorded video or image')
+@option('attachment', discord.Attachment, description='The media file to scan', required=True)
 async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment, integration: str):
     if attachment:
         await handle_message(ctx, attachment, integration)
     else:
-        await ctx.respond('No attachment found.', ephemeral=True)
+        await ctx.respond(f'${constants.ERROR_EMOJI} No attachment found', ephemeral=True)
 
 bot.run(constants.DISCORD_TOKEN)
