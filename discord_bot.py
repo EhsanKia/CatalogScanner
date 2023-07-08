@@ -1,13 +1,17 @@
+import asyncio
+import concurrent.futures
+import logging as stdlib_logging
 import os
-import platform
 import contextlib
-import hashids
 import datetime
-from google.cloud import datastore
+import pathlib
 
+from absl import app, logging
 import discord
 from discord.ext import commands
 from discord import option
+from google.cloud import datastore
+import hashids
 
 import constants
 import scanner
@@ -18,9 +22,7 @@ bot = commands.Bot(intents=intents)
 hashid_client = hashids.Hashids(salt=constants.SALT, min_length=6)
 
 
-def upload_to_datastore(result, discord_user_id=None):
-    print(f'Uploading to datastore...')
-
+def upload_to_datastore(result, discord_user_id=None) -> datastore.Entity:
     datastore_client = datastore.Client.from_service_account_json(
         'catalog-scanner.json')
 
@@ -36,7 +38,7 @@ def upload_to_datastore(result, discord_user_id=None):
         'locale': result.locale,
         'type': result.mode.name.lower(),
         'created': datetime.datetime.utcnow(),
-        'discord_user_id': discord_user_id
+        'discord_user': discord_user_id,
     })
     if result.unmatched:
         unmatched_data = '\n'.join(result.unmatched).encode('utf-8')
@@ -46,50 +48,119 @@ def upload_to_datastore(result, discord_user_id=None):
     return catalog
 
 
-async def handle_message(ctx: discord.ApplicationContext, attachment: discord.Attachment):
+async def handle_message(ctx: discord.ApplicationContext, attachment: discord.Attachment) -> None:
+    if not attachment:
+        await ctx.respond('No attachment found.', ephemeral=True)
+        return
+
     # Attachment.content_type returns a {type}/{file_format} string
-    attch_type = attachment.content_type.split('/')
-    if attch_type[0] != 'video':
+    assert attachment.content_type
+    filetype, _, _ = attachment.content_type.partition('/')
+    if filetype not in ('video', 'image'):
         await ctx.respond('The attachment needs to be a valid video file', ephemeral=True)
         return
 
     await ctx.respond('Scan started, your results will be ready soon...', ephemeral=True)
     file = await attachment.to_file()
-    path = 'dump'
-    if not os.path.exists(path):
-        os.makedirs(path)
-    temp_file = os.path.join(path, file.filename)
-    await attachment.save(temp_file)
+    tmp_dir = pathlib.Path('cache')
+    tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
+    tmp_file.parent.mkdir(parents=True, exist_ok=True)
+    await attachment.save(tmp_file)
 
     try:
-        result = scanner.scan_media(temp_file)
-    except Exception as e:
-        print(f'Failed to scan video {e}')
-        await ctx.respond('Failed to scan video. Make sure you have a valid video file.', ephemeral=True)
+        result = await async_scan(tmp_file)
+    except AssertionError as e:
+        error_message = improve_error_message(str(e))
+        await ctx.edit(content=f'Failed to scan: {error_message}')
+        return
+    except Exception:
+        logging.exception('Unexpected scan error.')
+        await ctx.edit(content='Failed to scan. Make sure you have a valid video file.')
+        return
+
+    if not result.items:
+        await ctx.edit(content='Did not find any items.')
+        return
 
     with contextlib.suppress(FileNotFoundError):
-        os.remove(temp_file)
+        os.remove(tmp_file)
 
     catalog = upload_to_datastore(result, ctx.user.id)
     url = 'https://nook.lol/{}'.format(catalog['hash'])
-    await ctx.interaction.edit_original_response(content=f"Found {len(result.items)} items in your video.\nResults: {url}")
+    logging.info('Found %s items with %s: %s', len(result.items), result.mode, url)
+    await ctx.edit(content=f"Found {len(result.items)} items in your video.\nResults: {url}")
+
+
+async def async_scan(filename: os.PathLike) -> scanner.ScanResult:
+    """Runs the scan asynchronously in a thread pool."""
+    pool = concurrent.futures.ThreadPoolExecutor()
+    future = pool.submit(scanner.scan_media, str(filename))
+    return await asyncio.wrap_future(future)
+
+
+def improve_error_message(message: str) -> str:
+    """Adds some more details to the error message."""
+    if 'is too long' in message:
+        message += ' Make sure you scroll with the correct analog stick (see instructions),'
+        message += ' and trim the video around the start and end of the scrolling.'
+    if 'scrolling too slowly' in message:
+        message += ' Make sure you hold down the *right* analog stick.'
+        message += ' See https://twitter.com/CatalogScanner/status/1261737975244865539'
+    if 'scrolling inconsistently' in message:
+        message += ' Please scroll once, from start to finish, in one direction only.'
+    if 'Invalid video' in message:
+        message += ' Make sure the video is exported directly from your Nintendo Switch '
+        message += 'and that you\'re scrolling through a supported page. See nook.lol'
+    if 'not showing catalog or recipes' in message:
+        message += ' Make sure to record the video with your Switch using the capture button.'
+    if 'x224' in message:
+        message += '\n(It seems like you\'re downloading the video from your Facebook and '
+        message += 're-posting it; try downloading it directly from your Switch instead)'
+    elif 'Invalid resolution' in message:
+        message += '\n(Make sure you are recording and sending directly from the Switch)'
+    if 'Pictures Mode' in message:
+        message += ' Press X to switch to list mode and try again!'
+    if 'blocking a reaction' in message:
+        message += ' Make sure to move the cursor to an empty slot or the top right corner, '
+        message += 'otherwise your results may not be accurate.'
+    if 'Workbench scanning' in message:
+        message += ' Please use the DIY Recipes phone app instead (beige background).'
+    if 'catalog is not supported' in message:
+        message += ' Please use the Catalog phone app instead (yellow background).'
+    if 'Incomplete critter scan' in message:
+        message += ' Make sure to fully capture the leftmost and rightmost sides of the page.'
+    if 'not uploaded directly' in message:
+        message += ' Make sure to record and download the video using the Switch\'s media gallery.'
+    return message
+
+
+@bot.slash_command(
+    name="scan",
+    description="Extracts your Animal Crossing items (catalog, recipes, critters, reactions, music).",
+)
+@option("attachment", discord.Attachment, description="The video to scan", required=True)
+async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
+    logging.info('Got request from %s', ctx.user)
+    await handle_message(ctx, attachment)
 
 
 @bot.event
 async def on_ready():
-    print(f"Logged in as a bot {bot.user.name}")
-    print(f"discord.py API version: {discord.__version__}")
-    print(f"Python version: {platform.python_version()}")
-    print(f"Running on: {platform.system()} {platform.release()} ({os.name})")
-    print("-------------------")
+    assert bot.user, 'Failed to login'
+    logging.info('Bot logged in as %s', bot.user)
 
 
-@bot.slash_command(name="scan", description="Extracts your Animal Crossing catalog items and DIY recipes from a recorded video.")
-@option("attachment", discord.Attachment, description="The video to scan", required=True)
-async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment, integration: str):
-    if attachment:
-        await handle_message(ctx, attachment, integration)
-    else:
-        await ctx.respond('No attachment found.', ephemeral=True)
+def main(argv):
+    del argv  # unused
+    bot.run(constants.DISCORD_TOKEN)
 
-bot.run(constants.DISCORD_TOKEN)
+
+if __name__ == '__main__':
+    # Write logs to file.
+    file_handler = stdlib_logging.FileHandler('logs.txt')
+    logging.get_absl_logger().addHandler(file_handler)
+    # Disable noise discord logs.
+    stdlib_logging.getLogger('discord.client').setLevel(stdlib_logging.WARNING)
+    stdlib_logging.getLogger('discord.gateway').setLevel(stdlib_logging.WARNING)
+
+    app.run(main)
