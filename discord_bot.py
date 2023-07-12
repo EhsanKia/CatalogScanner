@@ -50,17 +50,17 @@ def upload_to_datastore(result, discord_user_id=None) -> datastore.Entity:
 
 async def handle_message(ctx: discord.ApplicationContext, attachment: discord.Attachment) -> None:
     if not attachment:
-        await ctx.respond(f'${constants.ERROR_EMOJI} No attachment found.', ephemeral=True)
+        await ctx.respond(f'{constants.ERROR_EMOJI} No attachment found.', ephemeral=True)
         return
 
     # Attachment.content_type returns a {type}/{file_format} string
     assert attachment.content_type
     filetype, _, _ = attachment.content_type.partition('/')
     if filetype not in ('video', 'image'):
-        await ctx.respond(f'${constants.ERROR_EMOJI} The attachment needs to be a valid video or image file', ephemeral=True)
+        await ctx.respond(f'{constants.ERROR_EMOJI} The attachment needs to be a valid video or image file', ephemeral=True)
         return
 
-    await ctx.respond(f'${constants.SCANNING_EMOJI} Scan started, your results will be ready soon!', ephemeral=True)
+    await ctx.respond(f'{constants.SCANNING_EMOJI} Scan started, your results will be ready soon!', ephemeral=True)
     file = await attachment.to_file()
     tmp_dir = pathlib.Path('cache')
     tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
@@ -71,11 +71,11 @@ async def handle_message(ctx: discord.ApplicationContext, attachment: discord.At
         result = await async_scan(tmp_file)
     except AssertionError as e:
         error_message = improve_error_message(str(e))
-        await ctx.edit(content=f'${constants.ERROR_EMOJI} Failed to scan: {error_message}')
+        await ctx.edit(content=f'{constants.ERROR_EMOJI} Failed to scan: {error_message}')
         return
     except Exception:
         logging.exception('Unexpected scan error.')
-        ctx.edit(content=f'${constants.ERROR_EMOJI} Failed to scan media. Make sure you have a valid ${filetype} file.')
+        ctx.edit(content=f'{constants.ERROR_EMOJI} Failed to scan media. Make sure you have a valid ${filetype} file.')
         return
 
     if not result.items:
@@ -88,7 +88,7 @@ async def handle_message(ctx: discord.ApplicationContext, attachment: discord.At
     catalog = upload_to_datastore(result, ctx.user.id)
     url = 'https://nook.lol/{}'.format(catalog['hash'])
     logging.info('Found %s items with %s: %s', len(result.items), result.mode, url)
-    await ctx.edit(content=f"${constants.SUCCESS_EMOJI} Found {len(result.items)} items in your ${filetype}.\nResults: {url}")
+    await ctx.edit(content=f"{constants.SUCCESS_EMOJI} Found {len(result.items)} items in your ${filetype}.\nResults: {url}")
 
 
 async def async_scan(filename: os.PathLike) -> scanner.ScanResult:
@@ -116,6 +116,8 @@ def improve_error_message(message: str) -> str:
     if 'x224' in message:
         message += '\n(It seems like you\'re downloading the video from your Facebook and '
         message += 're-posting it; try downloading it directly from your Switch instead)'
+    if '640x360' in message:
+        message += '\nIt seems like Discord might have compressed your video; go to *Settings -> Text & Media* and set *Video Uploads* to **Best Quality**.'
     elif 'Invalid resolution' in message:
         message += '\n(Make sure you are recording and sending directly from the Switch)'
     if 'Pictures Mode' in message:
