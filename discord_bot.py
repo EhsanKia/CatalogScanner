@@ -16,6 +16,10 @@ import hashids
 import constants
 import scanner
 
+ERROR_EMOJI = "\U00002757"
+SUCCESS_EMOJI = "\U0001F389"
+SCANNING_EMOJI = "\U0001F50D"
+
 intents = discord.Intents.default()
 bot = commands.Bot(intents=intents)
 
@@ -50,17 +54,17 @@ def upload_to_datastore(result, discord_user_id=None) -> datastore.Entity:
 
 async def handle_message(ctx: discord.ApplicationContext, attachment: discord.Attachment) -> None:
     if not attachment:
-        await ctx.respond(f'{constants.ERROR_EMOJI} No attachment found.', ephemeral=True)
+        await ctx.respond(f'{ERROR_EMOJI} No attachment found.', ephemeral=True)
         return
 
     # Attachment.content_type returns a {type}/{file_format} string
     assert attachment.content_type
     filetype, _, _ = attachment.content_type.partition('/')
     if filetype not in ('video', 'image'):
-        await ctx.respond(f'{constants.ERROR_EMOJI} The attachment needs to be a valid video or image file', ephemeral=True)
+        await ctx.respond(f'{ERROR_EMOJI} The attachment needs to be a valid video or image file', ephemeral=True)
         return
 
-    await ctx.respond(f'{constants.SCANNING_EMOJI} Scan started, your results will be ready soon!', ephemeral=True)
+    await ctx.respond(f'{SCANNING_EMOJI} Scan started, your results will be ready soon!', ephemeral=True)
     file = await attachment.to_file()
     tmp_dir = pathlib.Path('cache')
     tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
@@ -71,15 +75,16 @@ async def handle_message(ctx: discord.ApplicationContext, attachment: discord.At
         result = await async_scan(tmp_file)
     except AssertionError as e:
         error_message = improve_error_message(str(e))
-        await ctx.edit(content=f'{constants.ERROR_EMOJI} Failed to scan: {error_message}')
+        await ctx.edit(content=f'{ERROR_EMOJI} Failed to scan: {error_message}')
         return
     except Exception:
         logging.exception('Unexpected scan error.')
-        ctx.edit(content=f'{constants.ERROR_EMOJI} Failed to scan media. Make sure you have a valid ${filetype} file.')
+        ctx.edit(
+            content=f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid ${filetype} file.')
         return
 
     if not result.items:
-        await ctx.edit(content=f'${constants.ERROR_EMOJI} Did not find any items.')
+        await ctx.edit(content=f'${ERROR_EMOJI} Did not find any items.')
         return
 
     with contextlib.suppress(FileNotFoundError):
@@ -87,8 +92,9 @@ async def handle_message(ctx: discord.ApplicationContext, attachment: discord.At
 
     catalog = upload_to_datastore(result, ctx.user.id)
     url = 'https://nook.lol/{}'.format(catalog['hash'])
-    logging.info('Found %s items with %s: %s', len(result.items), result.mode, url)
-    await ctx.edit(content=f"{constants.SUCCESS_EMOJI} Found {len(result.items)} items in your ${filetype}.\nResults: {url}")
+    logging.info('Found %s items with %s: %s',
+                 len(result.items), result.mode, url)
+    await ctx.edit(content=f"{SUCCESS_EMOJI} Found {len(result.items)} items in your ${filetype}.\nResults: {url}")
 
 
 async def async_scan(filename: os.PathLike) -> scanner.ScanResult:
@@ -163,6 +169,7 @@ if __name__ == '__main__':
     logging.get_absl_logger().addHandler(file_handler)
     # Disable noise discord logs.
     stdlib_logging.getLogger('discord.client').setLevel(stdlib_logging.WARNING)
-    stdlib_logging.getLogger('discord.gateway').setLevel(stdlib_logging.WARNING)
+    stdlib_logging.getLogger('discord.gateway').setLevel(
+        stdlib_logging.WARNING)
 
     app.run(main)
