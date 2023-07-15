@@ -16,9 +16,9 @@ import hashids
 import constants
 import scanner
 
-ERROR_EMOJI = "\U00002757"
-SUCCESS_EMOJI = "\U0001F389"
-SCANNING_EMOJI = "\U0001F50D"
+ERROR_EMOJI = ':exclamation:'
+SUCCESS_EMOJI = ':tada:'
+SCANNING_EMOJI = ':mag:'
 
 intents = discord.Intents.default()
 bot = commands.Bot(intents=intents)
@@ -80,11 +80,11 @@ async def handle_message(ctx: discord.ApplicationContext, attachment: discord.At
     except Exception:
         logging.exception('Unexpected scan error.')
         ctx.edit(
-            content=f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid ${filetype} file.')
+            content=f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype} file.')
         return
 
     if not result.items:
-        await ctx.edit(content=f'${ERROR_EMOJI} Did not find any items.')
+        await ctx.edit(content=f'{ERROR_EMOJI} Did not find any items.')
         return
 
     with contextlib.suppress(FileNotFoundError):
@@ -92,9 +92,8 @@ async def handle_message(ctx: discord.ApplicationContext, attachment: discord.At
 
     catalog = upload_to_datastore(result, ctx.user.id)
     url = 'https://nook.lol/{}'.format(catalog['hash'])
-    logging.info('Found %s items with %s: %s',
-                 len(result.items), result.mode, url)
-    await ctx.edit(content=f"{SUCCESS_EMOJI} Found {len(result.items)} items in your ${filetype}.\nResults: {url}")
+    logging.info('Found %s items with %s: %s', len(result.items), result.mode, url)
+    await ctx.edit(content=f"{SUCCESS_EMOJI} Found {len(result.items)} items in your {filetype}.\nResults: {url}")
 
 
 async def async_scan(filename: os.PathLike) -> scanner.ScanResult:
@@ -123,7 +122,8 @@ def improve_error_message(message: str) -> str:
         message += '\n(It seems like you\'re downloading the video from your Facebook and '
         message += 're-posting it; try downloading it directly from your Switch instead)'
     if '640x360' in message:
-        message += '\nIt seems like Discord might have compressed your video; go to *Settings -> Text & Media* and set *Video Uploads* to **Best Quality**.'
+        message += '\nIt seems like Discord might have compressed your video; '
+        message += 'go to *Settings -> Text & Media* and set *Video Uploads* to **Best Quality**.'
     elif 'Invalid resolution' in message:
         message += '\n(Make sure you are recording and sending directly from the Switch)'
     if 'Pictures Mode' in message:
@@ -169,7 +169,6 @@ if __name__ == '__main__':
     logging.get_absl_logger().addHandler(file_handler)
     # Disable noise discord logs.
     stdlib_logging.getLogger('discord.client').setLevel(stdlib_logging.WARNING)
-    stdlib_logging.getLogger('discord.gateway').setLevel(
-        stdlib_logging.WARNING)
+    stdlib_logging.getLogger('discord.gateway').setLevel(stdlib_logging.WARNING)
 
     app.run(main)
