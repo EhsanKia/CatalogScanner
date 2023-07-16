@@ -19,6 +19,9 @@ import scanner
 ERROR_EMOJI = ':exclamation:'
 SUCCESS_EMOJI = ':tada:'
 SCANNING_EMOJI = ':mag:'
+WAIT_EMOJI = ':hourglass:'
+
+WAIT_LOCK = asyncio.Lock()
 
 intents = discord.Intents.default()
 bot = commands.Bot(intents=intents)
@@ -52,19 +55,10 @@ def upload_to_datastore(result, discord_user_id=None) -> datastore.Entity:
     return catalog
 
 
-async def handle_message(ctx: discord.ApplicationContext, attachment: discord.Attachment) -> None:
-    if not attachment:
-        await ctx.respond(f'{ERROR_EMOJI} No attachment found.', ephemeral=True)
-        return
+async def handle_scan(ctx: discord.ApplicationContext, attachment: discord.Attachment, filetype: str) -> None:
+    """Downloads the file, runs the scans and uploads the results, while updating the user along the way."""
+    await reply(ctx, f'{SCANNING_EMOJI} Scan started, your results will be ready soon!')
 
-    # Attachment.content_type returns a {type}/{file_format} string
-    assert attachment.content_type
-    filetype, _, _ = attachment.content_type.partition('/')
-    if filetype not in ('video', 'image'):
-        await ctx.respond(f'{ERROR_EMOJI} The attachment needs to be a valid video or image file', ephemeral=True)
-        return
-
-    await ctx.respond(f'{SCANNING_EMOJI} Scan started, your results will be ready soon!', ephemeral=True)
     file = await attachment.to_file()
     tmp_dir = pathlib.Path('cache')
     tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
@@ -75,16 +69,15 @@ async def handle_message(ctx: discord.ApplicationContext, attachment: discord.At
         result = await async_scan(tmp_file)
     except AssertionError as e:
         error_message = improve_error_message(str(e))
-        await ctx.edit(content=f'{ERROR_EMOJI} Failed to scan: {error_message}')
+        await reply(ctx, f'{ERROR_EMOJI} Failed to scan: {error_message}')
         return
     except Exception:
         logging.exception('Unexpected scan error.')
-        ctx.edit(
-            content=f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype} file.')
+        await reply(ctx, f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype} file.')
         return
 
     if not result.items:
-        await ctx.edit(content=f'{ERROR_EMOJI} Did not find any items.')
+        await reply(ctx, f'{ERROR_EMOJI} Did not find any items.')
         return
 
     with contextlib.suppress(FileNotFoundError):
@@ -93,7 +86,7 @@ async def handle_message(ctx: discord.ApplicationContext, attachment: discord.At
     catalog = upload_to_datastore(result, ctx.user.id)
     url = 'https://nook.lol/{}'.format(catalog['hash'])
     logging.info('Found %s items with %s: %s', len(result.items), result.mode, url)
-    await ctx.edit(content=f"{SUCCESS_EMOJI} Found {len(result.items)} items in your {filetype}.\nResults: {url}")
+    await reply(ctx, f"{SUCCESS_EMOJI} Found {len(result.items)} items in your {filetype}.\nResults: {url}")
 
 
 async def async_scan(filename: os.PathLike) -> scanner.ScanResult:
@@ -101,6 +94,14 @@ async def async_scan(filename: os.PathLike) -> scanner.ScanResult:
     pool = concurrent.futures.ThreadPoolExecutor()
     future = pool.submit(scanner.scan_media, str(filename))
     return await asyncio.wrap_future(future)
+
+
+async def reply(ctx: discord.ApplicationContext, message: str) -> None:
+    """Responds with an ephemeral message, or updates the existing message."""
+    if not ctx.interaction.response.is_done():
+        await ctx.interaction.response.send_message(content=message, ephemeral=True)
+    else:
+        await ctx.interaction.edit_original_response(content=message)
 
 
 def improve_error_message(message: str) -> str:
@@ -148,8 +149,24 @@ def improve_error_message(message: str) -> str:
 )
 @option('attachment', discord.Attachment, description='The video to scan', required=True)
 async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
-    logging.info('Got request from %s', ctx.user)
-    await handle_message(ctx, attachment)
+    logging.info('Got request from %s (%s)', ctx.user, attachment.id)
+
+    # Verify that there is an attachment and it's the correct type.
+    if not attachment or not attachment.content_type:
+        await reply(ctx, f'{ERROR_EMOJI} No attachment found.')
+        return
+    filetype, _, _ = attachment.content_type.partition('/')  # {type}/{format}
+    if filetype not in ('video', 'image'):
+        await reply(ctx, f'{ERROR_EMOJI} The attachment needs to be a valid video or image file')
+        return
+
+    # Have a queue system that handles requests one at a time.
+    if WAIT_LOCK.locked:
+        position = 1 if not WAIT_LOCK._waiters else len(WAIT_LOCK._waiters) + 1  # type: ignore
+        logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, position)
+        await reply(ctx, f'{WAIT_EMOJI} You are #{position} in the queue, your scan will start soon.')
+    async with WAIT_LOCK:
+        await handle_scan(ctx, attachment, filetype)
 
 
 @bot.event
@@ -166,7 +183,7 @@ def main(argv):
 if __name__ == '__main__':
     # Write logs to file.
     file_handler = stdlib_logging.FileHandler('logs.txt')
-    logging.get_absl_logger().addHandler(file_handler)
+    logging.get_absl_logger().addHandler(file_handler)  # type: ignore
     # Disable noise discord logs.
     stdlib_logging.getLogger('discord.client').setLevel(stdlib_logging.WARNING)
     stdlib_logging.getLogger('discord.gateway').setLevel(stdlib_logging.WARNING)
