@@ -9,3 +9,4 @@ examples/more/
 dist/
 *.code-workspace
 catalog-scanner.json
+constants.py
