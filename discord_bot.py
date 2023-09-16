@@ -31,9 +31,7 @@ hashid_client = hashids.Hashids(salt=constants.SALT, min_length=6)
 
 
 def upload_to_datastore(result, discord_user_id=None) -> datastore.Entity:
-    datastore_client = datastore.Client.from_service_account_json(
-        'catalog-scanner.json'
-    )
+    datastore_client = datastore.Client.from_service_account_json('catalog-scanner.json')
 
     temp_key = datastore_client.key('Catalog')
     key = datastore_client.allocate_ids(temp_key, 1)[0]
@@ -135,9 +133,7 @@ async def reply(ctx: discord.ApplicationContext, message: str) -> None:
 def improve_error_message(message: str) -> str:
     """Adds some more details to the error message."""
     if 'is too long' in message:
-        message += (
-            ' Make sure you scroll with the correct analog stick (see instructions),'
-        )
+        message += ' Make sure you scroll with the correct analog stick (see instructions),'
         message += ' and trim the video around the start and end of the scrolling.'
     if 'scrolling too slowly' in message:
         message += ' Make sure you hold down the *right* analog stick.'
@@ -145,43 +141,29 @@ def improve_error_message(message: str) -> str:
     if 'scrolling inconsistently' in message:
         message += ' Please scroll once, from start to finish, in one direction only.'
     if 'Invalid video' in message:
-        message += (
-            ' Make sure the video is exported directly from your Nintendo Switch '
-        )
+        message += ' Make sure the video is exported directly from your Nintendo Switch '
         message += 'and that you\'re scrolling through a supported page. See nook.lol'
     if 'not showing catalog or recipes' in message:
-        message += (
-            ' Make sure to record the video with your Switch using the capture button.'
-        )
+        message += ' Make sure to record the video with your Switch using the capture button.'
     if 'x224' in message:
-        message += (
-            '\n(It seems like you\'re downloading the video from your Facebook and '
-        )
-        message += (
-            're-posting it; try downloading it directly from your Switch instead)'
-        )
+        message += '\n(It seems like you\'re downloading the video from your Facebook and '
+        message += 're-posting it; try downloading it directly from your Switch instead)'
     if '640x360' in message:
         message += '\nIt seems like Discord might have compressed your video; '
         message += 'go to *Settings -> Text & Media* and set *Video Uploads* to **Best Quality**.'
     elif 'Invalid resolution' in message:
-        message += (
-            '\n(Make sure you are recording and sending directly from the Switch)'
-        )
+        message += '\n(Make sure you are recording and sending directly from the Switch)'
     if 'Pictures Mode' in message:
         message += ' Press X to switch to list mode and try again!'
     if 'blocking a reaction' in message:
-        message += (
-            ' Make sure to move the cursor to an empty slot or the top right corner, '
-        )
+        message += ' Make sure to move the cursor to an empty slot or the top right corner, '
         message += 'otherwise your results may not be accurate.'
     if 'Workbench scanning' in message:
         message += ' Please use the DIY Recipes phone app instead (beige background).'
     if 'catalog is not supported' in message:
         message += ' Please use the Catalog phone app instead (yellow background).'
     if 'Incomplete critter scan' in message:
-        message += (
-            ' Make sure to fully capture the leftmost and rightmost sides of the page.'
-        )
+        message += ' Make sure to fully capture the leftmost and rightmost sides of the page.'
     if 'not uploaded directly' in message:
         message += ' Make sure to record and download the video using the Switch\'s media gallery.'
     return message
@@ -198,9 +180,7 @@ def improve_error_message(message: str) -> str:
     description='The video or image to scan',
     required=False,
 )
-async def scan(
-    ctx: discord.ApplicationContext, url: str, attachment: discord.Attachment
-):
+async def scan(ctx: discord.ApplicationContext, url: str, attachment: discord.Attachment):
     logging.info('Got request from %s', ctx.user)
 
     # Verify that there is an attachment and it's the correct type.

@@ -78,9 +78,7 @@ def get_tokens(tweet_url):
         s.headers.update({"authorization": f"Bearer {bearer_token}"})
 
         # activate bearer token and get guest token
-        guest_token = s.post("https://api.twitter.com/1.1/guest/activate.json").json()[
-            "guest_token"
-        ]
+        guest_token = s.post("https://api.twitter.com/1.1/guest/activate.json").json()["guest_token"]
 
     assert (
         guest_token is not None
@@ -132,9 +130,7 @@ def get_tweet_details(tweet_url, guest_token, bearer_token):
         ), f"Failed to find errors in details error json.  If you are using the correct Twitter URL this suggests a bug in the script.  Please open a GitHub issue and copy and paste this message.  Status code: {details.status_code}.  Tweet url: {tweet_url}"
 
         needed_variable_pattern = re.compile(r"Variable '([^']+)'")
-        needed_features_pattern = re.compile(
-            r'The following features cannot be null: ([^"]+)'
-        )
+        needed_features_pattern = re.compile(r'The following features cannot be null: ([^"]+)')
 
         for error in error_json["errors"]:
             needed_vars = needed_variable_pattern.findall(error["message"])
@@ -188,11 +184,7 @@ def get_tweet_status_id(tweet_url):
 
 def get_associated_media_id(j, tweet_url):
     sid = get_tweet_status_id(tweet_url)
-    pattern = (
-        r'"expanded_url"\s*:\s*"https://twitter\.com/[^/]+/status/'
-        + sid
-        + '/[^"]+",\s*"id_str"\s*:\s*"\d+",'
-    )
+    pattern = r'"expanded_url"\s*:\s*"https://twitter\.com/[^/]+/status/' + sid + '/[^"]+",\s*"id_str"\s*:\s*"\d+",'
     matches = re.findall(pattern, j)
     if len(matches) > 0:
         target = matches[0]
@@ -203,12 +195,8 @@ def get_associated_media_id(j, tweet_url):
 
 def extract_mp4s(j, tweet_url, target_all_mp4s=False):
     # pattern looks like https://video.twimg.com/amplify_video/1638969830442237953/vid/1080x1920/lXSFa54mAVp7KHim.mp4?tag=16 or https://video.twimg.com/ext_tw_video/1451958820348080133/pu/vid/720x1280/GddnMJ7KszCQQFvA.mp4?tag=12
-    amplitude_pattern = re.compile(
-        r"(https://video.twimg.com/amplify_video/(\d+)/vid/(\d+x\d+)/[^.]+.mp4\?tag=\d+)"
-    )
-    ext_tw_pattern = re.compile(
-        r"(https://video.twimg.com/ext_tw_video/(\d+)/pu/vid/(\d+x\d+)/[^.]+.mp4\?tag=\d+)"
-    )
+    amplitude_pattern = re.compile(r"(https://video.twimg.com/amplify_video/(\d+)/vid/(\d+x\d+)/[^.]+.mp4\?tag=\d+)")
+    ext_tw_pattern = re.compile(r"(https://video.twimg.com/ext_tw_video/(\d+)/pu/vid/(\d+x\d+)/[^.]+.mp4\?tag=\d+)")
 
     # format - https://video.twimg.com/tweet_video/Fvh6brqWAAQhU9p.mp4
     tweet_video_pattern = re.compile(r'https://video.twimg.com/tweet_video/[^"]+')
@@ -353,11 +341,7 @@ def repost_check(j, exclude_replies=True):
         # We extract the source status id (ssid)
         ssid = json.loads("{" + matches[0] + "}")["source_status_id_str"]
         # We plug it in this regular expression to find expanded_url (the original tweet url)
-        expanded_url_pattern = (
-            r'"expanded_url"\s*:\s*"https://twitter\.com/[^/]+/status/'
-            + ssid
-            + '[^"]+"'
-        )
+        expanded_url_pattern = r'"expanded_url"\s*:\s*"https://twitter\.com/[^/]+/status/' + ssid + '[^"]+"'
         matches2 = re.findall(expanded_url_pattern, j)
 
         if len(matches2) > 0:
@@ -374,18 +358,12 @@ def repost_check(j, exclude_replies=True):
         ssids = list(set(ssids))
         if len(ssids) > 0:
             for ssid in ssids:
-                expanded_url_pattern = (
-                    r'"expanded_url"\s*:\s*"https://twitter\.com/[^/]+/status/'
-                    + ssid
-                    + '[^"]+"'
-                )
+                expanded_url_pattern = r'"expanded_url"\s*:\s*"https://twitter\.com/[^/]+/status/' + ssid + '[^"]+"'
                 matches2 = re.findall(expanded_url_pattern, j)
                 if len(matches2) > 0:
                     status_urls = []
                     for match in matches2:
-                        status_urls.append(
-                            json.loads("{" + match + "}")["expanded_url"]
-                        )
+                        status_urls.append(json.loads("{" + match + "}")["expanded_url"])
                     # We remove duplicates another time
                     status_urls = list(set(status_urls))
                     return status_urls
@@ -407,9 +385,7 @@ def download_video(tweet_url, output_file, target_all_videos=False):
 
         if len(original_urls) > 0:
             for url in original_urls:
-                download_video(
-                    url, output_file.replace(".mp4", f"_{video_counter}.mp4")
-                )
+                download_video(url, output_file.replace(".mp4", f"_{video_counter}.mp4"))
                 video_counter += 1
             if len(mp4s) > 0:
                 for mp4 in mp4s:
