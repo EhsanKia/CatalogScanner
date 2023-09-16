@@ -10,3 +10,5 @@ dist/
 *.code-workspace
 catalog-scanner.json
 constants.py
+logs.txt
+cache/
