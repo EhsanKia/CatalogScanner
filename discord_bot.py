@@ -15,7 +15,7 @@ import hashids
 
 import constants
 import scanner
-import twitter_video_dl as tvdl
+import tvdl.src.twitter_video_dl.twitter_video_dl as tvdl
 
 ERROR_EMOJI = ':exclamation:'
 SUCCESS_EMOJI = ':tada:'
