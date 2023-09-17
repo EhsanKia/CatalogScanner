@@ -15,6 +15,7 @@ import hashids
 
 import constants
 import scanner
+import tvdl.src.twitter_video_dl.twitter_video_dl as tvdl
 
 ERROR_EMOJI = ':exclamation:'
 SUCCESS_EMOJI = ':tada:'
@@ -30,8 +31,7 @@ hashid_client = hashids.Hashids(salt=constants.SALT, min_length=6)
 
 
 def upload_to_datastore(result, discord_user_id=None) -> datastore.Entity:
-    datastore_client = datastore.Client.from_service_account_json(
-        'catalog-scanner.json')
+    datastore_client = datastore.Client.from_service_account_json('catalog-scanner.json')
 
     temp_key = datastore_client.key('Catalog')
     key = datastore_client.allocate_ids(temp_key, 1)[0]
@@ -39,14 +39,16 @@ def upload_to_datastore(result, discord_user_id=None) -> datastore.Entity:
 
     key_hash = hashid_client.encode(key.id)
     catalog_data = '\n'.join(result.items).encode('utf-8')
-    catalog.update({
-        'hash': key_hash,
-        'data': catalog_data,
-        'locale': result.locale,
-        'type': result.mode.name.lower(),
-        'created': datetime.datetime.utcnow(),
-        'discord_user': discord_user_id,
-    })
+    catalog.update(
+        {
+            'hash': key_hash,
+            'data': catalog_data,
+            'locale': result.locale,
+            'type': result.mode.name.lower(),
+            'created': datetime.datetime.utcnow(),
+            'discord_user': discord_user_id,
+        }
+    )
     if result.unmatched:
         unmatched_data = '\n'.join(result.unmatched).encode('utf-8')
         catalog['unmatched'] = unmatched_data
@@ -55,15 +57,33 @@ def upload_to_datastore(result, discord_user_id=None) -> datastore.Entity:
     return catalog
 
 
-async def handle_scan(ctx: discord.ApplicationContext, attachment: discord.Attachment, filetype: str) -> None:
+async def handle_scan(
+    ctx: discord.ApplicationContext,
+    attachment: discord.Attachment,
+    filetype: str,
+    url: str,
+) -> None:
     """Downloads the file, runs the scans and uploads the results, while updating the user along the way."""
     await reply(ctx, f'{SCANNING_EMOJI} Scan started, your results will be ready soon!')
 
-    file = await attachment.to_file()
     tmp_dir = pathlib.Path('cache')
-    tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
-    tmp_file.parent.mkdir(parents=True, exist_ok=True)
-    await attachment.save(tmp_file)
+
+    if url:
+        try:
+            tmp_file = tmp_dir / f'{ctx.user.id}_video.mp4'
+            tvdl.download_video(url, tmp_file)
+        except Exception:
+            logging.exception('Unexpected scan error.')
+            await reply(
+                ctx,
+                f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype}.',
+            )
+            return
+    else:
+        file = await attachment.to_file()
+        tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
+        tmp_file.parent.mkdir(parents=True, exist_ok=True)
+        await attachment.save(tmp_file)
 
     try:
         result = await async_scan(tmp_file)
@@ -73,7 +93,10 @@ async def handle_scan(ctx: discord.ApplicationContext, attachment: discord.Attac
         return
     except Exception:
         logging.exception('Unexpected scan error.')
-        await reply(ctx, f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype} file.')
+        await reply(
+            ctx,
+            f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype}.',
+        )
         return
 
     if not result.items:
@@ -86,7 +109,10 @@ async def handle_scan(ctx: discord.ApplicationContext, attachment: discord.Attac
     catalog = upload_to_datastore(result, ctx.user.id)
     url = 'https://nook.lol/{}'.format(catalog['hash'])
     logging.info('Found %s items with %s: %s', len(result.items), result.mode, url)
-    await reply(ctx, f"{SUCCESS_EMOJI} Found {len(result.items)} items in your {filetype}.\nResults: {url}")
+    await reply(
+        ctx,
+        f'{SUCCESS_EMOJI} Found {len(result.items)} items in your {filetype}.\nResults: {url}',
+    )
 
 
 async def async_scan(filename: os.PathLike) -> scanner.ScanResult:
@@ -147,26 +173,42 @@ def improve_error_message(message: str) -> str:
     name='scan',
     description='Extracts your Animal Crossing items (catalog, recipes, critters, reactions, music).',
 )
-@option('attachment', discord.Attachment, description='The video to scan', required=True)
-async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
-    logging.info('Got request from %s (%s)', ctx.user, attachment.id)
+@option('url', str, description='The url of a video to scan', required=False)
+@option(
+    'attachment',
+    discord.Attachment,
+    description='The video or image to scan',
+    required=False,
+)
+async def scan(ctx: discord.ApplicationContext, url: str, attachment: discord.Attachment):
+    logging.info('Got request from %s', ctx.user)
 
     # Verify that there is an attachment and it's the correct type.
-    if not attachment or not attachment.content_type:
-        await reply(ctx, f'{ERROR_EMOJI} No attachment found.')
+    if not attachment and not url:
+        await reply(ctx, f'{ERROR_EMOJI} No attachment or url found.')
         return
-    filetype, _, _ = attachment.content_type.partition('/')  # {type}/{format}
-    if filetype not in ('video', 'image'):
-        await reply(ctx, f'{ERROR_EMOJI} The attachment needs to be a valid video or image file')
-        return
+
+    if attachment:
+        filetype, _, _ = attachment.content_type.partition('/')  # {type}/{format}
+        if filetype not in ('video', 'image'):
+            await reply(
+                ctx,
+                f'{ERROR_EMOJI} The attachment needs to be a valid video or image file.',
+            )
+            return
+    if url:
+        filetype = 'url'
 
     # Have a queue system that handles requests one at a time.
     if WAIT_LOCK.locked:
         position = 1 if not WAIT_LOCK._waiters else len(WAIT_LOCK._waiters) + 1  # type: ignore
-        logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, position)
-        await reply(ctx, f'{WAIT_EMOJI} You are #{position} in the queue, your scan will start soon.')
+        logging.info('%s (%s) is in queue position %s', ctx.user, ctx.user.id, position)
+        await reply(
+            ctx,
+            f'{WAIT_EMOJI} You are #{position} in the queue, your scan will start soon.',
+        )
     async with WAIT_LOCK:
-        await handle_scan(ctx, attachment, filetype)
+        await handle_scan(ctx, attachment, filetype, url)
 
 
 @bot.event
