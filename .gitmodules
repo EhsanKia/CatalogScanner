@@ -1,0 +1,3 @@
+[submodule "tvdl"]
+	path = tvdl
+	url = https://github.com/bingqiao/twitter-video-dl
