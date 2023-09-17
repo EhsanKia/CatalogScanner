@@ -2,7 +2,6 @@ import asyncio
 import concurrent.futures
 import logging as stdlib_logging
 import os
-import contextlib
 import datetime
 import pathlib
 
@@ -152,19 +151,21 @@ async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
     logging.info('Got request from %s (%s)', ctx.user, attachment.id)
 
     # Verify that there is an attachment and it's the correct type.
-    if not attachment or not attachment.content_type:
+    if not attachment:
+        logging.info('No attachment found, skipping.')
         await reply(ctx, f'{ERROR_EMOJI} No attachment found.')
         return
+    assert attachment.content_type
     filetype, _, _ = attachment.content_type.partition('/')  # {type}/{format}
     if filetype not in ('video', 'image'):
+        logging.info('Invalid attachment type %r, skipping.', attachment.content_type)
         await reply(ctx, f'{ERROR_EMOJI} The attachment needs to be a valid video or image file')
         return
 
     # Have a queue system that handles requests one at a time.
-    if WAIT_LOCK.locked:
-        position = 1 if not WAIT_LOCK._waiters else len(WAIT_LOCK._waiters) + 1  # type: ignore
-        logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, position)
-        await reply(ctx, f'{WAIT_EMOJI} You are #{position} in the queue, your scan will start soon.')
+    if WAIT_LOCK.locked and (waiters := WAIT_LOCK._waiters):  # type: ignore
+        logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, len(waiters))
+        await reply(ctx, f'{WAIT_EMOJI} You are #{len(waiters)} in the queue, your scan will start soon.')
     async with WAIT_LOCK:
         await handle_scan(ctx, attachment, filetype)
 
