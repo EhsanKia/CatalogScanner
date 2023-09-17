@@ -68,6 +68,7 @@ async def handle_scan(
     tmp_dir = pathlib.Path('cache')
 
     if url:
+        logging.info('Downloading video from %s', url)
         try:
             tmp_file = tmp_dir / f'{ctx.user.id}_video.mp4'
             tvdl.download_video(url, tmp_file)
@@ -76,6 +77,7 @@ async def handle_scan(
             await reply(ctx, f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype}.')
             return
     else:
+        logging.info('Downloading attachment %s', attachment.id)
         file = await attachment.to_file()
         tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
         tmp_file.parent.mkdir(parents=True, exist_ok=True)
@@ -174,8 +176,6 @@ def improve_error_message(message: str) -> str:
     required=False,
 )
 async def scan(ctx: discord.ApplicationContext, url: str, attachment: discord.Attachment):
-    logging.info('Got request from %s', ctx.user)
-
     if attachment and url:
         await reply(ctx, f'{ERROR_EMOJI} Please provide either an attachment or a URL, not both.')
         return
@@ -192,6 +192,8 @@ async def scan(ctx: discord.ApplicationContext, url: str, attachment: discord.At
     else:
         await reply(ctx, f'{ERROR_EMOJI} No attachment or url found.')
         return
+
+    logging.info('Got request from %s with type %r', ctx.user, filetype)
 
     # Have a queue system that handles requests one at a time.
     if WAIT_LOCK.locked and (waiters := WAIT_LOCK._waiters):  # type: ignore
