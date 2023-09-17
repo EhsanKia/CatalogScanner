@@ -73,10 +73,7 @@ async def handle_scan(
             tvdl.download_video(url, tmp_file)
         except Exception:
             logging.exception('Unexpected scan error.')
-            await reply(
-                ctx,
-                f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype}.',
-            )
+            await reply(ctx, f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype}.')
             return
     else:
         file = await attachment.to_file()
@@ -101,9 +98,6 @@ async def handle_scan(
     if not result.items:
         await reply(ctx, f'{ERROR_EMOJI} Did not find any items.')
         return
-
-    with contextlib.suppress(FileNotFoundError):
-        os.remove(tmp_file)
 
     catalog = upload_to_datastore(result, ctx.user.id)
     url = 'https://nook.lol/{}'.format(catalog['hash'])
@@ -182,19 +176,22 @@ def improve_error_message(message: str) -> str:
 async def scan(ctx: discord.ApplicationContext, url: str, attachment: discord.Attachment):
     logging.info('Got request from %s', ctx.user)
 
-    # Verify that there is an attachment and it's the correct type.
-    if not attachment and not url:
-        await reply(ctx, f'{ERROR_EMOJI} No attachment or url found.')
+    if attachment and url:
+        await reply(ctx, f'{ERROR_EMOJI} Please provide either an attachment or a URL, not both.')
         return
 
     if attachment:
+        assert attachment.content_type
         filetype, _, _ = attachment.content_type.partition('/')  # {type}/{format}
         if filetype not in ('video', 'image'):
             logging.info('Invalid attachment type %r, skipping.', attachment.content_type)
             await reply(ctx, f'{ERROR_EMOJI} The attachment needs to be a valid video or image file.')
             return
-    if url:
+    elif url:
         filetype = 'url'
+    else:
+        await reply(ctx, f'{ERROR_EMOJI} No attachment or url found.')
+        return
 
     # Have a queue system that handles requests one at a time.
     if WAIT_LOCK.locked and (waiters := WAIT_LOCK._waiters):  # type: ignore
