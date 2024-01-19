@@ -147,6 +147,9 @@ def improve_error_message(message: str) -> str:
         message += '\n(It seems like you\'re downloading the video from your Facebook and '
         message += 're-posting it; try downloading it directly from your Switch instead)'
     if '640x360' in message:
+        message += '\nIt looks like you might have Data Saving Mode enabled; '
+        message += 'go to *Settings -> Text & Media*, uncheck Data Saving Mode and make sure *Video Uploads* is set to **Best Quality**.'
+    elif '854x480' in message:
         message += '\nIt seems like Discord might have compressed your video; '
         message += 'go to *Settings -> Text & Media* and set *Video Uploads* to **Best Quality**.'
     elif 'Invalid resolution' in message:
