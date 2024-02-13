@@ -14,7 +14,7 @@ import hashids
 
 import constants
 import scanner
-import tvdl.src.twitter_video_dl.twitter_video_dl as tvdl
+import twitter_downloader.twitter_downloader as tvdl
 
 ERROR_EMOJI = ':exclamation:'
 SUCCESS_EMOJI = ':tada:'
@@ -68,9 +68,6 @@ async def handle_scan(
     tmp_dir = pathlib.Path('cache')
 
     if url:
-        # Use twitter.com domain since the library is too old to recognize X.
-        # Also remove any query paramaters from the URL to clean it up.
-        url, _, _ = url.replace('x.com', 'twitter.com').partition('?')
         logging.info('Downloading video from %s', url)
         try:
             tmp_file = tmp_dir / f'{ctx.user.id}_video.mp4'
