@@ -14,7 +14,7 @@ import hashids
 
 import constants
 import scanner
-import twitter_downloader.twitter_downloader as tvdl
+import twitter_downloader.src.twitter_downloader as tvdl
 
 ERROR_EMOJI = ':exclamation:'
 SUCCESS_EMOJI = ':tada:'
@@ -71,7 +71,7 @@ async def handle_scan(
         logging.info('Downloading video from %s', url)
         try:
             tmp_file = tmp_dir / f'{ctx.user.id}_video.mp4'
-            tvdl.download_video(url, tmp_file)
+            tvdl.download_twitter_video(url, tmp_file)
         except (Exception, SystemExit):
             logging.exception('Unexpected scan error.')
             await reply(ctx, f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype}.')
