@@ -1,3 +1,4 @@
-[submodule "tvdl"]
-	path = tvdl
-	url = https://github.com/bingqiao/twitter-video-dl
+
+[submodule "twitter_downloader"]
+	path = twitter_downloader
+	url = https://github.com/linsvensson/twitter-video-downloader
