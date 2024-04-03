@@ -2,6 +2,6 @@ absl_py==1.4.0
 ImageHash==4.3.1
 numpy==1.25.0
 opencv_contrib_python==4.7.0.72
-Pillow==10.2.0
+Pillow==10.3.0
 protobuf==4.23.3
 pytesseract==0.3.10
