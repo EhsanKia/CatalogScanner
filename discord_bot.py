@@ -163,7 +163,7 @@ def improve_error_message(message: str) -> str:
     'attachment',
     discord.Attachment,
     description='The video or image to scan',
-    required=False,
+    required=True,
 )
 async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
     if attachment:
