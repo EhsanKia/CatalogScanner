@@ -14,7 +14,6 @@ import hashids
 
 import constants
 import scanner
-import twitter_downloader.src.twitter_downloader as tvdl
 
 ERROR_EMOJI = ':exclamation:'
 SUCCESS_EMOJI = ':tada:'
@@ -60,28 +59,17 @@ async def handle_scan(
     ctx: discord.ApplicationContext,
     attachment: discord.Attachment,
     filetype: str,
-    url: str,
 ) -> None:
     """Downloads the file, runs the scans and uploads the results, while updating the user along the way."""
     await reply(ctx, f'{SCANNING_EMOJI} Scan started, your results will be ready soon!')
 
     tmp_dir = pathlib.Path('cache')
 
-    if url:
-        logging.info('Downloading video from %s', url)
-        try:
-            tmp_file = tmp_dir / f'{ctx.user.id}_video.mp4'
-            tvdl.download_twitter_video(url, tmp_file)
-        except (Exception, SystemExit):
-            logging.exception('Unexpected scan error.')
-            await reply(ctx, f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype}.')
-            return
-    else:
-        logging.info('Downloading attachment %s', attachment.id)
-        file = await attachment.to_file()
-        tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
-        tmp_file.parent.mkdir(parents=True, exist_ok=True)
-        await attachment.save(tmp_file)
+    logging.info('Downloading attachment %s', attachment.id)
+    file = await attachment.to_file()
+    tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
+    tmp_file.parent.mkdir(parents=True, exist_ok=True)
+    await attachment.save(tmp_file)
 
     try:
         result = await async_scan(tmp_file)
@@ -132,7 +120,7 @@ def improve_error_message(message: str) -> str:
         message += ' and trim the video around the start and end of the scrolling.'
     if 'scrolling too slowly' in message:
         message += ' Make sure you hold down the *right* analog stick.'
-        message += ' See https://twitter.com/CatalogScanner/status/1261737975244865539'
+        message += ' See https://x.com/CatalogScanner/status/1261737975244865539'
     if 'scrolling inconsistently' in message:
         message += ' Please scroll once, from start to finish, in one direction only.'
     if 'Invalid video' in message:
@@ -171,18 +159,13 @@ def improve_error_message(message: str) -> str:
     name='scan',
     description='Extracts your Animal Crossing items (catalog, recipes, critters, reactions, music).',
 )
-@option('url', str, description='The url of a video to scan', required=False)
 @option(
     'attachment',
     discord.Attachment,
     description='The video or image to scan',
-    required=False,
+    required=True,
 )
-async def scan(ctx: discord.ApplicationContext, url: str, attachment: discord.Attachment):
-    if attachment and url:
-        await reply(ctx, f'{ERROR_EMOJI} Please provide either an attachment or a URL, not both.')
-        return
-
+async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
     if attachment:
         assert attachment.content_type
         filetype, _, _ = attachment.content_type.partition('/')  # {type}/{format}
@@ -190,10 +173,8 @@ async def scan(ctx: discord.ApplicationContext, url: str, attachment: discord.At
             logging.info('Invalid attachment type %r, skipping.', attachment.content_type)
             await reply(ctx, f'{ERROR_EMOJI} The attachment needs to be a valid video or image file.')
             return
-    elif url:
-        filetype = 'url'
     else:
-        await reply(ctx, f'{ERROR_EMOJI} No attachment or url found.')
+        await reply(ctx, f'{ERROR_EMOJI} No attachment found.')
         return
 
     logging.info('Got request from %s with type %r', ctx.user, filetype)
@@ -203,7 +184,7 @@ async def scan(ctx: discord.ApplicationContext, url: str, attachment: discord.At
         logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, len(waiters))
         await reply(ctx, f'{WAIT_EMOJI} You are #{len(waiters)} in the queue, your scan will start soon.')
     async with WAIT_LOCK:
-        await handle_scan(ctx, attachment, filetype, url)
+        await handle_scan(ctx, attachment, filetype)
 
 
 @bot.event

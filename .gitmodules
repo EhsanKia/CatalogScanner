@@ -1,4 +1,0 @@
-
-[submodule "twitter_downloader"]
-	path = twitter_downloader
-	url = https://github.com/linsvensson/twitter-video-downloader
