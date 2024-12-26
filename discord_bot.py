@@ -7,6 +7,7 @@ import pathlib
 
 from absl import app, logging
 import discord
+from discord.enums import IntegrationType, InteractionContextType
 from discord.ext import commands
 from discord import option
 from google.cloud import datastore
@@ -158,6 +159,8 @@ def improve_error_message(message: str) -> str:
 @bot.slash_command(
     name='scan',
     description='Extracts your Animal Crossing items (catalog, recipes, critters, reactions, music).',
+    integration_types=[IntegrationType.user_install, IntegrationType.guild_install],
+    contexts=[InteractionContextType.guild, InteractionContextType.bot_dm, InteractionContextType.private_channel],
 )
 @option(
     'attachment',
