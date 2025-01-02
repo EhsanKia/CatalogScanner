@@ -169,23 +169,23 @@ def improve_error_message(message: str) -> str:
     required=True,
 )
 async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
-    if attachment:
-        assert attachment.content_type
-        filetype, _, _ = attachment.content_type.partition('/')  # {type}/{format}
-        if filetype not in ('video', 'image'):
-            logging.info('Invalid attachment type %r, skipping.', attachment.content_type)
-            await reply(ctx, f'{ERROR_EMOJI} The attachment needs to be a valid video or image file.')
-            return
-    else:
-        await reply(ctx, f'{ERROR_EMOJI} No attachment found.')
+    logging.info('Got request from %s with type %r', ctx.user, attachment.content_type)
+    
+    if not attachment or not attachment.content_type:
+        await reply(ctx, f'{ERROR_EMOJI} Invalid or no attachment.')
         return
 
-    logging.info('Got request from %s with type %r', ctx.user, filetype)
+    filetype, _, _ = attachment.content_type.partition('/')  # {type}/{format}
+    if filetype not in ('video', 'image'):
+        logging.info('Invalid attachment type %r, skipping.', attachment.content_type)
+        await reply(ctx, f'{ERROR_EMOJI} The attachment needs to be a valid video or image file.')
+        return
 
     # Have a queue system that handles requests one at a time.
     if WAIT_LOCK.locked and (waiters := WAIT_LOCK._waiters):  # type: ignore
         logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, len(waiters))
         await reply(ctx, f'{WAIT_EMOJI} You are #{len(waiters)} in the queue, your scan will start soon.')
+
     async with WAIT_LOCK:
         await handle_scan(ctx, attachment, filetype)
 
