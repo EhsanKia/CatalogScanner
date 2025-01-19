@@ -155,6 +155,13 @@ def improve_error_message(message: str) -> str:
         message += ' Make sure to record and download the video using the Switch\'s media gallery.'
     return message
 
+@bot.slash_command(
+    name='ping',
+    description='Responds with the bot latency.',
+)
+async def ping(ctx: discord.ApplicationContext):
+    latency = bot.latency * 1000  # Convert to milliseconds
+    await ctx.respond(f'Pong! Latency is {latency:.2f} ms')
 
 @bot.slash_command(
     name='scan',
