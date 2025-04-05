@@ -108,10 +108,7 @@ async def async_scan(filename: os.PathLike) -> scanner.ScanResult:
 
 async def reply(ctx: discord.ApplicationContext, message: str) -> None:
     """Responds with an ephemeral message, or updates the existing message."""
-    if not ctx.interaction.response.is_done():
-        await ctx.interaction.response.send_message(content=message, ephemeral=True)
-    else:
-        await ctx.interaction.edit_original_response(content=message)
+    await ctx.interaction.followup.send(content=message, ephemeral=True)
 
 
 def improve_error_message(message: str) -> str:
@@ -193,6 +190,7 @@ async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
         logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, len(waiters))
         await reply(ctx, f'{WAIT_EMOJI} You are #{len(waiters)} in the queue, your scan will start soon.')
 
+    await ctx.interaction.response.defer(ephemeral=True, invisible=False)
     async with WAIT_LOCK:
         await handle_scan(ctx, attachment, filetype)
 
