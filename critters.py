@@ -48,7 +48,7 @@ class CritterIcon(numpy.ndarray):
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing Critterpedia."""
     color = frame[:20, 1100:1150].mean(axis=(0, 1))
-    return numpy.linalg.norm(color - BG_COLOR) < 5
+    return numpy.linalg.norm(color - BG_COLOR) < 7
 
 
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
