@@ -272,7 +272,7 @@ def _dedupe_rows(all_rows: List[numpy.ndarray]) -> List[numpy.ndarray]:
 def _get_tesseract_config(lang: str) -> str:
     """Generates Tesseract configurations for the given language."""
     configs = [
-        '--psm 6'  # Manually specify that we know orientation / shape.
+        '--psm 6',  # Manually specify that we know orientation / shape.
         '-c preserve_interword_spaces=1',  # Fixes spacing between logograms.
         '-c tessedit_do_invert=0',  # Speed up skipping invert check.
     ]
