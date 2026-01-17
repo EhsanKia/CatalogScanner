@@ -25,6 +25,11 @@
   "cfbc4014b13e3c29b43bb04954a5a5d7b49a9a2f39166a6470d8bba815c376e6c3d44f33cd6292ee5"
  ],
  [
+  "Chillwave",
+  "mjk_Chillwave.png",
+  "9c1660bb623f2d7e001c3cc58cc27ccfe68101751987a49374d7b3c3032b17758ba6ddc43ccdeacf9"
+ ],
+ [
   "Comrade K.K.",
   "mjk_ShowaKayo.png",
   "f33037e0c30cff20ff47a021c7ae0f3de64c72c52f0334e13d380c84f0663f3e38fdd9ce1e61a3e01"
@@ -85,6 +90,11 @@
   "969fea5853d6d73c7db20531775a1f8356b86093c069a82e1716d73961038c86986edb56e7b074ab2"
  ],
  [
+  "K.K. Bashment",
+  "mjk_Bashment.png",
+  "f1a7239639a334879cce98ecd9bd9e73326333260e9a76c30d6738984b74ee6a2467321999461d8cd"
+ ],
+ [
   "K.K. Bazaar",
   "mjk_Roma.png",
   "dc2c06070a3f758f4d8743f8ab6dcbc0f4c8535c64bdd2326e3002d6b19dff19f4e5e02cf860e1a72"
@@ -105,6 +115,11 @@
   "9726e5cb1a1a94b76a80df873754f2012292ed4b52a5b92e53cd626b2575aad2612b0c6772bf2a73c"
  ],
  [
+  "K.K. Break",
+  "mjk_Break.png",
+  "e5ab2b122b87c290f98745b69499a31e9e0a1b9bd61f1b4a66fc35f875c55ccac14b27a46c8c87497"
+ ],
+ [
   "K.K. Calypso",
   "mjk_Caripso.png",
   "eacb339a499789e6aa8bb74aad1b6a06e73d4f29ed926948a8db42b40df18a5949832f16726da9cc2"
@@ -118,6 +133,11 @@
   "K.K. Chorale",
   "mjk_Sanbika.png",
   "d311392262ceae69898cb1184e6d24e7b659d919b4b2bccb6639e6225e4379824798e6dbf269b36c6"
+ ],
+ [
+  "K.K. Chorinho",
+  "mjk_Choro.png",
+  "ca17723e9732d2d13f3e1393320d1e1e39b22a1b96b7c4431863950700f256c34e6fe8e49af4ded1e"
  ],
  [
   "K.K. Condor",
@@ -155,6 +175,11 @@
   "d6a3054233818dcfd8079eb91421843f50bfea773e71395a0c3cc34ba547f8c2d5689e7836ff1cb90"
  ],
  [
+  "K.K. Dub",
+  "mjk_Dub.png",
+  "c43f72b88ce808c40f667fa43a24ab80ce1f9e61f6660bd52d8cfb743ba3117188788d7ea65df330c"
+ ],
+ [
   "K.K. \u00c9tude",
   "mjk_Etude.png",
   "fa66f2d1edf03af4b36930384da4306ef24b9060d3bedce8e25e3173b9c93e786e312d9c103604d91"
@@ -175,6 +200,11 @@
   "cd0a318da266ccefb619c1655a846d75a9674a31d1f3005b6346af3ec9cd4cb35365e05e3db903b62"
  ],
  [
+  "K.K. Fugue",
+  "mjk_Fugue.png",
+  "e1084ca552cd237ace972c7c0726bc5c3ecc9e378e9934488f0f8c7abed34233633b49bc690f99ac3"
+ ],
+ [
   "K.K. Fusion",
   "mjk_Fusion.png",
   "b04546a6f5bccac3190c9313e9276284c984a7acba5d25e936cd3626f969364392d85dee2f56bf825"
@@ -188,6 +218,11 @@
   "K.K. Gumbo",
   "mjk_NewOrleans.png",
   "fefaac69d8e4429948f0e3c1fce912d667b2961d92eed1e40c48f5c95e03a139389f8349d8770b52a"
+ ],
+ [
+  "K.K. Hop",
+  "mjk_Hiphop.png",
+  "8c5164c8828fc9f0e7718c11cf7c72383f9c3e637e17042afcc6631f3bda3786b8e20b1132e3ef01d"
  ],
  [
   "K.K. House",
@@ -210,6 +245,11 @@
   "d0203988c1dede48536cfda356a37cd8652d689e8bbd42a938b7e13e42c31b52b68c4ad41bf98d53e"
  ],
  [
+  "K.K. Khoomei",
+  "mjk_Khoomii.png",
+  "b66e70670d8d2ce67e699b3980dc63d899f08f18710f8c3e34c78fb9a5bc7f12ed807386bc242318c"
+ ],
+ [
   "K.K. Lament",
   "mjk_Enka.png",
   "dd4df4713a3d336a6e9618ac590a5666915124dcb725249bc70c9b66e72d9d8b6638f4f652c09e32c"
@@ -218,6 +258,11 @@
   "K.K. Love Song",
   "mjk_LoveSong.png",
   "d365f304a2ff65b134e249a5a160db3624c9b684da5b6a953124f25a4ce936dd893364e8db3652ed6"
+ ],
+ [
+  "K.K. Lovers",
+  "mjk_Lovers.png",
+  "c7243c7cbbccf770a0a3368c9a5c8c8c1e1af079d4c0bb5f8d3eaca45a9aa93bf249814cfbb501333"
  ],
  [
   "K.K. Lullaby",
@@ -270,6 +315,11 @@
   "c106e6def3fe41a2f63812594be6c7e9ce2865a93db163691f199323c7869a8921fb3c30867c36583"
  ],
  [
+  "K.K. Polka",
+  "mjk_Polka.png",
+  "ebfb64896b904b26c9d2fa13f529385a716dcf534f6b2ce049b491c7919836dab0becbc2920e18c69"
+ ],
+ [
   "K.K. Ragtime",
   "mjk_RagTime.png",
   "8d136c4c16e6593b373366db4ce6c9901e94317ce671d9618e9739947f17936699093cc93cc656915"
@@ -283,6 +333,11 @@
   "K.K. Reggae",
   "mjk_Reggae.png",
   "8165dc66e2e61093d0521bca56e4cb50cd3b899c4498e6d9aa49e16da6a9f4e4cd8f9d1d9d99a6cd5"
+ ],
+ [
+  "K.K. Robot Synth",
+  "mjk_Android.png",
+  "ed59789aea6924a5566d58a1ed819ad66979c5255358dd25c8d0cbb349598d02ca6ea9acf6b267c92"
  ],
  [
   "K.K. Rock",
@@ -313,6 +368,11 @@
   "K.K. Ska",
   "mjk_Ska.png",
   "8fbc58d46bb46e53a3f839a643591c2258d8e41ed2f696723d2b6585ac0f098234b1af61cc3f8fac6"
+ ],
+ [
+  "K.K. Slack-Key",
+  "mjk_Slackkey.png",
+  "c019e64d92de4cfb079fc62c8ca1227fc0f05c9cf471018167670a4e26b039a547f3e26dd3f273bcb"
  ],
  [
   "K.K. Sonata",
@@ -473,65 +533,5 @@
   "Welcome Horizons",
   "mjk_MainTheme.png",
   "a5bfda040cf81c97ffd82964df0f07fa6907cb401b0ffde0843ef8c187e4f01d81e0780fc34630d3e"
- ],
- [
-  "Chillwave",
-  "mjk_Chillwave.png",
-  "9c1660bb623f2d7e001c3cc58cc27ccfe68101751987a49374d7b3c3032b17758ba6ddc43ccdeacf9"
- ],
- [
-  "K.K. Bashment",
-  "mjk_Bashment.png",
-  "f1a7239639a334879cce98ecd9bd9e73326333260e9a76c30d6738984b74ee6a2467321999461d8cd"
- ],
- [
-  "K.K. Break",
-  "mjk_Break.png",
-  "e5ab2b122b87c290f98745b69499a31e9e0a1b9bd61f1b4a66fc35f875c55ccac14b27a46c8c87497"
- ],
- [
-  "K.K. Chorinho",
-  "mjk_Choro.png",
-  "ca17723e9732d2d13f3e1393320d1e1e39b22a1b96b7c4431863950700f256c34e6fe8e49af4ded1e"
- ],
- [
-  "K.K. Dub",
-  "mjk_Dub.png",
-  "c43f72b88ce808c40f667fa43a24ab80ce1f9e61f6660bd52d8cfb743ba3117188788d7ea65df330c"
- ],
- [
-  "K.K. Fugue",
-  "mjk_Fugue.png",
-  "e1084ca552cd237ace972c7c0726bc5c3ecc9e378e9934488f0f8c7abed34233633b49bc690f99ac3"
- ],
- [
-  "K.K. Hop",
-  "mjk_Hiphop.png",
-  "8c5164c8828fc9f0e7718c11cf7c72383f9c3e637e17042afcc6631f3bda3786b8e20b1132e3ef01d"
- ],
- [
-  "K.K. Khoomei",
-  "mjk_Khoomii.png",
-  "b66e70670d8d2ce67e699b3980dc63d899f08f18710f8c3e34c78fb9a5bc7f12ed807386bc242318c"
- ],
- [
-  "K.K. Lovers",
-  "mjk_Lovers.png",
-  "c7243c7cbbccf770a0a3368c9a5c8c8c1e1af079d4c0bb5f8d3eaca45a9aa93bf249814cfbb501333"
- ],
- [
-  "K.K. Polka",
-  "mjk_Polka.png",
-  "ebfb64896b904b26c9d2fa13f529385a716dcf534f6b2ce049b491c7919836dab0becbc2920e18c69"
- ],
- [
-  "K.K. Robot Synth",
-  "mjk_Android.png",
-  "ed59789aea6924a5566d58a1ed819ad66979c5255358dd25c8d0cbb349598d02ca6ea9acf6b267c92"
- ],
- [
-  "K.K. Slack-Key",
-  "mjk_Slackkey.png",
-  "c019e64d92de4cfb079fc62c8ca1227fc0f05c9cf471018167670a4e26b039a547f3e26dd3f273bcb"
  ]
 ]
