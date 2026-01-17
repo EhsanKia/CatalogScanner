@@ -82,6 +82,7 @@
  ],
  "Baby panda": [],
  "Bell-bag rug": [],
+ "Big Man bench": [],
  "Bohemian tunic dress": [
   "Navy blue",
   "Red",
@@ -93,6 +94,7 @@
  "Bunny Day bag": [],
  "Bunny Day basket": [],
  "Bunny Day bed": [],
+ "Bunny Day candy": [],
  "Bunny Day crown": [],
  "Bunny Day festive balloons": [],
  "Bunny Day flooring": [],
@@ -128,6 +130,7 @@
   "Light blue",
   "Navy blue"
  ],
+ "Chinese-style meal": [],
  "Cinnamoroll flooring": [],
  "Cinnamoroll hat": [],
  "Cinnamoroll jacket": [],
@@ -142,6 +145,15 @@
  "Cinnamoroll tray": [],
  "Cinnamoroll wall": [],
  "Comrade K.K.": [],
+ "Crab Tank": [
+  "Yellow",
+  "Purple",
+  "Pink",
+  "Green",
+  "Orange",
+  "Blue"
+ ],
+ "Cyan Trainers": [],
  "DAL apron": [],
  "DAL backpack": [],
  "DAL cap": [],
@@ -220,6 +232,7 @@
   "Blue",
   "White"
  ],
+ "Decayed Guardian": [],
  "Drivin'": [],
  "EKG machine": [],
  "Earth rug": [],
@@ -230,6 +243,9 @@
   "Purple",
   "Gray"
  ],
+ "Eeltail Alley wall": [],
+ "Famicom": [],
+ "Famicom Disk System": [],
  "Farewell": [],
  "Festivale accessory": [
   "Red",
@@ -314,10 +330,29 @@
   "Purple"
  ],
  "Fire Flower": [],
+ "Force ReBoots": [],
  "Forest Life": [],
+ "Frye top": [],
+ "Game Boy": [
+  "Original",
+  "Red",
+  "Yellow",
+  "Green",
+  "Black",
+  "White",
+  "Clear",
+  "Blue"
+ ],
  "Gemini closet": [],
  "Go K.K. Rider": [],
  "Goal Pole": [],
+ "Goddess Statue": [
+  "No ornamentation",
+  "Kakariko Village",
+  "Goron City",
+  "Rito Village"
+ ],
+ "Golden Egg": [],
  "HHA pennant": [],
  "HMD": [],
  "Hawaiian-print apron": [
@@ -328,6 +363,7 @@
  "Hazure01": [],
  "Hazure02": [],
  "Hazure03": [],
+ "Heart Container": [],
  "Hello Kitty bed": [],
  "Hello Kitty chair": [],
  "Hello Kitty clock": [],
@@ -341,7 +377,11 @@
  "Hello Kitty table": [],
  "Hello Kitty tee": [],
  "Hello Kitty wall": [],
+ "Hero Boot Replicas": [],
+ "Hero Suit Replica": [],
  "Hikoboshi outfit": [],
+ "Hylian boots": [],
+ "Hylian trousers": [],
  "Hypno K.K.": [],
  "I Love You": [],
  "IV drip": [
@@ -351,6 +391,8 @@
   "Green"
  ],
  "Imperial K.K.": [],
+ "Inkling head": [],
+ "Inkling shorts": [],
  "Jack's face": [],
  "Jack's portrait": [],
  "Jack's robe": [],
@@ -362,6 +404,7 @@
   "Red",
   "Antique"
  ],
+ "Japanese-style meal": [],
  "Jingle wall": [],
  "K.K. Adventure": [],
  "K.K. Aria": [],
@@ -463,6 +506,8 @@
  "Kiki & Lala wall": [],
  "King K.K.": [],
  "King Tut mask": [],
+ "Korok Forest flooring": [],
+ "Korok Forest wall": [],
  "LCD TV (20 in.)": [
   "Black",
   "White",
@@ -479,6 +524,57 @@
   "Silver",
   "Red",
   "Blue"
+ ],
+ "LEGO\u00ae DIY workbench": [
+  "Colorful",
+  "Modern",
+  "Cute",
+  "Chic"
+ ],
+ "LEGO\u00ae arcade game": [
+  "Colorful",
+  "Modern",
+  "Cute",
+  "Chic"
+ ],
+ "LEGO\u00ae bed": [
+  "Colorful",
+  "Modern",
+  "Cute",
+  "Chic"
+ ],
+ "LEGO\u00ae brick tee": [],
+ "LEGO\u00ae fireplace": [
+  "Colorful",
+  "Colorful",
+  "Modern",
+  "Modern",
+  "Cute",
+  "Cute",
+  "Chic",
+  "Chic"
+ ],
+ "LEGO\u00ae logo tee": [],
+ "LEGO\u00ae minifigure tee": [],
+ "LEGO\u00ae partition": [
+  "Colorful",
+  "Modern",
+  "Cute",
+  "Chic"
+ ],
+ "LEGO\u00ae plum blossom": [],
+ "LEGO\u00ae sofa": [
+  "Colorful",
+  "Modern",
+  "Cute",
+  "Chic"
+ ],
+ "LEGO\u00ae space logo rug": [],
+ "LEGO\u00ae table": [
+  "Colorful",
+  "Modern",
+  "Cute",
+  "Chic"
  ],
  "Labelle cap": [
   "Midnight",
@@ -579,6 +675,9 @@
  "Lakitu's Cloud rug": [],
  "Leo sculpture": [],
  "Libra scale": [],
+ "Link hat": [],
+ "Link outfit": [],
+ "Love Tester": [],
  "Lucky K.K.": [],
  "Luigi 'stache": [],
  "Luigi hat": [],
@@ -588,6 +687,7 @@
  "Lunar New Year decoration": [],
  "M. sunset moth model": [],
  "MVP tee": [],
+ "Majora's Mask": [],
  "Mama bear": [
   "Cream",
   "Cream",
@@ -621,6 +721,8 @@
  "Mario outfit": [],
  "Mario shoes": [],
  "Market Place decoration": [],
+ "Master Sword": [],
+ "Mineru costume": [],
  "Mom's art": [
   "Still Life",
   "Street with Trees",
@@ -675,6 +777,14 @@
   "Family",
   "Denim",
   "Quilted pattern"
+ ],
+ "Mom's homemade cake": [
+  "Cat",
+  "Strawberry & flowers",
+  "Carrot",
+  "Dog",
+  "Bird",
+  "Chocolate"
  ],
  "Mom's knapsack": [
   "Forest print",
@@ -782,6 +892,7 @@
  "My Melody table": [],
  "My Melody wall": [],
  "My Place": [],
+ "NES": [],
  "Napoleonfish model": [],
  "Neapolitan": [],
  "New Year's hat": [
@@ -794,6 +905,7 @@
   "Blue",
   "Purple"
  ],
+ "New Year's noodles": [],
  "New Year's shimekazari": [],
  "New Year's silk hat": [
   "Red",
@@ -810,6 +922,7 @@
   "Neon blue & neon red",
   "Gray"
  ],
+ "Nintendo Switch 2": [],
  "Nintendo Switch Lite": [
   "Turquoise",
   "Gray",
@@ -1244,6 +1357,8 @@
  "OK Motors cap": [],
  "OK Motors jacket": [],
  "OK Motors sign": [],
+ "Octoling head": [],
+ "Olivier salad": [],
  "Only Me": [],
  "Orihime outfit": [],
  "PA speaker": [],
@@ -1317,6 +1432,7 @@
   "Light blue",
   "Purple"
  ],
+ "Pink Trainers": [],
  "Pisces lamp": [],
  "Pocket modern camper": [
   "Ketchup and mustard",
@@ -1375,6 +1491,7 @@
  "Rockin' K.K.": [],
  "Room Sketch flooring": [],
  "Room Sketch wall": [],
+ "Roost sabl\u00e9 cookie": [],
  "Rover's briefcase": [],
  "SLR camera": [
   "Black",
@@ -1396,15 +1513,83 @@
   "Green",
   "Red"
  ],
+ "Shiver top": [],
+ "Smallfry headband": [],
  "Soulful K.K.": [],
  "South Pole": [],
  "Space K.K.": [],
+ "Splatfest sign center panel": [],
+ "Splatfest sign left panel": [],
+ "Splatfest sign right panel": [],
+ "Splatoon locker": [
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Yellow",
+  "Yellow",
+  "Yellow",
+  "Yellow",
+  "Yellow",
+  "Yellow",
+  "Light blue",
+  "Light blue",
+  "Light blue",
+  "Light blue",
+  "Light blue",
+  "Light blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Beat-up",
+  "Beat-up",
+  "Beat-up",
+  "Beat-up",
+  "Beat-up",
+  "Beat-up"
+ ],
+ "Splattershot": [
+  "Yellow",
+  "Purple",
+  "Pink",
+  "Green",
+  "Orange",
+  "Blue"
+ ],
  "Spring Blossoms": [],
+ "Squidmark Sweat": [],
  "Stale Cupcakes": [],
  "Statue of Liberty": [],
  "Steep Hill": [],
  "Stonehenge": [],
+ "Super Famicom": [],
  "Super Mushroom": [],
+ "Super NES (NTSC version)": [],
+ "Super NES (PAL version)": [],
+ "Super Sea Snail": [],
  "Super Star": [],
  "Surfin' K.K.": [],
  "T. rex skull": [],
@@ -1432,6 +1617,7 @@
   "Blue",
   "Blue"
  ],
+ "Takoroka Nylon Vintage": [],
  "Taurus bathtub": [],
  "The K. Funk": [],
  "Thwomp": [],
@@ -1441,6 +1627,11 @@
  "Tower of Pisa": [],
  "Toy Day sleigh": [],
  "Toy Day stockings": [],
+ "Tri headband": [],
+ "Tri-Shred Tee": [],
+ "Tricolor Turf War flooring": [],
+ "Triforce": [],
+ "Tulin outfit": [],
  "Turkey Day casserole": [
   "Fall harvest",
   "Spring blooming"
@@ -1477,6 +1668,8 @@
   "Spring blooming"
  ],
  "Two Days Ago": [],
+ "Ultra Hand": [],
+ "Ultra Machine": [],
  "V-neck sweater": [
   "Black",
   "Red",
@@ -1505,7 +1698,15 @@
  "Wario shoes": [],
  "Welcome Horizons": [],
  "Yoshi's Egg rug": [],
+ "Yule log": [
+  "Chocolate",
+  "Chestnut",
+  "Whipped-cream topping",
+  "Strawberry",
+  "Green tea"
+ ],
  "Yut Nori": [],
+ "Zonai authentication crest": [],
  "abstract wall": [],
  "academy uniform": [
   "Gray",
@@ -1575,11 +1776,6 @@
   "Black",
   "Pink",
   "Green",
-  "Yellow",
-  "White",
-  "Black",
-  "Pink",
-  "Green",
   "Yellow"
  ],
  "air conditioner": [
@@ -1591,6 +1787,7 @@
   "Brown"
  ],
  "airplane wall": [],
+ "aji fry": [],
  "aloha-edition carrying case": [],
  "alpinist dress": [
   "Red",
@@ -1642,9 +1839,10 @@
   "Pink",
   "Ivory",
   "Light blue",
-  "Black"
+  "Silver"
  ],
  "anatomical model": [],
+ "anchoas al ajillo": [],
  "anchor statue": [
   "Black",
   "Silver",
@@ -1662,6 +1860,9 @@
   "Purple",
   "Beige"
  ],
+ "ancient princess costume": [],
+ "ancient princess sandals": [],
+ "ancient princess wig": [],
  "ancient sashed robe": [
   "Red",
   "Pink",
@@ -1709,11 +1910,11 @@
  "ant farm": [],
  "ant model": [],
  "anthurium plant": [
-  "White",
-  "Brown",
-  "Light blue",
+  "Red",
+  "Berry red",
+  "Green",
   "Pink",
-  "Black"
+  "White"
  ],
  "antique bed": [
   "Brown",
@@ -1784,6 +1985,10 @@
   "Natural",
   "Black"
  ],
+ "apparel-shop paper bag": [
+  "Pink",
+  "Light blue"
+ ],
  "apparel-shop wall": [],
  "apple chair": [
   "Red apple",
@@ -1791,7 +1996,12 @@
  ],
  "apple dress": [],
  "apple hat": [],
+ "apple jam": [],
+ "apple jelly": [],
+ "apple pie": [],
  "apple rug": [],
+ "apple smoothie": [],
+ "apple tart": [],
  "apple umbrella": [],
  "apple wall": [],
  "apron": [
@@ -1876,6 +2086,136 @@
  ],
  "arowana model": [],
  "art plaque": [],
+ "artful bed": [
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White"
+ ],
+ "artful chair": [
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White"
+ ],
+ "artful lamp": [
+  "Light wood",
+  "Orange wood",
+  "Dark wood",
+  "Black",
+  "Cherry wood",
+  "White"
+ ],
+ "artful screen": [
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Light wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Orange wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Dark wood",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "Cherry wood",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White"
+ ],
+ "artful shelves": [
+  "Light wood",
+  "Orange wood",
+  "Dark wood",
+  "Black",
+  "Cherry wood",
+  "White"
+ ],
  "artisanal bug cage": [],
  "artsy chair": [
   "Silver",
@@ -2181,6 +2521,7 @@
   "Blue",
   "Purple"
  ],
+ "baked potatoes": [],
  "ball": [
   "Basketball",
   "Soccer ball",
@@ -2302,6 +2643,7 @@
  "bamboo-grove wall": [],
  "bamboo-screen wall": [],
  "bamboo-shoot lamp": [],
+ "bamboo-shoot soup": [],
  "bandage": [],
  "bank-vault wall": [],
  "banker's lamp": [
@@ -2335,6 +2677,7 @@
   "Chestnut"
  ],
  "barred knifejaw model": [],
+ "barred-knifejaw carpaccio": [],
  "barrel": [],
  "barreleye model": [],
  "barrette": [],
@@ -2395,6 +2738,11 @@
   "Monotone"
  ],
  "basic wall": [],
+ "basket bag": [
+  "Light brown",
+  "Brown",
+  "White"
+ ],
  "basket pack": [],
  "basketball hoop": [
   "Blue",
@@ -2684,10 +3032,10 @@
   "Blue",
   "Yellow"
  ],
+ "beige Moroccan flooring": [],
+ "beige Moroccan wall": [],
  "beige art-deco wall": [],
  "beige blossoming wall": [],
- "beige desert-tile flooring": [],
- "beige desert-tile wall": [],
  "bekasab robe": [
   "Red",
   "Camel",
@@ -2722,6 +3070,7 @@
   "Green",
   "Blue"
  ],
+ "berliner": [],
  "berry-chocolates flooring": [],
  "betta model": [],
  "bicycle helmet": [
@@ -2760,6 +3109,14 @@
  "bingata dress": [],
  "bingo wheel": [],
  "birch flooring": [],
+ "bird-of-paradise": [
+  "White",
+  "Black",
+  "Brown",
+  "Gray",
+  "Gold",
+  "Silver"
+ ],
  "birdbath": [
   "Natural",
   "Red",
@@ -2781,6 +3138,11 @@
   "Blue",
   "White"
  ],
+ "birthday cake": [
+  "Whipped-cream topping",
+  "Chocolate buttercream",
+  "Strawberry buttercream"
+ ],
  "birthday candles": [
   "Colorful",
   "Pink",
@@ -2789,6 +3151,7 @@
   "Orange",
   "Gorgeous"
  ],
+ "birthday cupcake": [],
  "birthday hat": [
   "Pink",
   "Yellow",
@@ -2816,6 +3179,7 @@
   "Orange",
   "Gorgeous"
  ],
+ "biryani": [],
  "bistro table": [
   "Light wood",
   "Light wood",
@@ -2870,6 +3234,7 @@
  "blackboard wall": [],
  "block": [],
  "block flooring": [],
+ "blood-orange juice": [],
  "blossom dress": [
   "Pink",
   "Yellow",
@@ -2895,6 +3260,8 @@
  ],
  "blowfish model": [],
  "blue Hawaiian quilt rug": [],
+ "blue Moroccan flooring": [],
+ "blue Moroccan wall": [],
  "blue Moroccan-style wall": [],
  "blue Persian rug": [],
  "blue argyle rug": [],
@@ -2904,8 +3271,6 @@
  "blue camo wall": [],
  "blue corner": [],
  "blue delicate-blooms wall": [],
- "blue desert-tile flooring": [],
- "blue desert-tile wall": [],
  "blue diner wall": [],
  "blue dot flooring": [],
  "blue dot parasol": [],
@@ -2916,6 +3281,9 @@
  "blue heart-pattern wall": [],
  "blue honeycomb tile": [],
  "blue honeycomb-tile wall": [],
+ "blue hotel aloha shirt": [],
+ "blue hotel cardigan": [],
+ "blue hotel tee": [],
  "blue intricate wall": [],
  "blue kilim-style carpet": [],
  "blue kitchen mat": [],
@@ -3053,10 +3421,10 @@
   "Textbook"
  ],
  "book stands": [
-  "Colorful",
-  "Brown",
+  "White",
+  "Navy blue",
   "Black",
-  "Pastel"
+  "Pink"
  ],
  "boomerang": [
   "Natural",
@@ -3143,6 +3511,57 @@
   "Gray",
   "Gray",
   "Gray"
+ ],
+ "bottled beverage": [
+  "Clear",
+  "Clear",
+  "Clear",
+  "Clear",
+  "Clear",
+  "Clear",
+  "Clear",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Orange",
+  "Orange",
+  "Orange",
+  "Orange",
+  "Orange",
+  "Orange",
+  "Orange",
+  "Purple",
+  "Purple",
+  "Purple",
+  "Purple",
+  "Purple",
+  "Purple",
+  "Purple"
  ],
  "bottled ship": [
   "Trading ship",
@@ -3237,6 +3656,9 @@
  "brachio pelvis": [],
  "brachio skull": [],
  "brachio tail": [],
+ "bread": [],
+ "bread gratin": [],
+ "bread-print eco bag": [],
  "breaker": [],
  "brick garden wall": [],
  "brick oven": [
@@ -3289,6 +3711,8 @@
  "brown-brick flooring": [],
  "brown-brick wall": [],
  "brown-crown wall": [],
+ "brown-sugar cupcakes": [],
+ "brown-sugar pound cake": [],
  "bubble machine": [
   "Black",
   "White"
@@ -3493,6 +3917,7 @@
   "Blue",
   "Silver"
  ],
+ "cake sal\u00e9": [],
  "camo bomber-style jacket": [
   "Green",
   "Gray",
@@ -3525,6 +3950,10 @@
   "Avocado",
   "Blue",
   "Purple"
+ ],
+ "camo tote bag": [
+  "Green",
+  "Brown"
  ],
  "camo umbrella": [],
  "camo wall": [],
@@ -3576,6 +4005,7 @@
   "Canned snacks"
  ],
  "canvas backpack": [],
+ "caprese sandwich set": [],
  "capsule-toy machine": [
   "Blue",
   "Red",
@@ -3676,6 +4106,25 @@
   "Black",
   "Yellow",
   "Red"
+ ],
+ "carpaccio di capesante": [],
+ "carpaccio di marlin blu": [],
+ "carpaccio di salmone": [],
+ "carrot bagel sandwich": [],
+ "carrot cake": [],
+ "carrot juice": [],
+ "carrot potage": [],
+ "carrot scones": [],
+ "carrot-tops curry": [],
+ "carton beverage": [
+  "Milk",
+  "Coffee-flavored milk",
+  "Strawberry-flavored milk",
+  "Orange juice",
+  "Apple juice",
+  "Grape juice",
+  "Vegetable juice",
+  "Vegetable potage"
  ],
  "cartoonist's set": [
   "Black",
@@ -3846,6 +4295,16 @@
   "Navy blue",
   "Brown"
  ],
+ "cat plushie": [
+  "Orange tabby",
+  "Gray tabby",
+  "White",
+  "Black",
+  "Calico",
+  "Cream & brown",
+  "Gray",
+  "Yellow"
+ ],
  "cat tower": [
   "Beige",
   "Brown",
@@ -3933,19 +4392,22 @@
  ],
  "chalkboard": [
   "Blank",
-  "After school",
+  "Scribbles",
   "Foreign language",
   "Math",
   "Music",
   "Club activities",
   "Art"
  ],
+ "champion outfit": [],
+ "champion wig": [],
  "champion's pennant": [
   "Red",
   "Blue",
   "Green",
   "Black"
  ],
+ "champi\u00f1ones al ajillo": [],
  "changing room": [
   "Gray",
   "Gray",
@@ -4092,16 +4554,21 @@
  ],
  "cherry dress": [],
  "cherry hat": [],
+ "cherry jam": [],
+ "cherry jelly": [],
  "cherry lamp": [
   "Cherry",
   "Black cherry"
  ],
+ "cherry pie": [],
  "cherry rug": [],
  "cherry salmon model": [],
+ "cherry smoothie": [],
  "cherry speakers": [
   "Cherry",
   "Black cherry"
  ],
+ "cherry tart": [],
  "cherry umbrella": [],
  "cherry wall": [],
  "cherry-blossom bonsai": [],
@@ -4127,6 +4594,8 @@
   "Brown",
   "Camel"
  ],
+ "chic LEGO\u00ae flooring": [],
+ "chic LEGO\u00ae wall": [],
  "chic cosmos wreath": [],
  "chic mum crown": [],
  "chic rose crown": [],
@@ -4161,9 +4630,16 @@
  ],
  "chiton": [],
  "chocolate hallway wall": [],
+ "chocolate heart": [
+  "Milk chocolate",
+  "Dark chocolate",
+  "White chocolate",
+  "Strawberry chocolate"
+ ],
  "chocolate herringbone wall": [],
  "ciao tee": [],
  "cicada shell model": [],
+ "circle cushion": [],
  "circuit-board flooring": [],
  "circuit-board wall": [],
  "circus flooring": [],
@@ -4178,6 +4654,7 @@
   "Pastel",
   "Cute"
  ],
+ "clam chowder": [],
  "clarinet": [],
  "clasp purse": [
   "White",
@@ -4319,6 +4796,12 @@
  "clown fish model": [],
  "club flooring": [],
  "club wall": [],
+ "clutch": [
+  "Light brown",
+  "Black",
+  "Red",
+  "Green"
+ ],
  "coatigan": [
   "Gray",
   "Pink",
@@ -4326,7 +4809,13 @@
   "Light blue",
   "Purple"
  ],
+ "coconut cookies": [],
+ "coconut juice": [],
  "coconut mat": [],
+ "coconut milk": [],
+ "coconut oil": [],
+ "coconut pancakes": [],
+ "coconut pudding": [],
  "coconut wall planter": [],
  "coelacanth model": [],
  "coffee beans": [
@@ -4337,7 +4826,7 @@
   "Black (Decaf)"
  ],
  "coffee cup": [
-  "Plain",
+  "Simple",
   "Floral",
   "Polka dots",
   "Rose",
@@ -4400,6 +4889,9 @@
   "Beige"
  ],
  "colored-leaves flooring": [],
+ "colorful LEGO\u00ae flooring": [],
+ "colorful LEGO\u00ae wall": [],
+ "colorful juice": [],
  "colorful mosaic-tile flooring": [],
  "colorful puzzle flooring": [],
  "colorful puzzle wall": [],
@@ -4434,6 +4926,40 @@
   "Win or lose",
   "Black & red",
   "Items"
+ ],
+ "colorful-lantern arch": [
+  "Natural",
+  "Natural",
+  "Natural",
+  "Natural",
+  "Natural",
+  "Natural",
+  "Natural",
+  "Natural",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White"
  ],
  "colorful-tile wall": [],
  "combat helmet": [
@@ -4564,6 +5090,7 @@
   "Brown"
  ],
  "cookie rug": [],
+ "cookies": [],
  "cooking tools": [
   "Stylish",
   "Natural"
@@ -5059,6 +5586,7 @@
  ],
  "cup with saucer": [],
  "curly mustache": [],
+ "curry with rice": [],
  "curtain partition": [
   "Silver",
   "Silver",
@@ -5105,6 +5633,8 @@
   "Red",
   "Blue"
  ],
+ "cute LEGO\u00ae flooring": [],
+ "cute LEGO\u00ae wall": [],
  "cute bed": [
   "White",
   "Sky blue",
@@ -5187,6 +5717,23 @@
  "cute yellow wall": [],
  "cute yellow-tile flooring": [],
  "cute-paint flooring": [],
+ "cutlery": [
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White"
+ ],
  "cutting board": [
   "No finish",
   "No finish",
@@ -5292,6 +5839,7 @@
   "Camel"
  ],
  "danger tank": [],
+ "dango": [],
  "dark bamboo bath mat": [],
  "dark bamboo rug": [],
  "dark cosmos crown": [],
@@ -5546,6 +6094,10 @@
   "Washed out",
   "Blue"
  ],
+ "department-store paper bag": [
+  "Blue",
+  "Red"
+ ],
  "desert outfit": [
   "Pink",
   "Yellow",
@@ -5633,12 +6185,14 @@
   "Yellow",
   "Hisshou (Certain victory)"
  ],
+ "diamond-weave basket bag": [],
  "diaper": [
   "Light blue",
   "Pink",
   "Cream",
   "Black"
  ],
+ "diced-salad sandwich set": [],
  "die": [
   "White",
   "Black",
@@ -5770,9 +6324,9 @@
   "Pink",
   "Pink",
   "Pink",
-  "Cream",
-  "Cream",
-  "Cream",
+  "White",
+  "White",
+  "White",
   "Purple",
   "Purple",
   "Purple"
@@ -6013,6 +6567,7 @@
   "Pink",
   "Blue"
  ],
+ "double Gloucester cheese": [],
  "double nose tissues": [],
  "double sofa": [
   "Red",
@@ -6546,6 +7101,12 @@
  "electronics kit": [
   "Green",
   "Black"
+ ],
+ "electronics-store paper bag": [
+  "Yellow",
+  "Light blue",
+  "Red",
+  "Blue"
  ],
  "elegant bed": [
   "Gold",
@@ -7141,6 +7702,7 @@
   "Green",
   "Blue"
  ],
+ "extravagant meal": [],
  "eye gauze": [],
  "eye mask": [
   "Gray",
@@ -7152,6 +7714,7 @@
  ],
  "eye patch": [],
  "facial mask": [],
+ "fairy bottle": [],
  "fairy dress": [
   "Pink",
   "Yellow",
@@ -7404,10 +7967,10 @@
   "White",
   "White",
   "White",
-  "Red",
-  "Red",
-  "Red",
-  "Red",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
   "Brown",
   "Brown",
   "Brown",
@@ -7483,6 +8046,7 @@
   "Damaged",
   "Damaged"
  ],
+ "festival zongzi": [],
  "festive dress": [],
  "festive rug": [],
  "festive top set": [],
@@ -7572,6 +8136,7 @@
   "Natural",
   "White"
  ],
+ "first-anniversary cake": [],
  "fischerhemd": [],
  "fish container": [
   "Light blue",
@@ -7647,11 +8212,13 @@
  ],
  "fish rug": [],
  "fish umbrella": [],
+ "fish-and-chips": [],
  "fish-drying rack": [
   "Fish",
   "Squid",
   "Octopus"
  ],
+ "fish-print eco bag": [],
  "fish-print tee": [],
  "fishing vest": [
   "Black",
@@ -7961,6 +8528,13 @@
   "White",
   "Black"
  ],
+ "flower planter": [
+  "Brown",
+  "Dark brown",
+  "Blue",
+  "Green",
+  "Artistic"
+ ],
  "flower sandals": [
   "White",
   "Black",
@@ -8006,6 +8580,7 @@
   "Pink",
   "Green"
  ],
+ "flower-print eco bag": [],
  "flowery-dot tights": [
   "White",
   "Black",
@@ -8293,6 +8868,7 @@
   "Beige",
   "Silver"
  ],
+ "french fries": [],
  "fresh cooler": [],
  "fresh-food trays": [
   "Salmon",
@@ -8325,6 +8901,7 @@
   "Fatty tuna"
  ],
  "freshwater goby model": [],
+ "fried rice": [],
  "frilly dress": [
   "Pink",
   "Brown",
@@ -8416,6 +8993,8 @@
   "Red",
   "Lime"
  ],
+ "frosted cookies": [],
+ "frosted pretzels": [],
  "frozen arch": [
   "Ice",
   "Ice blue",
@@ -8558,9 +9137,14 @@
   "Brown"
  ],
  "fruit basket": [],
+ "fruit cupcakes": [],
+ "fruit pizza": [],
+ "fruit salad": [],
+ "fruit scones": [],
  "fruit wreath": [],
+ "fruit-topped pancakes": [],
  "frying pan": [
-  "Empty",
+  "None",
   "Veggie saut\u00e9",
   "Pasta",
   "Ratatouille",
@@ -8611,9 +9195,23 @@
   "Green",
   "Blue"
  ],
+ "furoshiki bag": [
+  "Green",
+  "White",
+  "Red",
+  "Purple",
+  "Blue",
+  "Gold"
+ ],
  "futon": [],
  "future-tech flooring": [],
  "future-tech wall": [],
+ "futuristic meal": [
+  "White",
+  "Silver",
+  "Black",
+  "Green"
+ ],
  "fuzzy vest": [
   "Red",
   "Green",
@@ -9068,6 +9666,14 @@
   "Yarn",
   "Yarn"
  ],
+ "glass pitcher": [
+  "Water",
+  "Iced tea",
+  "Coffee",
+  "Green tea",
+  "Orange juice",
+  "Milk"
+ ],
  "glass showcase": [
   "White",
   "Light brown",
@@ -9158,6 +9764,9 @@
   "White",
   "Damaged"
  ],
+ "gnocchi di carote": [],
+ "gnocchi di patate": [],
+ "gnocchi di zucca": [],
  "go board": [],
  "goatee": [],
  "gobelin shorts": [
@@ -9274,6 +9883,7 @@
  ],
  "grasshopper model": [],
  "grasshopper-head model": [],
+ "gratin": [],
  "gravel flooring": [],
  "graveyard wall": [],
  "gray argyle-tile flooring": [],
@@ -9321,6 +9931,7 @@
  "green-paint wall": [],
  "greenhouse box": [],
  "greenhouse wall": [],
+ "grilled sea bass with herbs": [],
  "groovy shirt": [
   "Red",
   "Orange",
@@ -9435,7 +10046,7 @@
   "Brown",
   "Yellow",
   "Red",
-  "Black"
+  "Silver"
  ],
  "handlebar mustache": [],
  "handmade cape": [],
@@ -9550,6 +10161,7 @@
   "Blue"
  ],
  "headkerchief": [],
+ "heart": [],
  "heart apron": [
   "Red",
   "Pink",
@@ -9595,6 +10207,7 @@
   "Black"
  ],
  "hearth": [],
+ "hearty ramen": [],
  "heavy-curtain wall": [],
  "heavy-duty shirt": [
   "Red",
@@ -9629,6 +10242,7 @@
   "Purple"
  ],
  "hermit crab model": [],
+ "hero's sword and shield": [],
  "hexagonal floral flooring": [],
  "hi tee": [],
  "hi-fi stereo": [],
@@ -9867,6 +10481,13 @@
  "hospital screen": [],
  "hot-dog costume": [],
  "hot-dog hood": [],
+ "hotel bandanna": [],
+ "hotel mug": [],
+ "hotel pennant": [],
+ "hotel snow globe": [],
+ "hotel towel rack": [],
+ "hotel umbrella": [],
+ "hotel wall clock": [],
  "hourglass": [
   "Natural",
   "White",
@@ -9934,6 +10555,10 @@
   "Blue"
  ],
  "ice flooring": [],
+ "ice pail": [
+  "Silver",
+  "Gold"
+ ],
  "ice wall": [],
  "ice-cream display": [
   "Blue stripes",
@@ -9953,6 +10578,9 @@
  ],
  "iceberg flooring": [],
  "iceberg wall": [],
+ "iced caff\u00e8 latte": [],
+ "iced coffee": [],
+ "iced lemon tea": [],
  "icy dress": [],
  "iguanodon skull": [],
  "iguanodon tail": [],
@@ -10099,6 +10727,7 @@
   "Camouflage"
  ],
  "infused-water dispenser": [],
+ "ink tank": [],
  "inspection equipment": [
   "Silver",
   "Silver",
@@ -10130,6 +10759,14 @@
   "Green",
   "Green",
   "Green"
+ ],
+ "instant noodles": [
+  "Shoyu ramen",
+  "Shio ramen",
+  "Miso ramen",
+  "Green curry",
+  "Tom yum kung",
+  "Spicy ramen"
  ],
  "instant-muscles suit": [
   "Red",
@@ -10310,6 +10947,8 @@
   "Black",
   "Rusted iron"
  ],
+ "jarred bamboo shoots": [],
+ "jarred mushrooms": [],
  "jester costume": [
   "Black & white",
   "Red & blue",
@@ -10400,6 +11039,7 @@
  "jungle wall": [],
  "junihitoe kimono": [],
  "juramaia": [],
+ "kabu ankake": [],
  "kabuki umbrella": [],
  "kabuki-actor yukata": [
   "Gray",
@@ -10412,6 +11052,7 @@
   "Black",
   "Red"
  ],
+ "kagamimochi": [],
  "kandoora": [
   "White",
   "Gray",
@@ -10432,6 +11073,7 @@
   "Pink"
  ],
  "karaoke system": [],
+ "karei no nitsuke": [],
  "katana": [
   "Black",
   "Dark blue",
@@ -10439,6 +11081,7 @@
   "Red",
   "Gold"
  ],
+ "ketchup fried rice": [],
  "kettle": [],
  "kettle bathtub": [],
  "kettlebell": [
@@ -10460,6 +11103,36 @@
   "Silver",
   "Pink",
   "Brass"
+ ],
+ "kiddie car": [
+  "Pop",
+  "Natural",
+  "Cute",
+  "Chic"
+ ],
+ "kiddie house": [
+  "Pop",
+  "Natural",
+  "Cute",
+  "Chic"
+ ],
+ "kiddie partition": [
+  "Pop",
+  "Natural",
+  "Cute",
+  "Chic"
+ ],
+ "kiddie seesaw": [
+  "Pop",
+  "Natural",
+  "Cute",
+  "Chic"
+ ],
+ "kiddie slide": [
+  "Pop",
+  "Natural",
+  "Cute",
+  "Chic"
  ],
  "kiddie sneakers": [
   "Silver",
@@ -10996,8 +11669,8 @@
  "light square tile": [],
  "light stones rug": [],
  "light switch": [
-  "Gray",
-  "Brown",
+  "Silver",
+  "Gold",
   "White",
   "Wood grain"
  ],
@@ -11025,7 +11698,7 @@
   "Blue",
   "White",
   "Yellow",
-  "Gray"
+  "Brown"
  ],
  "lily crown": [],
  "lily record player": [
@@ -11300,6 +11973,16 @@
   "White wood",
   "White birch"
  ],
+ "logo paper bag": [
+  "Green",
+  "Red",
+  "White"
+ ],
+ "logo tote bag": [
+  "Gray",
+  "Red",
+  "Navy blue"
+ ],
  "logo umbrella": [],
  "long bathtub": [
   "White",
@@ -11453,6 +12136,7 @@
   "Green"
  ],
  "lunch-service cap": [],
+ "luncheon plate meal": [],
  "luxury car": [
   "Void",
   "Liberty",
@@ -11674,6 +12358,56 @@
  "maple-leaf pond stone": [],
  "maple-leaf rug": [],
  "maple-leaf umbrella": [],
+ "marble fireplace": [
+  "White",
+  "Black",
+  "Gray",
+  "Beige",
+  "Green",
+  "Red",
+  "Blue",
+  "Pink"
+ ],
+ "marble kitchen island": [
+  "White",
+  "Black",
+  "Gray",
+  "Beige",
+  "Green",
+  "Red",
+  "Blue",
+  "Pink"
+ ],
+ "marble table": [
+  "White",
+  "Black",
+  "Gray",
+  "Beige",
+  "Green",
+  "Red",
+  "Blue",
+  "Pink"
+ ],
+ "marble vanity": [
+  "White",
+  "Black",
+  "Gray",
+  "Beige",
+  "Green",
+  "Red",
+  "Blue",
+  "Pink"
+ ],
+ "marble wall clock": [
+  "White",
+  "Black",
+  "Gray",
+  "Beige",
+  "Green",
+  "Red",
+  "Blue",
+  "Pink"
+ ],
  "marble-dots dress": [
   "White",
   "Black"
@@ -11783,6 +12517,7 @@
  "megacero skull": [],
  "megacero tail": [],
  "megacero torso": [],
+ "melon soda": [],
  "melon umbrella": [],
  "meme shirt": [
   "Red",
@@ -11982,6 +12717,8 @@
   "Blue"
  ],
  "milkmaid hat": [],
+ "milkshake": [],
+ "minestrone soup": [],
  "mini DIY workbench": [
   "Natural",
   "Brown",
@@ -12086,9 +12823,15 @@
  ],
  "mint dot flooring": [],
  "mint umbrella": [],
+ "miso ramen": [],
  "misty tee": [],
  "misty-garden wall": [],
  "mitten crab model": [],
+ "mixed-fruits bagel sandwich": [],
+ "mixed-fruits crepe": [],
+ "mixed-fruits pie": [],
+ "mixed-fruits sandwich": [],
+ "mixed-fruits tart": [],
  "mixed-tweed socks": [
   "Red",
   "Orange",
@@ -12169,6 +12912,8 @@
   "Clay dinosaur",
   "Clay cake"
  ],
+ "modern LEGO\u00ae flooring": [],
+ "modern LEGO\u00ae wall": [],
  "modern cash register": [
   "White",
   "Black"
@@ -12224,6 +12969,7 @@
   "White"
  ],
  "moon": [],
+ "moon cakes": [],
  "moon rug": [],
  "mop": [
   "Blue",
@@ -12337,6 +13083,12 @@
   "Black",
   "Black"
  ],
+ "mug shelves": [
+  "Natural",
+  "Brown",
+  "Dark brown",
+  "White"
+ ],
  "multicolor shorts": [
   "Red",
   "Yellow",
@@ -12413,7 +13165,12 @@
  ],
  "mush umbrella": [],
  "mush wall": [],
+ "mushroom crepe": [],
+ "mushroom curry": [],
  "mushroom mural": [],
+ "mushroom pizza": [],
+ "mushroom potage": [],
+ "mushroom salad": [],
  "mushroom wreath": [],
  "music stand": [
   "Brown",
@@ -12437,6 +13194,7 @@
   "Pink",
   "Black"
  ],
+ "nanakusa gayu": [],
  "natural flooring": [],
  "natural garden chair": [
   "Natural",
@@ -12500,6 +13258,7 @@
   "Purple",
   "Beige"
  ],
+ "nigirizushi": [],
  "nine-ball tee": [],
  "ninja costume": [
   "Dark blue",
@@ -12662,8 +13421,8 @@
  ],
  "office desk": [
   "White",
-  "Beige & white",
-  "Brown & black",
+  "Ivory & wood",
+  "Black & wood",
   "Gray"
  ],
  "office materials": [
@@ -12738,9 +13497,11 @@
   "Green",
   "Purple"
  ],
- "olive desert-tile flooring": [],
- "olive desert-tile wall": [],
+ "olive Moroccan flooring": [],
+ "olive Moroccan wall": [],
  "olive flounder model": [],
+ "olive-flounder meuni\u00e8re": [],
+ "omurice": [],
  "one-ball tee": [],
  "open track jacket": [
   "Black",
@@ -12813,9 +13574,17 @@
   "Blood orange"
  ],
  "orange hat": [],
+ "orange hotel aloha shirt": [],
+ "orange hotel cardigan": [],
+ "orange jelly": [],
+ "orange marmalade": [],
  "orange molded-panel wall": [],
+ "orange pie": [],
+ "orange pound cake": [],
  "orange retro flooring": [],
  "orange rug": [],
+ "orange smoothie": [],
+ "orange tart": [],
  "orange umbrella": [],
  "orange wall": [],
  "orange wall-mounted clock": [
@@ -12824,6 +13593,7 @@
  ],
  "orange-paint wall": [],
  "orchid mantis model": [],
+ "organic bread": [],
  "ornament crown": [],
  "ornament garland": [
   "Red",
@@ -12863,6 +13633,12 @@
   "Light green",
   "Pink",
   "Purple"
+ ],
+ "osechi": [
+  "Black",
+  "Red",
+  "White",
+  "Wood grain"
  ],
  "outback hat": [
   "White",
@@ -13112,6 +13888,7 @@
   "Baby mint",
   "Baby blue"
  ],
+ "pad krapow": [],
  "pagoda": [
   "Red",
   "Natural wood",
@@ -13183,6 +13960,15 @@
   "Cute",
   "Cool"
  ],
+ "pampas grass": [
+  "Light blue",
+  "Pink",
+  "Blue",
+  "Beige",
+  "Black",
+  "White"
+ ],
+ "pancakes": [],
  "panda backpack": [
   "Black & white",
   "Brown"
@@ -13198,9 +13984,8 @@
  "pants press": [
   "Brown",
   "Black",
-  "Gray"
+  "Silver"
  ],
- "paper bag": [],
  "paper kite butterfly model": [],
  "paper lantern": [
   "Natural wood",
@@ -13229,6 +14014,7 @@
   "Brown"
  ],
  "paper tiger": [],
+ "paper-bag hood": [],
  "paperboy cap": [
   "Gray",
   "Red",
@@ -13379,12 +14165,17 @@
  "peach checked rug": [],
  "peach dress": [],
  "peach hat": [],
+ "peach jam": [],
+ "peach jelly": [],
+ "peach pie": [],
  "peach rug": [],
+ "peach smoothie": [],
  "peach stripes rug": [],
  "peach surprise box": [
   "White peach",
   "Yellow peach"
  ],
+ "peach tart": [],
  "peach two-toned tile wall": [],
  "peach umbrella": [],
  "peach wall": [],
@@ -13414,7 +14205,12 @@
  ],
  "pear dress": [],
  "pear hat": [],
+ "pear jam": [],
+ "pear jelly": [],
+ "pear pie": [],
  "pear rug": [],
+ "pear smoothie": [],
+ "pear tart": [],
  "pear umbrella": [],
  "pear wall": [],
  "pear wardrobe": [
@@ -13452,6 +14248,7 @@
   "Yellow flowers",
   "Orange flowers"
  ],
+ "pesce all'acqua pazza": [],
  "pet bed": [
   "Natural",
   "Natural",
@@ -13505,6 +14302,7 @@
   "Light green",
   "Camel"
  ],
+ "pickled veggies": [],
  "picnic basket": [
   "Red",
   "Blue",
@@ -13526,6 +14324,7 @@
  ],
  "pigtail": [],
  "pike model": [],
+ "pilaf": [],
  "pile of cardboard boxes": [
   "Plain",
   "Labeled",
@@ -13661,6 +14460,7 @@
   "Green",
   "Blue"
  ],
+ "pizza margherita": [],
  "plaid puffed-sleeve shirt": [
   "Energetic plaid",
   "Sweet plaid",
@@ -13686,6 +14486,7 @@
   "Blue",
   "Beige"
  ],
+ "plain cupcakes": [],
  "plain do-rag": [
   "Black",
   "Red",
@@ -13712,6 +14513,7 @@
   "Light wood",
   "White wood"
  ],
+ "plain scones": [],
  "plain sink": [
   "Natural",
   "Brown wood",
@@ -13937,6 +14739,12 @@
   "Cute",
   "Cool"
  ],
+ "plaza teacup ride": [
+  "Vivid",
+  "Classic",
+  "Cute",
+  "Cool"
+ ],
  "plaza train": [
   "Vivid",
   "Classic",
@@ -13973,6 +14781,15 @@
  "pleather fringe bag": [
   "White",
   "Camel"
+ ],
+ "pleather handbag": [
+  "Red",
+  "Pink",
+  "Orange",
+  "Yellow",
+  "Blue",
+  "Gray",
+  "Black"
  ],
  "pleather mask": [],
  "pleather pants": [
@@ -14061,6 +14878,7 @@
   "Red"
  ],
  "podium": [],
+ "poke": [],
  "police cap": [],
  "polka-dot backpack": [
   "Pink",
@@ -14178,6 +14996,56 @@
   "Blue",
   "Black"
  ],
+ "popcorn snack set": [
+  "Salted & cola",
+  "Salted & cola",
+  "Salted & cola",
+  "Salted & cola",
+  "Salted & cola",
+  "Salted & cola",
+  "Salted & cola",
+  "Salted & cola",
+  "Salted & iced coffee",
+  "Salted & iced coffee",
+  "Salted & iced coffee",
+  "Salted & iced coffee",
+  "Salted & iced coffee",
+  "Salted & iced coffee",
+  "Salted & iced coffee",
+  "Salted & iced coffee",
+  "Salted & orange juice",
+  "Salted & orange juice",
+  "Salted & orange juice",
+  "Salted & orange juice",
+  "Salted & orange juice",
+  "Salted & orange juice",
+  "Salted & orange juice",
+  "Salted & orange juice",
+  "Caramel & iced tea",
+  "Caramel & iced tea",
+  "Caramel & iced tea",
+  "Caramel & iced tea",
+  "Caramel & iced tea",
+  "Caramel & iced tea",
+  "Caramel & iced tea",
+  "Caramel & iced tea",
+  "Caramel & melon soda",
+  "Caramel & melon soda",
+  "Caramel & melon soda",
+  "Caramel & melon soda",
+  "Caramel & melon soda",
+  "Caramel & melon soda",
+  "Caramel & melon soda",
+  "Caramel & melon soda",
+  "Curry-flavored & berry soda",
+  "Curry-flavored & berry soda",
+  "Curry-flavored & berry soda",
+  "Curry-flavored & berry soda",
+  "Curry-flavored & berry soda",
+  "Curry-flavored & berry soda",
+  "Curry-flavored & berry soda",
+  "Curry-flavored & berry soda"
+ ],
  "porcelain vase": [
   "Simple",
   "Cranes",
@@ -14289,6 +15157,9 @@
   "Stainless steel",
   "Pop"
  ],
+ "potato curry": [],
+ "potato galette": [],
+ "potato potage": [],
  "potted ivy": [
   "Light green",
   "Yellow",
@@ -14303,6 +15174,7 @@
   "Pink",
   "Gray"
  ],
+ "pound cake": [],
  "powder-room booth": [
   "Standard",
   "Cute",
@@ -14329,8 +15201,10 @@
   "Green",
   "Blue"
  ],
+ "premium nigirizushi": [],
  "pretty cosmos wreath": [],
  "pretty tulip wreath": [],
+ "pretzels": [],
  "prim outfit": [
   "Gray",
   "Pink",
@@ -14456,6 +15330,12 @@
   "Gold"
  ],
  "prom wall": [],
+ "protein shaker bottle": [
+  "Plain",
+  "Vanilla flavored",
+  "Cocoa flavored",
+  "Strawberry flavored"
+ ],
  "ptera body": [],
  "public bench": [
   "Blue",
@@ -14493,6 +15373,7 @@
   "Lime",
   "Light blue"
  ],
+ "pull-apart bread": [],
  "pull-up-bar stand": [
   "Black",
   "Red",
@@ -14506,6 +15387,13 @@
   "Navy blue",
   "Purple"
  ],
+ "pumpkin bagel sandwich": [],
+ "pumpkin cupcakes": [],
+ "pumpkin curry": [],
+ "pumpkin pie": [],
+ "pumpkin pound cake": [],
+ "pumpkin scones": [],
+ "pumpkin soup": [],
  "punching bag": [
   "Red",
   "Blue",
@@ -14534,12 +15422,12 @@
   "Gray & white",
   "Pink"
  ],
+ "purple Moroccan flooring": [],
+ "purple Moroccan wall": [],
  "purple Persian rug": [],
  "purple camo flooring": [],
  "purple camo wall": [],
  "purple chic umbrella": [],
- "purple desert-tile flooring": [],
- "purple desert-tile wall": [],
  "purple dotted wall": [],
  "purple heart rug": [],
  "purple hyacinth crown": [],
@@ -15203,9 +16091,9 @@
   "Black",
   "Black",
   "Black",
-  "Retro",
-  "Retro",
-  "Retro"
+  "Vintage",
+  "Vintage",
+  "Vintage"
  ],
  "retro ice-cream case": [
   "Sun",
@@ -15269,7 +16157,7 @@
  "revolving spice rack": [
   "Brown",
   "Orange",
-  "White"
+  "Silver"
  ],
  "rhinestone shades": [
   "Red",
@@ -15374,6 +16262,7 @@
   "Red necktie",
   "Purple necktie"
  ],
+ "risotto": [],
  "robo antennae": [
   "Light blue",
   "Green",
@@ -15398,7 +16287,7 @@
   "Pink",
   "White",
   "Black",
-  "Gray"
+  "Silver"
  ],
  "robot hero tee": [
   "Black",
@@ -15527,6 +16416,72 @@
   "Black",
   "Black",
   "Black"
+ ],
+ "rolling suitcase": [
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Yellow",
+  "Yellow",
+  "Yellow",
+  "Yellow",
+  "Yellow",
+  "Yellow",
+  "Yellow",
+  "Yellow",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Light blue",
+  "Light blue",
+  "Light blue",
+  "Light blue",
+  "Light blue",
+  "Light blue",
+  "Light blue",
+  "Light blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White"
  ],
  "rope partition": [
   "Gold & red",
@@ -15727,6 +16682,14 @@
   "Green",
   "Blue"
  ],
+ "rupee": [
+  "Green",
+  "Blue",
+  "Red",
+  "Purple",
+  "Silver",
+  "Gold"
+ ],
  "rush tatami": [],
  "rush tatami flooring": [],
  "rustic-stone wall": [],
@@ -15832,12 +16795,17 @@
  ],
  "sakura-wood flooring": [],
  "sakura-wood wall": [],
+ "salad": [],
  "salad bar": [
   "Silver",
   "Brown",
   "White"
  ],
+ "salad-stuffed tomato": [],
+ "salade de carottes r\u00e2p\u00e9es": [],
+ "salmon bagel sandwich": [],
  "salmon model": [],
+ "salmon sandwich": [],
  "sample case": [
   "Black",
   "Silver",
@@ -15894,7 +16862,9 @@
  ],
  "sandbox": [],
  "sandlot": [],
+ "sandwich plate meal": [],
  "sandy-beach flooring": [],
+ "sardines in oil": [],
  "sari": [
   "Garnet",
   "Topaz",
@@ -15926,6 +16896,8 @@
   "Brown"
  ],
  "sauna heater": [],
+ "saut\u00e9ed olive flounder": [],
+ "savory bread": [],
  "saw shark model": [],
  "saw stag model": [],
  "scarab beetle model": [],
@@ -16122,6 +17094,11 @@
  ],
  "sea horse model": [],
  "sea view": [],
+ "sea-bass pie": [],
+ "seafood ajillo": [],
+ "seafood pizza": [],
+ "seafood salad": [],
+ "seaweed soup": [],
  "security uniform": [],
  "security-monitors wall": [],
  "semi-opaque socks": [
@@ -16352,6 +17329,7 @@
   "Purple",
   "Light purple"
  ],
+ "shio ramen": [],
  "ship deck": [],
  "ship-wheel door decoration": [],
  "shiromuku": [],
@@ -16524,6 +17502,7 @@
   "Copper",
   "Black"
  ],
+ "shoyu ramen": [],
  "shutter wall": [],
  "sidewalk flooring": [],
  "sideways pirate barrel": [],
@@ -16537,6 +17516,7 @@
   "Tailors",
   "Museum"
  ],
+ "silent princess": [],
  "silk floral-print pants": [
   "Gray",
   "Pink",
@@ -16584,11 +17564,11 @@
   "White"
  ],
  "silo": [
-  "Red roof",
-  "Green roof",
-  "Blue roof",
-  "Black roof",
-  "Aqua roof"
+  "Red & brown",
+  "Green & dark brown",
+  "Blue & gray",
+  "Black & white",
+  "Aqua & pink"
  ],
  "silver HHA plaque": [],
  "silver HHA trophy": [],
@@ -16818,22 +17798,22 @@
   "Light brown",
   "Light brown",
   "Light brown",
-  "Copper",
-  "Copper",
-  "Copper",
-  "Copper",
-  "Copper",
-  "Copper",
-  "Copper",
-  "Copper",
-  "Silver",
-  "Silver",
-  "Silver",
-  "Silver",
-  "Silver",
-  "Silver",
-  "Silver",
-  "Silver",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Gray",
+  "Gray",
+  "Gray",
+  "Gray",
+  "Gray",
+  "Gray",
+  "Gray",
+  "Gray",
   "Gold",
   "Gold",
   "Gold",
@@ -16996,6 +17976,13 @@
   "Purple"
  ],
  "simple stool": [],
+ "simple streetlamp": [
+  "Silver",
+  "Black",
+  "White",
+  "Brown",
+  "Rust"
+ ],
  "simple sunglasses": [
   "Black",
   "Red",
@@ -17069,6 +18056,14 @@
   "Purple",
   "Purple",
   "Purple"
+ ],
+ "simple tote bag": [
+  "Red",
+  "Yellow",
+  "Green",
+  "Blue",
+  "Black & white",
+  "Beige"
  ],
  "simple vanity": [
   "Natural",
@@ -17739,6 +18734,73 @@
   "Green",
   "Silver"
  ],
+ "snack": [
+  "Flavored chips",
+  "Flavored chips",
+  "Flavored chips",
+  "Flavored chips",
+  "Flavored chips",
+  "Flavored chips",
+  "Flavored chips",
+  "Flavored chips",
+  "Sour-cream chips",
+  "Sour-cream chips",
+  "Sour-cream chips",
+  "Sour-cream chips",
+  "Sour-cream chips",
+  "Sour-cream chips",
+  "Sour-cream chips",
+  "Sour-cream chips",
+  "Rice crackers",
+  "Rice crackers",
+  "Rice crackers",
+  "Rice crackers",
+  "Rice crackers",
+  "Rice crackers",
+  "Rice crackers",
+  "Rice crackers",
+  "Chocolate-chip cookies",
+  "Chocolate-chip cookies",
+  "Chocolate-chip cookies",
+  "Chocolate-chip cookies",
+  "Chocolate-chip cookies",
+  "Chocolate-chip cookies",
+  "Chocolate-chip cookies",
+  "Chocolate-chip cookies",
+  "Crackers",
+  "Crackers",
+  "Crackers",
+  "Crackers",
+  "Crackers",
+  "Crackers",
+  "Crackers",
+  "Crackers",
+  "Chocolates",
+  "Chocolates",
+  "Chocolates",
+  "Chocolates",
+  "Chocolates",
+  "Chocolates",
+  "Chocolates",
+  "Chocolates",
+  "Cheesy snacks",
+  "Cheesy snacks",
+  "Cheesy snacks",
+  "Cheesy snacks",
+  "Cheesy snacks",
+  "Cheesy snacks",
+  "Cheesy snacks",
+  "Cheesy snacks",
+  "Spicy snacks",
+  "Spicy snacks",
+  "Spicy snacks",
+  "Spicy snacks",
+  "Spicy snacks",
+  "Spicy snacks",
+  "Spicy snacks",
+  "Spicy snacks"
+ ],
+ "snack bread": [],
  "snack machine": [
   "Black",
   "White",
@@ -17853,6 +18915,7 @@
   "White",
   "Natural & green"
  ],
+ "songpyeon": [],
  "soothing tearoom wall": [],
  "soup kettle": [
   "Corn soup",
@@ -17899,6 +18962,11 @@
   "Purple",
   "Blue"
  ],
+ "spaghetti carbonara": [],
+ "spaghetti genovese": [],
+ "spaghetti marinara": [],
+ "spaghetti napolitan": [],
+ "spaghetti peperoncino": [],
  "spangle shorts": [
   "Silver",
   "Black",
@@ -17915,9 +18983,9 @@
   "Blue"
  ],
  "speed bag": [
-  "Red",
-  "Blue",
-  "Black"
+  "Red & black",
+  "Blue & white",
+  "Black & silver"
  ],
  "sphinx": [],
  "spider doorplate": [
@@ -17968,6 +19036,7 @@
   "Green",
   "Monochrome"
  ],
+ "spooky cookies": [],
  "spooky flooring": [],
  "spooky garland": [
   "Orange",
@@ -18120,7 +19189,18 @@
   "Brown"
  ],
  "squat toilet": [],
+ "squid bumper": [
+  "Yellow",
+  "Purple",
+  "Pink",
+  "Green",
+  "Orange",
+  "Blue"
+ ],
+ "squid jukebox": [],
  "squid model": [],
+ "squid-ink curry": [],
+ "squid-ink spaghetti": [],
  "stache & glasses": [
   "Black",
   "Red"
@@ -18342,14 +19422,14 @@
   "Black",
   "Black",
   "Black",
-  "Gray",
-  "Gray",
-  "Gray",
-  "Gray",
-  "Gray"
+  "Orange & silver",
+  "Orange & silver",
+  "Orange & silver",
+  "Orange & silver",
+  "Orange & silver"
  ],
  "stand mixer": [
-  "Gray",
+  "Silver",
   "Red",
   "Pink",
   "Light blue",
@@ -18804,6 +19884,7 @@
  "straw wall": [],
  "strawberry dress": [],
  "strawberry hat": [],
+ "strawberry soda": [],
  "strawberry umbrella": [],
  "strawberry-chocolate wall": [],
  "street lamp with banners": [
@@ -18866,6 +19947,10 @@
  ],
  "stringfish model": [],
  "stripe flooring": [],
+ "striped basket bag": [
+  "Brown",
+  "Black & white"
+ ],
  "striped bell-bottoms": [
   "Red",
   "Orange",
@@ -19079,6 +20164,7 @@
  ],
  "succulent plant": [],
  "suckerfish model": [],
+ "sugar crepe": [],
  "suit of lights": [
   "Black",
   "Red",
@@ -19104,6 +20190,7 @@
  "sunflower rug": [],
  "sunflower sunglasses": [],
  "sunny parasol": [],
+ "super-premium nigirizushi": [],
  "superhero mask": [],
  "superhero uniform": [
   "Black",
@@ -19246,14 +20333,14 @@
   "Brown"
  ],
  "system kitchen": [
-  "Off-white",
+  "White",
   "Red",
   "Blue",
   "Yellow",
   "Black",
-  "Brown",
-  "Natural",
-  "White"
+  "Dark wood",
+  "Natural wood",
+  "White wood"
  ],
  "tabi": [
   "White",
@@ -19418,6 +20505,7 @@
   "Blue",
   "Purple"
  ],
+ "tangyuan": [],
  "tank": [
   "Silver",
   "Silver",
@@ -19488,6 +20576,7 @@
   "Light blue",
   "Black"
  ],
+ "tantanmen": [],
  "tape deck": [
   "Silver",
   "Orange",
@@ -19538,12 +20627,6 @@
   "Light wood",
   "Red wood"
  ],
- "teacup ride": [
-  "Colorful",
-  "Gorgeous",
-  "Pastel",
-  "Cool"
- ],
  "tee and towel": [
   "White towel & white shirt",
   "Red towel & white shirt",
@@ -19561,7 +20644,7 @@
   "Navy blue",
   "Beige"
  ],
- "tee with silicon bib": [
+ "tee with silicone bib": [
   "Baby pink",
   "Baby purple",
   "Baby orange",
@@ -19799,7 +20882,7 @@
   "Black",
   "Ash",
   "Green",
-  "Gray"
+  "Silver"
  ],
  "throwback wall clock": [
   "Yellow",
@@ -19818,6 +20901,7 @@
   "Black",
   "Gold"
  ],
+ "thumbprint jam cookies": [],
  "tiara": [
   "Silver",
   "Rose gold",
@@ -19908,6 +20992,11 @@
   "Berry red",
   "Gold"
  ],
+ "tiny-flower-print tote bag": [
+  "Pink",
+  "Yellow",
+  "Light blue"
+ ],
  "tire stack": [
   "Black",
   "Green",
@@ -19970,6 +21059,11 @@
   "Dark blue",
   "Dark blue"
  ],
+ "tomates al ajillo": [],
+ "tomato bagel sandwich": [],
+ "tomato curry": [],
+ "tomato juice": [],
+ "tomato puree": [],
  "tool bag": [],
  "tool cart": [
   "Red",
@@ -20248,7 +21342,7 @@
   "White"
  ],
  "tree's bounty lamp": [
-  "Red",
+  "Brown",
   "White"
  ],
  "tree's bounty little tree": [
@@ -20411,6 +21505,216 @@
   "Blue",
   "Purple"
  ],
+ "tubular chair": [
+  "Silver",
+  "Gold",
+  "Copper",
+  "Black",
+  "Red",
+  "Blue",
+  "Green",
+  "Pink"
+ ],
+ "tubular lamp": [
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink"
+ ],
+ "tubular magazine rack": [
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink"
+ ],
+ "tubular shelves": [
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Silver",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Gold",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Copper",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Black",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Red",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Blue",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Green",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink",
+  "Pink"
+ ],
+ "tubular table": [
+  "Silver",
+  "Gold",
+  "Copper",
+  "Black",
+  "Red",
+  "Blue",
+  "Green",
+  "Pink"
+ ],
  "tulip crown": [],
  "tulip hat": [
   "Orange",
@@ -20437,6 +21741,7 @@
   "Blue",
   "Purple"
  ],
+ "turnip salad": [],
  "turquoise heart rug": [],
  "tuxedo jacket": [
   "White",
@@ -20723,7 +22028,7 @@
   "Red",
   "Yellow",
   "Green",
-  "Gray",
+  "Silver",
   "Black"
  ],
  "vampire costume": [
@@ -20731,6 +22036,14 @@
   "Purple"
  ],
  "veggie basket": [],
+ "veggie cookies": [],
+ "veggie crepe": [],
+ "veggie cupcakes": [],
+ "veggie plate meal": [],
+ "veggie quiche": [],
+ "veggie sandwich": [],
+ "veggie sandwich set": [],
+ "veggie-print eco bag": [],
  "vehicle cabin seat": [
   "Blue",
   "Blue",
@@ -21091,6 +22404,48 @@
   "Red",
   "Blue"
  ],
+ "wall-mounted bookshelf": [
+  "Natural",
+  "Natural",
+  "Natural",
+  "Natural",
+  "Natural",
+  "Natural",
+  "Natural",
+  "Natural",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "Dark brown",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "White",
+  "Stainless steel",
+  "Stainless steel",
+  "Stainless steel",
+  "Stainless steel",
+  "Stainless steel",
+  "Stainless steel",
+  "Stainless steel",
+  "Stainless steel"
+ ],
  "wall-mounted candle": [
   "Gold",
   "Silver",
@@ -21154,7 +22509,7 @@
   "Green",
   "Black",
   "Silver",
-  "Brown"
+  "Rust"
  ],
  "water sandals": [
   "Red",
@@ -21197,6 +22552,11 @@
   "Garden"
  ],
  "wedding bench": [
+  "Cute",
+  "Chic",
+  "Garden"
+ ],
+ "wedding cake": [
   "Cute",
   "Chic",
   "Garden"
@@ -21260,6 +22620,7 @@
   "Blue"
  ],
  "western vista": [],
+ "western-style meal": [],
  "western-style stone": [
   "White",
   "Gray",
@@ -21288,6 +22649,7 @@
  "white heart rug": [],
  "white honeycomb tile": [],
  "white honeycomb-tile wall": [],
+ "white hotel tee": [],
  "white iron-parquet flooring": [],
  "white message mat": [],
  "white mosaic-tile flooring": [],
@@ -22349,7 +23711,18 @@
   "Purple",
   "Brown"
  ],
+ "zodiac boar figurine": [],
+ "zodiac dog figurine": [],
+ "zodiac dragon figurine": [],
+ "zodiac horse figurine": [],
+ "zodiac monkey figurine": [],
  "zodiac ox figurine": [],
+ "zodiac pig figurine": [],
+ "zodiac rabbit figurine": [],
+ "zodiac rat figurine": [],
+ "zodiac rooster figurine": [],
+ "zodiac sheep figurine": [],
+ "zodiac snake figurine": [],
  "zodiac tiger figurine": [],
  "zori": [
   "Aqua",
@@ -22368,7 +23741,5 @@
   "Green",
   "Navy blue"
  ],
- "\u305e\u3046\u304d\u3093\u304c\u3051\u306e\u30ba\u30dc\u30f3": [],
- "\u305e\u3046\u304d\u3093\u304c\u3051\u306e\u30d0\u30f3\u30c0\u30ca": [],
- "\u305e\u3046\u304d\u3093\u304c\u3051\u30a8\u30d7\u30ed\u30f3": []
+ "\u03c0 pie": []
 }
