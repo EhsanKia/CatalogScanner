@@ -42,7 +42,7 @@
   "it-eu": "arco caccia all'uovo",
   "ja-jp": "イースターなアーチ",
   "ko-kr": "이스터 아치",
-  "nl-eu": "eierboog",
+  "nl-eu": "eierpoort",
   "ru-eu": "арка на День зайцев",
   "zh-cn": "复活节拱门",
   "zh-tw": "復活節拱門"
@@ -3456,7 +3456,7 @@
   "zh-tw": "木雕鴨"
  },
  "deer decoration": {
-  "de-eu": "Holz-Rehkopf",
+  "de-eu": "Holz-Hirschkopf",
   "en-eu": "deer decoration",
   "en-us": "deer decoration",
   "es-eu": "cabeza de ciervo decorativa",
@@ -3823,22 +3823,6 @@
   "zh-cn": "柴火",
   "zh-tw": "柴火"
  },
- "fish and chips": {
-  "de-eu": "Fish and Chips",
-  "en-eu": "fish and chips",
-  "en-us": "fish and chips",
-  "es-eu": "fish & chips",
-  "es-us": "fish & chips",
-  "fr-eu": "fish and chips",
-  "fr-us": "fish and chips",
-  "it-eu": "piatto di fritti",
-  "ja-jp": "フィッシュ&チップス",
-  "ko-kr": "피시&칩스",
-  "nl-eu": "vis en friet",
-  "ru-eu": "рыба с картофелем фри",
-  "zh-cn": "炸鱼薯条",
-  "zh-tw": "炸魚薯條"
- },
  "fish bait": {
   "de-eu": "Köder",
   "en-eu": "fish bait",
@@ -3854,6 +3838,22 @@
   "ru-eu": "наживка",
   "zh-cn": "鱼饲料",
   "zh-tw": "魚飼料"
+ },
+ "fish-and-chips": {
+  "de-eu": "Fish and Chips",
+  "en-eu": "fish-and-chips",
+  "en-us": "fish-and-chips",
+  "es-eu": "fish & chips",
+  "es-us": "fish & chips",
+  "fr-eu": "fish and chips",
+  "fr-us": "fish and chips",
+  "it-eu": "piatto di fritti",
+  "ja-jp": "フィッシュ&チップス",
+  "ko-kr": "피시&칩스",
+  "nl-eu": "vis en friet",
+  "ru-eu": "рыба с картофелем фри",
+  "zh-cn": "炸鱼薯条",
+  "zh-tw": "炸魚薯條"
  },
  "fishing rod": {
   "de-eu": "Angel",
@@ -10570,7 +10570,7 @@
   "it-eu": "arco in rovina",
   "ja-jp": "いせきのアーチ",
   "ko-kr": "유적 아치",
-  "nl-eu": "vervallen boog",
+  "nl-eu": "vervallen poort",
   "ru-eu": "разрушенная арка",
   "zh-cn": "遗迹拱门",
   "zh-tw": "遺跡拱門"
@@ -12362,7 +12362,7 @@
   "it-eu": "arco di pietra",
   "ja-jp": "ストーンアーチ",
   "ko-kr": "석제 아치",
-  "nl-eu": "stenen boog",
+  "nl-eu": "stenen poort",
   "ru-eu": "каменная арка",
   "zh-cn": "石拱门",
   "zh-tw": "石拱門"
