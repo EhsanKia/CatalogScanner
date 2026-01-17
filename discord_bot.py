@@ -108,7 +108,7 @@ async def async_scan(filename: os.PathLike) -> scanner.ScanResult:
 
 async def reply(ctx: discord.ApplicationContext, message: str) -> None:
     """Responds with an ephemeral message, or updates the existing message."""
-    await ctx.interaction.followup.send(content=message, ephemeral=True)
+    await ctx.respond(content=message, ephemeral=True)
 
 
 def improve_error_message(message: str) -> str:
@@ -184,13 +184,14 @@ async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
         logging.info('Invalid attachment type %r, skipping.', attachment.content_type)
         await reply(ctx, f'{ERROR_EMOJI} The attachment needs to be a valid video or image file.')
         return
+        
+    await ctx.interaction.response.defer(ephemeral=True, invisible=False)
 
     # Have a queue system that handles requests one at a time.
     if WAIT_LOCK.locked and (waiters := WAIT_LOCK._waiters):  # type: ignore
         logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, len(waiters))
         await reply(ctx, f'{WAIT_EMOJI} You are #{len(waiters)} in the queue, your scan will start soon.')
 
-    await ctx.interaction.response.defer(ephemeral=True, invisible=False)
     async with WAIT_LOCK:
         await handle_scan(ctx, attachment, filetype)
 
