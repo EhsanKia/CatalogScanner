@@ -1,5 +1,10 @@
 [
  [
+  "Act Natural",
+  "AddPoseNaturel.png",
+  "New Reactions Notebook"
+ ],
+ [
   "Aggravation",
   "Outraged.png",
   "Peppy villagers"
@@ -8,6 +13,11 @@
   "Agreement",
   "Nodding.png",
   "Cranky villagers"
+ ],
+ [
+  "Airplane",
+  "AddKKFesPosing01.png",
+  "DJ KK concert"
  ],
  [
   "Amazed",
@@ -20,14 +30,34 @@
   "Big Sister villagers"
  ],
  [
+  "Arm Circles",
+  "AddRadioGymnastics02.png",
+  "Group Stretching"
+ ],
+ [
+  "Arm-Swing Dance",
+  "AddKKFesPosing03.png",
+  "DJ KK concert"
+ ],
+ [
   "Bashfulness",
   "Blushing.png",
   "Lazy villagers"
  ],
  [
+  "Behold",
+  "AddRequestLook.png",
+  "New Reactions Notebook"
+ ],
+ [
   "Bewilderment",
   "Pardon.png",
   "Cranky villagers"
+ ],
+ [
+  "Body Twists",
+  "AddRadioGymnastics04.png",
+  "Group Stretching"
  ],
  [
   "Cold Chill",
@@ -70,9 +100,19 @@
   "Jock villagers"
  ],
  [
+  "Double Wave",
+  "AddGreetingBothHands.png",
+  "New Reactions Notebook"
+ ],
+ [
   "Dozing",
   "Sleep.png",
   "Smug villagers"
+ ],
+ [
+  "Eager",
+  "RequestOkay.png",
+  "New Reactions Notebook"
  ],
  [
   "Encouraging",
@@ -95,6 +135,11 @@
   "Viva Festivale Reaction Set"
  ],
  [
+  "Flex",
+  "AddMusclePose.png",
+  "New Reactions Notebook"
+ ],
+ [
   "Flourish",
   "Dance.png",
   "Jock villagers"
@@ -108,6 +153,21 @@
   "Greetings",
   "Greeting.png",
   "All villagers"
+ ],
+ [
+  "Groove Left",
+  "AddKKFesLeft.png",
+  "DJ KK concert"
+ ],
+ [
+  "Groove Right",
+  "AddKKFesRight.png",
+  "DJ KK concert"
+ ],
+ [
+  "Grooving Hop",
+  "AddKKFesUpper.png",
+  "DJ KK concert"
  ],
  [
   "Happiness",
@@ -130,6 +190,11 @@
   "Hip Reaction Collection"
  ],
  [
+  "Hula",
+  "AddHula.png",
+  "New Reactions Notebook"
+ ],
+ [
   "Inspiration",
   "IdeaBulb.png",
   "Cranky villagers"
@@ -140,9 +205,24 @@
   "Snooty villagers"
  ],
  [
+  "Island Stomp",
+  "AddKKFesPosing04.png",
+  "DJ KK concert"
+ ],
+ [
+  "Jammin'",
+  "AddRhythm.png",
+  "New Reactions Notebook"
+ ],
+ [
   "Joy",
   "HappyFlower.png",
   "All villagers"
+ ],
+ [
+  "Jump",
+  "AddRadioGymnastics07.png",
+  "Group Stretching"
  ],
  [
   "Laughter",
@@ -153,6 +233,11 @@
   "Let's Go",
   "AddEntice.png",
   "Viva Festivale Reaction Set"
+ ],
+ [
+  "Listening Ears",
+  "AddListen.png",
+  "New Reactions Notebook"
  ],
  [
   "Love",
@@ -175,6 +260,11 @@
   "Normal villagers"
  ],
  [
+  "Posture Warm-Up",
+  "AddRadioGymnastics01.png",
+  "Group Stretching"
+ ],
+ [
   "Pride",
   "SmugFace.png",
   "Lazy villagers"
@@ -190,6 +280,11 @@
   "Normal villagers"
  ],
  [
+  "Say Cheese",
+  "RequestWillingness.png",
+  "New Reactions Notebook"
+ ],
+ [
   "Scare",
   "AddPrank.png",
   "All villagers"
@@ -198,6 +293,11 @@
   "Sheepishness",
   "WrySmile.png",
   "Cranky villagers"
+ ],
+ [
+  "Shimmy",
+  "AddKKFesPosing00.png",
+  "DJ KK concert"
  ],
  [
   "Shocked",
@@ -213,6 +313,16 @@
   "Shyness",
   "Hesitate.png",
   "Lazy villagers"
+ ],
+ [
+  "Side Bends",
+  "AddRadioGymnastics03.png",
+  "Group Stretching"
+ ],
+ [
+  "Side-to-Side",
+  "AddKKFesPosing05.png",
+  "DJ KK concert"
  ],
  [
   "Sighing",
@@ -245,9 +355,19 @@
   "Hip Reaction Collection"
  ],
  [
+  "Soak It In",
+  "AddKKFesLower.png",
+  "DJ KK concert"
+ ],
+ [
   "Sorrow",
   "Crying.png",
   "Lazy villagers"
+ ],
+ [
+  "Stretch",
+  "AddStretch.png",
+  "New Reactions Notebook"
  ],
  [
   "Surprise",
@@ -270,6 +390,21 @@
   "Snooty villagers"
  ],
  [
+  "Turnip Patch",
+  "AddKKFesPosing06.png",
+  "DJ KK concert"
+ ],
+ [
+  "Twisty Dance",
+  "AddKKFesPosing02.png",
+  "DJ KK concert"
+ ],
+ [
+  "Upper-Body Circles",
+  "AddRadioGymnastics06.png",
+  "Group Stretching"
+ ],
+ [
   "Viva",
   "AddViva.png",
   "Viva Festivale Reaction Set"
@@ -278,6 +413,16 @@
   "Wave Goodbye",
   "AddWaveHands.png",
   "Hip Reaction Collection"
+ ],
+ [
+  "Wide Arm Stretch",
+  "AddRadioGymnastics05.png",
+  "Group Stretching"
+ ],
+ [
+  "Work It",
+  "AddPoseCool.png",
+  "New Reactions Notebook"
  ],
  [
   "Work Out",
@@ -293,150 +438,5 @@
   "Yoga",
   "AddYoga.png",
   "Hip Reaction Collection"
- ],
- [
-  "Act Natural",
-  "AddPoseNaturel.png",
-  ""
- ],
- [
-  "Airplane",
-  "AddKKFesPosing01.png",
-  ""
- ],
- [
-  "Arm Circles",
-  "AddRadioGymnastics02.png",
-  ""
- ],
- [
-  "Arm-Swing Dance",
-  "AddKKFesPosing03.png",
-  ""
- ],
- [
-  "Behold",
-  "AddRequestLook.png",
-  ""
- ],
- [
-  "Body Twists",
-  "AddRadioGymnastics04.png",
-  ""
- ],
- [
-  "Double Wave",
-  "AddGreetingBothHands.png",
-  ""
- ],
- [
-  "Eager",
-  "RequestOkay.png",
-  ""
- ],
- [
-  "Flex",
-  "AddMusclePose.png",
-  ""
- ],
- [
-  "Groove Left",
-  "AddKKFesLeft.png",
-  ""
- ],
- [
-  "Groove Right",
-  "AddKKFesRight.png",
-  ""
- ],
- [
-  "Grooving Hop",
-  "AddKKFesUpper.png",
-  ""
- ],
- [
-  "Hula",
-  "AddHula.png",
-  ""
- ],
- [
-  "Island Stomp",
-  "AddKKFesPosing04.png",
-  ""
- ],
- [
-  "Jammin'",
-  "AddRhythm.png",
-  ""
- ],
- [
-  "Jump",
-  "AddRadioGymnastics07.png",
-  ""
- ],
- [
-  "Listening Ears",
-  "AddListen.png",
-  ""
- ],
- [
-  "Posture Warm-Up",
-  "AddRadioGymnastics01.png",
-  ""
- ],
- [
-  "Say Cheese",
-  "RequestWillingness.png",
-  ""
- ],
- [
-  "Shimmy",
-  "AddKKFesPosing00.png",
-  ""
- ],
- [
-  "Side Bends",
-  "AddRadioGymnastics03.png",
-  ""
- ],
- [
-  "Side-to-Side",
-  "AddKKFesPosing05.png",
-  ""
- ],
- [
-  "Soak It In",
-  "AddKKFesLower.png",
-  ""
- ],
- [
-  "Stretch",
-  "AddStretch.png",
-  ""
- ],
- [
-  "Turnip Patch",
-  "AddKKFesPosing06.png",
-  ""
- ],
- [
-  "Twisty Dance",
-  "AddKKFesPosing02.png",
-  ""
- ],
- [
-  "Upper-Body Circles",
-  "AddRadioGymnastics06.png",
-  ""
- ],
- [
-  "Wide Arm Stretch",
-  "AddRadioGymnastics05.png",
-  ""
- ],
- [
-  "Work It",
-  "AddPoseCool.png",
-  ""
  ]
 ]
