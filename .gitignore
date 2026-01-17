@@ -7,6 +7,7 @@ pythonenv*/
 build/
 examples/more/
 dist/
+twitter_downloader/
 *.code-workspace
 catalog-scanner.json
 constants.py
