@@ -69,7 +69,7 @@ def parse_image(filename: str) -> List[numpy.ndarray]:
         if not ret:
             break  # Video is over
 
-        if frame.shape[:2] == (1080, 1920):
+        if frame.shape[:2] != (720, 1280):
             frame = cv2.resize(frame, (1280, 720))
 
         if not detect(frame):

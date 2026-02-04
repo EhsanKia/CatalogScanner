@@ -58,12 +58,9 @@ def _detect_media_type(filename: str) -> str:
         if not success or frame is None:
             break
 
-        # Resize 1080p screenshots to 720p to match videos.
-        if filename.endswith('.jpg') and frame.shape[:2] == (1080, 1920):
+        # Resize frames to 720p since matching is built for 720p.
+        if frame.shape[:2] != (720, 1280):
             frame = cv2.resize(frame, (1280, 720))
-
-        assert frame.shape[:2] == (720, 1280), \
-            'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
         for mode, scanner in SCANNERS.items():
             if scanner.detect(frame):

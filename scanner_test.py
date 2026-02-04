@@ -102,15 +102,17 @@ class ScannerTest(absltest.TestCase):
 
 class ScannerExtraTest(parameterized.TestCase):
 
-    @parameterized.parameters(EXTRA_GROUND_TRUTH)
-    def test_extra(self, filename):
+    @parameterized.named_parameters([
+        (k.replace('.', '_'), k, v) for k, v in EXTRA_GROUND_TRUTH.items()
+    ])
+    def test_extra(self, filename, expected):
         filepath = os.path.join('examples/extra', filename)
         try:
             results = scanner.scan_media(filepath)
             actual = results.items
         except AssertionError as e:
             actual = str(e)
-        self.assertEqual(EXTRA_GROUND_TRUTH[filename], actual)
+        self.assertEqual(expected, actual)
 
 
 if __name__ == "__main__":

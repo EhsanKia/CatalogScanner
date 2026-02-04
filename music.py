@@ -93,8 +93,9 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         if not ret:
             break  # Video is over
 
-        assert frame.shape[:2] == (720, 1280), \
-            'Invalid resolution: {1}x{0}'.format(*frame.shape)
+        # Resize frames to 720p since matching is built for 720p.
+        if frame.shape[:2] != (720, 1280):
+            frame = cv2.resize(frame, (1280, 720))
 
         if not detect(frame):
             continue  # Skip frames that are not showing music list.
