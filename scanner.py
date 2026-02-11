@@ -58,7 +58,12 @@ def _detect_media_type(filename: str) -> str:
         if not success or frame is None:
             break
 
+        # Resolution must be at least 720p.
+        assert frame.shape[0] >= 720, \
+            'Invalid resolution: {1}x{0}'.format(*frame.shape)
+
         # Resize frames to 720p since matching is built for 720p.
+        # This is to handle 1080p videos from the Switch 2.
         if frame.shape[:2] != (720, 1280):
             frame = cv2.resize(frame, (1280, 720))
 
