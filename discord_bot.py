@@ -131,10 +131,10 @@ def improve_error_message(message: str) -> str:
         message += 're-posting it; try downloading it directly from your Switch instead)'
     if 'x360' in message:
         message += '\nIt looks like you might have Data Saving Mode enabled; '
-        message += 'go to *Settings -> Text & Media*, uncheck Data Saving Mode and make sure *Video Uploads* is set to **Best Quality**.'
+        message += 'go to *Settings -> Chat*, uncheck Data Saving Mode and make sure *Video Uploads* is set to **Best Quality**.'
     elif 'x480' in message:
         message += '\nIt seems like Discord might have compressed your video; '
-        message += 'go to *Settings -> Text & Media* and set *Video Uploads* to **Best Quality**.'
+        message += 'go to *Settings -> Chat* and set *Video Uploads* to **Best Quality**.'
     elif 'Invalid resolution' in message:
         message += '\n(Make sure you are recording and sending directly from the Switch)'
     if 'Pictures Mode' in message:
