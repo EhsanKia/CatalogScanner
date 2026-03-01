@@ -12,6 +12,7 @@ from discord.ext import commands
 from discord import option
 from google.cloud import datastore
 import hashids
+import simple_colors
 
 import constants
 import scanner
@@ -204,15 +205,35 @@ async def on_ready():
     logging.info('Bot logged in as %s', bot.user)
 
 
+class ColorFormatter(logging.PythonFormatter):
+    COLORS = {
+        'DEBUG': (simple_colors.cyan, 'dim'),
+        'INFO': (simple_colors.black, 'bright'),
+        'WARNING': (simple_colors.yellow, 'dim'),
+        'ERROR': (simple_colors.red, 'bright'),
+        'CRITICAL': (simple_colors.magenta, 'blink'),
+    }
+
+    def format(self, record):
+        log = super().format(record)
+        log = log[:16] + ' ' + log[30:]
+        prefix, sep, message = log.partition(']')
+        color, style = self.COLORS.get(record.levelname)
+        return color(prefix + sep, style) + message
+
+
 def main(argv):
     del argv  # unused
     bot.run(constants.DISCORD_TOKEN)
 
 
 if __name__ == '__main__':
-    # Write logs to file.
+    # Set color log formatter to write to both file and terminal.
     file_handler = stdlib_logging.FileHandler('logs.txt')
-    logging.get_absl_logger().addHandler(file_handler)  # type: ignore
+    file_handler.setFormatter(ColorFormatter())
+    logging.get_absl_logger().addHandler(file_handler)
+    logging.get_absl_handler().setFormatter(ColorFormatter())
+
     # Disable noise discord logs.
     stdlib_logging.getLogger('discord.client').setLevel(stdlib_logging.WARNING)
     stdlib_logging.getLogger('discord.gateway').setLevel(stdlib_logging.WARNING)
