@@ -29,7 +29,7 @@ bot = commands.Bot(intents=intents)
 hashid_client = hashids.Hashids(salt=constants.SALT, min_length=6)
 
 
-def upload_to_datastore(result, discord_user_id=None) -> datastore.Entity:
+def upload_to_datastore(result, discord_user: discord.User, cache_filename: str) -> datastore.Entity:
     datastore_client = datastore.Client.from_service_account_json('catalog-scanner.json')
 
     temp_key = datastore_client.key('Catalog')
@@ -45,7 +45,9 @@ def upload_to_datastore(result, discord_user_id=None) -> datastore.Entity:
             'locale': result.locale,
             'type': result.mode.name.lower(),
             'created': datetime.datetime.utcnow(),
-            'discord_user': discord_user_id,
+            'discord_user': discord_user.id,
+            'discord_user_name': discord_user.name,
+            'cache_filename': cache_filename,
         }
     )
     if result.unmatched:
@@ -90,7 +92,7 @@ async def handle_scan(
         await reply(ctx, f'{ERROR_EMOJI} Did not find any items.')
         return
 
-    catalog = upload_to_datastore(result, ctx.user.id)
+    catalog = upload_to_datastore(result, ctx.user, tmp_file.name)
     url = 'https://nook.lol/{}'.format(catalog['hash'])
     logging.info('Found %s items with %s: %s', len(result.items), result.mode, url)
     await reply(
@@ -174,7 +176,7 @@ async def ping(ctx: discord.ApplicationContext):
 )
 async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
     logging.info('Got request from %s with type %r', ctx.user, attachment.content_type)
-    
+
     if not attachment or not attachment.content_type:
         await reply(ctx, f'{ERROR_EMOJI} Invalid or no attachment.')
         return
@@ -184,7 +186,7 @@ async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
         logging.info('Invalid attachment type %r, skipping.', attachment.content_type)
         await reply(ctx, f'{ERROR_EMOJI} The attachment needs to be a valid video or image file.')
         return
-        
+
     await ctx.interaction.response.defer(ephemeral=True, invisible=False)
 
     # Have a queue system that handles requests one at a time.
