@@ -111,6 +111,35 @@ class ScannerTest(absltest.TestCase):
         self.assertIn('ごの', ja_unmatched)
         self.assertNotIn('みの', ja_matched)
 
+    def test_player_named_items_skipped(self):
+        matched, unmatched = catalog.match_items(
+            {"Ehsan's tent", "Ehsan's kit", "Bob's tent", "Kids' tent"},
+            locale='en-us',
+        )
+        self.assertEqual(matched, ["Kids' tent"])
+        self.assertEqual(unmatched, [])
+
+        fr_matched, fr_unmatched = catalog.match_items(
+            {'Tente de Ehsan', 'Kit de chimie'},
+            locale='fr-eu',
+        )
+        self.assertEqual(fr_matched, ['Kit de chimie'])
+        self.assertEqual(fr_unmatched, [])
+
+        ja_matched, ja_unmatched = catalog.match_items(
+            {'えさんのテント', 'アーガイルベスト'},
+            locale='ja-jp',
+        )
+        self.assertEqual(ja_matched, ['アーガイルベスト'])
+        self.assertEqual(ja_unmatched, [])
+
+        ko_matched, ko_unmatched = catalog.match_items(
+            {'에산의 텐트', '에산 이전 키트', '박물관 이전 키트'},
+            locale='ko-kr',
+        )
+        self.assertEqual(ko_matched, ['박물관 이전 키트'])
+        self.assertEqual(ko_unmatched, [])
+
     def test_case_insensitive_image_extensions(self):
         self.assertTrue(is_image_file('photo.JPG'))
         self.assertTrue(is_image_file('page_%d.PNG'))

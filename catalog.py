@@ -9,6 +9,7 @@ import logging
 import numpy
 import os
 import pytesseract
+import re
 import typing
 import unicodedata
 
@@ -86,6 +87,24 @@ LEGACY_ALIASES: Dict[str, Dict[str, str]] = {
         'Fish and chips': 'Fish-and-chips',
         'Tee with silicon bib': 'Tee with silicone bib',
     },
+}
+
+# Player-specific tent/moving-kit names contain arbitrary player names and should be ignored.
+PLAYER_ITEM_PATTERNS: Dict[str, re.Pattern] = {
+    'en-us': re.compile(r"^.+'s (?:tent|kit)$", re.IGNORECASE),
+    'en-eu': re.compile(r"^.+'s (?:tent|kit)$", re.IGNORECASE),
+    'de-eu': re.compile(r'^(?:Zelt|Kit) von .+$', re.IGNORECASE),
+    'es-eu': re.compile(r'^(?:Tienda de|Kit de) [A-ZÁÉÍÓÚÑ].+$'),
+    'es-us': re.compile(r'^(?:Tienda|Kit de) [A-ZÁÉÍÓÚÑ].+$'),
+    'fr-eu': re.compile(r'^(?:Tente de .+|Kit de [A-ZÀ-Ÿ].+)$'),
+    'fr-us': re.compile(r'^(?:Tente de .+|Kit de [A-ZÀ-Ÿ].+)$'),
+    'it-eu': re.compile(r'^(?:Tenda di .+|Kit di [A-ZÀ-Ÿ].+)$'),
+    'nl-eu': re.compile(r'^Tent van .+$', re.IGNORECASE),
+    'ru-eu': re.compile(r'^(?:Палатка .+|Набор [А-ЯЁA-Z].+)$'),
+    'ja-jp': re.compile(r'^.+のテント$'),
+    'ko-kr': re.compile(r'^.+(?:의 텐트| 이전 키트)$'),
+    'zh-cn': re.compile(r'^.+的帐篷$'),
+    'zh-tw': re.compile(r'^.+的帳篷$'),
 }
 
 
@@ -205,11 +224,16 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
     item_db = _get_item_db(locale)
     item_list = _get_item_list(locale)
     aliases = LEGACY_ALIASES.get(locale, {})
+    player_pattern = PLAYER_ITEM_PATTERNS.get(locale)
 
     for raw_item in sorted(item_names):
         item = aliases.get(raw_item, raw_item)
         if item in item_db:
             matched_items.add(item)
+            continue
+
+        if player_pattern and player_pattern.match(item):
+            logging.debug('Skipping player-named item %r', raw_item)
             continue
 
         cutoff, min_margin, high_conf = _fuzzy_thresholds(len(item))
