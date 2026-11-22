@@ -5,10 +5,14 @@ import cv2
 import functools
 import imagehash
 import json
+import logging
 import numpy
 import os
 
-from typing import Iterator, List
+from typing import Iterator, List, Tuple
+
+# Maximum allowed pHash Hamming distance (out of 324 bits; hovered covers reach ~110, noise ~162).
+MAX_PHASH_DISTANCE = 125
 
 # The expected color for the video background.
 BG_COLOR1 = (240, 210, 100)
@@ -41,13 +45,14 @@ def detect(frame: numpy.ndarray) -> bool:
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
     """Scans a video of scrolling through music list and returns all songs found."""
     song_covers = parse_video(video_file)
-    song_names = match_songs(song_covers)
+    song_names, unmatched = match_songs(song_covers)
     results = translate_names(song_names, locale)
 
     return ScanResult(
         mode=ScanMode.MUSIC,
         items=results,
         locale=locale.replace('auto', 'en-us'),
+        unmatched=unmatched,
     )
 
 
@@ -62,16 +67,22 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
     return _remove_blanks(all_covers)
 
 
-def match_songs(song_covers: List[numpy.ndarray]) -> List[str]:
+def match_songs(song_covers: List[numpy.ndarray]) -> Tuple[List[str], List[str]]:
     """Matches icons against database of music covers, finding best matches."""
     matched_songs = set()
+    unmatched_covers: List[str] = []
     song_db = _get_song_db()
     for cover in song_covers:
         image = Image.fromarray(cover)
         test_hash = imagehash.phash(image, hash_size=18)
         best_match = min(song_db, key=lambda x: x.icon_hash - test_hash)
+        dist = best_match.icon_hash - test_hash
+        if dist > MAX_PHASH_DISTANCE:
+            logging.warning('Rejected music cover crop with pHash distance %d (closest: %s)', dist, best_match.song_name)
+            unmatched_covers.append(f'phash_dist={dist}')
+            continue
         matched_songs.add(best_match.song_name)
-    return sorted(matched_songs)
+    return sorted(matched_songs), unmatched_covers
 
 
 def translate_names(song_names: List[str], locale: str) -> List[str]:
@@ -158,7 +169,7 @@ def _is_duplicate_cards(all_covers: List[numpy.ndarray], new_covers: List[numpy.
         old_concat = cv2.hconcat(all_covers[ind])
         if old_concat is None:
             continue
-        if cv2.absdiff(new_concat, old_concat).mean() < 20:
+        if cv2.absdiff(new_concat, old_concat).mean() < 15:
             return True
     return False
 

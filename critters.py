@@ -1,5 +1,5 @@
 import itertools
-from common import ScanMode, ScanResult
+from common import ScanMode, ScanResult, is_image_file
 
 import collections
 import cv2
@@ -135,7 +135,7 @@ def _read_frames(filename: str) -> Iterator[Tuple[CritterType, numpy.ndarray]]:
             raise AssertionError('Critterpedia is in Pictures Mode.')
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        if filename.endswith('.jpg'):  # Handle screenshots
+        if is_image_file(filename):  # Handle screenshots
             yield _detect_critter_section(gray), frame[149:623, :]
             continue
 

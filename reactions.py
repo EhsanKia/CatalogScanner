@@ -1,4 +1,4 @@
-from common import ScanMode, ScanResult
+from common import ScanMode, ScanResult, is_image_file
 
 import cv2
 import itertools
@@ -81,7 +81,9 @@ def parse_image(filename: str) -> List[numpy.ndarray]:
         except AssertionError as e:
             assertion_error = e
 
-    if assertion_error and (filename.endswith('.jpg') or not icon_pages):
+    cap.release()
+
+    if assertion_error and (is_image_file(filename) or not icon_pages):
         raise assertion_error
 
     return [icon for page in icon_pages.values() for icon in page]

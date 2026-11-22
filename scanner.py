@@ -1,4 +1,4 @@
-from common import ScanResult
+from common import ScanResult, is_image_file
 from typing import Any, Dict, Optional
 
 import catalog
@@ -13,6 +13,8 @@ import cv2
 from absl import app
 from absl import flags
 from absl import logging
+
+MAX_VIDEO_DURATION_SECONDS = 180
 
 SCANNERS: Dict[str, Any] = {
     'catalog': catalog,
@@ -52,6 +54,12 @@ def scan_media(filename: str, mode: str = 'auto', locale: str = 'auto', for_sale
 def _detect_media_type(filename: str) -> str:
     video_capture = cv2.VideoCapture(filename)
     try:
+        if not is_image_file(filename):
+            fps = video_capture.get(cv2.CAP_PROP_FPS)
+            frame_count = video_capture.get(cv2.CAP_PROP_FRAME_COUNT)
+            if fps > 1 and frame_count > 0 and (frame_count / fps) > MAX_VIDEO_DURATION_SECONDS:
+                raise AssertionError('Your video is too long.')
+
         unsupported_error: Optional[AssertionError] = None
 
         # Check the first 100 frames for a match.

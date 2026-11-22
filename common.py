@@ -1,7 +1,16 @@
 import dataclasses
 import enum
+import os
 
 from typing import List
+
+IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.webp', '.bmp')
+
+
+def is_image_file(filename: str) -> bool:
+    """Returns True if filename points to a static image (including %d sequences)."""
+    _, ext = os.path.splitext(filename)
+    return ext.lower() in IMAGE_EXTENSIONS
 
 
 class ScanMode(enum.Enum):

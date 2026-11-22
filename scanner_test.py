@@ -1,11 +1,15 @@
 import json
 import os
+import shutil
+import tempfile
 
+import numpy
 from absl.testing import absltest, parameterized
 
 import catalog
+import music
 import scanner
-from common import ScanMode
+from common import ScanMode, is_image_file
 
 
 def _fetch_ground_truth():
@@ -107,6 +111,29 @@ class ScannerTest(absltest.TestCase):
         self.assertIn('ごの', ja_unmatched)
         self.assertNotIn('みの', ja_matched)
 
+    def test_case_insensitive_image_extensions(self):
+        self.assertTrue(is_image_file('photo.JPG'))
+        self.assertTrue(is_image_file('page_%d.PNG'))
+        self.assertFalse(is_image_file('clip.MP4'))
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            upper_jpg = os.path.join(tmpdir, 'reactions_upper.JPG')
+            shutil.copyfile('examples/reactions.jpg', upper_jpg)
+            results = scanner.scan_media(upper_jpg)
+            self.assertEqual(results.items, GROUND_TRUTH['test_reactions'])
+
+            critter_upper = os.path.join(tmpdir, 'critter_sea.JPG')
+            shutil.copyfile('examples/extra/critters_seacreatures_img.jpg', critter_upper)
+            c_res = scanner.scan_media(critter_upper)
+            self.assertEqual(c_res.items, EXTRA_GROUND_TRUTH['critters_seacreatures_img.jpg'])
+
+    def test_music_phash_rejects_noise_cover(self):
+        rng = numpy.random.default_rng(42)
+        noise_cover = rng.integers(0, 256, size=(260, 260, 3), dtype=numpy.uint8)
+        matched, unmatched = music.match_songs([noise_cover])
+        self.assertEqual(matched, [])
+        self.assertEqual(len(unmatched), 1)
+
 
 class ScannerExtraTest(parameterized.TestCase):
 
@@ -123,5 +150,5 @@ class ScannerExtraTest(parameterized.TestCase):
         self.assertEqual(expected, actual)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     absltest.main()
