@@ -153,11 +153,11 @@ class ScannerTest(absltest.TestCase):
             {
                 '1UP버섯', '3D안경', '5층탑', '거미', '검', '고민', '곤란', '광차',
                 '짐볼', '닷 장식', '발랫대마', '70 피규어', '7ᅮ0 오디오',
-                '불', '분추', '이스터 풍선 6',
+                '빙글빙글커피잔', '불', '분추', '이스터 풍선 6',
             },
             locale='ko-kr',
         )
-        for expected in ('TOY 오디오', 'TOY 피규어', '닻 장식', '빨랫대야', '짐 볼'):
+        for expected in ('TOY 오디오', 'TOY 피규어', '광장의 커피 잔', '닻 장식', '빨랫대야', '짐 볼'):
             self.assertIn(expected, ko_matched)
         self.assertEqual(ko_unmatched, ['분추', '불', '이스터 풍선 6'])
 
@@ -165,25 +165,54 @@ class ScannerTest(absltest.TestCase):
             {
                 '冰桌', '冰桶', '冰箱', '和服架', '飛鏢靶',
                 '樸春DIY作業台', '穴烤爐', '波斯菊花決',
+                'toy床鋪', '可愛diy桌', '搬家紙箱m', '摇椅', '中性色轉角',
                 '復活節廟子', '火火',
             },
             locale='zh-tw',
         )
-        for expected in ('樸素DIY作業台', '波斯菊花灑', '窯烤爐'):
+        for expected in (
+            'TOY床鋪', '中立轉角', '可愛DIY桌', '搬家紙箱M',
+            '搖椅', '樸素DIY作業台', '波斯菊花灑', '窯烤爐',
+        ):
             self.assertIn(expected, tw_matched)
         self.assertEqual(tw_unmatched, ['復活節廟子', '火火'])
 
         cn_matched, cn_unmatched = catalog.match_items(
             {
                 '书堆', '冰桶', '户外长凳', '电子闹钟', '黄金柏',
-                '青蔡庭院五', '水果蓝', '公园攀仆加',
+                '青蔡庭院五', '水果蓝', '公园攀仆加', '旋转咖啡杯',
                 '复活节受子',
             },
             locale='zh-cn',
         )
-        for expected in ('公园攀爬架', '水果篮', '青苔庭院石'):
+        for expected in ('公园攀爬架', '广场咖啡杯', '水果篮', '青苔庭院石'):
             self.assertIn(expected, cn_matched)
         self.assertEqual(cn_unmatched, ['复活节受子'])
+
+    def test_rapidocr_cjk_and_fallback(self):
+        row = numpy.full((35, 415), 245, dtype=numpy.uint8)
+        row[8:26, 20:110] = 45
+        crop = catalog._prepare_rec_crop(row)
+        self.assertEqual(crop.ndim, 3)
+        self.assertEqual(crop.shape[0], row.shape[0] + 8)
+        self.assertEqual(crop.shape[2], 3)
+        self.assertLess(crop.shape[1], row.shape[1])
+
+        rows = catalog.parse_video('examples/extra/catalog_zhcn.mp4')[:6]
+        ocr_names = catalog.run_ocr(rows, lang='chi_sim')
+        db = catalog._get_item_db('zh-cn')
+        self.assertGreaterEqual(sum(1 for name in ocr_names if name in db), 4)
+
+        with mock.patch.object(catalog, '_get_rapidocr_rec', return_value=None):
+            with mock.patch.object(catalog, '_ocr_chunk', return_value={'テスト'}) as mock_tess:
+                self.assertEqual(catalog.run_ocr([row], lang='jpn'), {'テスト'})
+                mock_tess.assert_called_once()
+
+        failing_rec = mock.MagicMock(side_effect=RuntimeError('boom'))
+        with mock.patch.object(catalog, '_get_rapidocr_rec', return_value=failing_rec):
+            with mock.patch.object(catalog, '_ocr_chunk', return_value={'테스트'}) as mock_tess:
+                self.assertEqual(catalog.run_ocr([row], lang='kor'), {'테스트'})
+                mock_tess.assert_called_once()
 
     def test_player_named_items_skipped(self):
         matched, unmatched = catalog.match_items(

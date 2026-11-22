@@ -18,7 +18,7 @@ import unicodedata
 
 from PIL import Image
 from rapidfuzz import fuzz, process
-from typing import Dict, FrozenSet, Iterable, Iterator, List, Optional, Set, Tuple, Union
+from typing import Any, Dict, FrozenSet, Iterable, Iterator, List, Optional, Set, Tuple, Union
 
 # Prevent OpenMP-enabled Tesseract builds from oversubscribing 1-2 vCPU hosts.
 os.environ.setdefault('OMP_THREAD_LIMIT', '1')
@@ -107,13 +107,13 @@ _JA_SMALL_TO_LARGE = str.maketrans(
 _JA_SMALL_CHARS: FrozenSet[str] = frozenset('ぁぃぅぇぉっゃゅょゎァィゥェォヵヶッャュョヮ')
 _JA_VISUAL_CONFUSIONS = _build_confusion_map([
     ('シ', 'ツ', 'ン'), ('ソ', 'ン'), ('ロ', '口'), ('カ', '力'),
-    ('ニ', '二', '三'), ('エ', '工'), ('ハ', '八'),
+    ('ニ', '二', '三'), ('エ', '工'), ('ハ', '八'), ('オ', '才'),
     ('ー', '一'), ('ー', '二'), ('ー', 'ニ'), ('ー', '三'),
 ])
 _ZH_VISUAL_CONFUSIONS = _build_confusion_map([
     ('五', '石'), ('蓝', '篮'), ('圖', '圓'), ('图', '圆'), ('晴', '蜻'),
     ('春', '素'), ('決', '灑'), ('沁', '灑'), ('綢', '繩'), ('繹', '繩'), ('绸', '绳'),
-    ('穴', '窯'), ('窗', '窑'), ('窒', '窑'),
+    ('穴', '窯'), ('窗', '窑'), ('窒', '窑'), ('摇', '搖'), ('乌', '鸟'),
 ])
 _KO_JAMO_CONFUSIONS = _build_confusion_map([
     'ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅅㅆㅊ', 'ㅈㅉㅊ',
@@ -155,7 +155,28 @@ _EN_LEGACY_ALIASES: Dict[str, str] = {
 LEGACY_ALIASES: Dict[str, Dict[str, str]] = {
     'en-us': _EN_LEGACY_ALIASES,
     'en-eu': _EN_LEGACY_ALIASES,
+    'zh-tw': {
+        '中性色轉角': '中立轉角',
+        '旋轉咖啡杯': '廣場咖啡杯',
+    },
+    'zh-cn': {
+        '旋转咖啡杯': '广场咖啡杯',
+    },
+    'ko-kr': {
+        '빙글빙글 커피 잔': '광장의 커피 잔',
+    },
 }
+
+# RapidOCR recognizer specs keyed by Tesseract language code for CJK accuracy.
+# Latin/Cyrillic and locale auto-detection continue to use Tesseract.
+_RAPIDOCR_REC_SPECS: Dict[str, Tuple[str, str, str]] = {
+    'chi_sim': ('ch', 'PP-OCRv6', 'small'),
+    'chi_tra': ('ch', 'PP-OCRv6', 'small'),
+    'jpn': ('ch', 'PP-OCRv6', 'small'),
+    'kor': ('korean', 'PP-OCRv5', 'mobile'),
+}
+_RAPIDOCR_BATCH_NUM = 32
+_RAPIDOCR_MIN_WIDTH = 128
 
 # Player-specific tent/moving-kit names contain arbitrary player names and should be ignored.
 PLAYER_ITEM_PATTERNS: Dict[str, re.Pattern] = {
@@ -246,6 +267,65 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     return [t.ref for t in tracks]
 
 
+def _prepare_rec_crop(row: numpy.ndarray) -> numpy.ndarray:
+    """Crops a grayscale catalog row around its glyph ink and pads it for RapidOCR."""
+    width = min(row.shape[1], max(32, _ink_width(row) + 8))
+    padded = cv2.copyMakeBorder(
+        row[:, :width], 4, 4, 8, 8, cv2.BORDER_CONSTANT, value=245,
+    )
+    return cv2.cvtColor(padded, cv2.COLOR_GRAY2BGR)
+
+
+@functools.lru_cache(maxsize=None)
+def _get_rapidocr_rec(lang_type: str, ocr_version: str, model_type: str) -> Optional[Any]:
+    """Loads and caches a recognition-only RapidOCR session with bounded CPU threads."""
+    try:
+        from rapidocr import LangRec, ModelType, OCRVersion, RapidOCR
+
+        engine = RapidOCR(params={
+            'Global.use_det': False,
+            'Global.use_cls': False,
+            'Global.use_rec': True,
+            'Global.log_level': 'warning',
+            'EngineConfig.onnxruntime.intra_op_num_threads': min(4, _available_cpus()),
+            'EngineConfig.onnxruntime.inter_op_num_threads': 1,
+            'EngineConfig.onnxruntime.enable_cpu_mem_arena': True,
+            'Rec.lang_type': LangRec(lang_type),
+            'Rec.ocr_version': OCRVersion(ocr_version),
+            'Rec.model_type': ModelType(model_type),
+            'Rec.rec_batch_num': _RAPIDOCR_BATCH_NUM,
+            'Rec.rec_img_shape': [3, 48, _RAPIDOCR_MIN_WIDTH],
+        })
+        return engine._load_rec_model()
+    except Exception:
+        logging.warning(
+            'RapidOCR unavailable for (%s, %s, %s); falling back to Tesseract.',
+            lang_type, ocr_version, model_type, exc_info=True,
+        )
+        return None
+
+
+def _run_rapidocr(item_rows: List[numpy.ndarray], lang: str) -> Optional[Set[str]]:
+    """Runs recognition-only RapidOCR across row crops; returns None if unavailable."""
+    spec = _RAPIDOCR_REC_SPECS.get(lang)
+    if spec is None:
+        return None
+    rec_model = _get_rapidocr_rec(*spec)
+    if rec_model is None:
+        return None
+    try:
+        from rapidocr.ch_ppocr_rec import TextRecInput
+
+        crops = [_prepare_rec_crop(row) for row in item_rows]
+        logging.debug('Running RapidOCR (%s: %s) on %d rows', lang, spec[1], len(crops))
+        output = rec_model(TextRecInput(img=crops))
+        txts = output.txts or ()
+        return {_cleanup_name(txt, lang) for txt in txts if txt} - {''}
+    except Exception:
+        logging.warning('RapidOCR failed for %s; falling back to Tesseract.', lang, exc_info=True)
+        return None
+
+
 def _ocr_chunk(chunk: List[numpy.ndarray], lang: str) -> Set[str]:
     """Runs Tesseract OCR on a single chunk of vertically concatenated row strips."""
     parsed_text = pytesseract.image_to_string(
@@ -258,9 +338,14 @@ def _ocr_chunk(chunk: List[numpy.ndarray], lang: str) -> Set[str]:
 
 
 def run_ocr(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
-    """Runs Tesseract OCR across item rows in parallel chunks and returns all parsed lines."""
+    """Runs CJK RapidOCR (with Tesseract fallback) or parallel Tesseract OCR across item rows."""
     if not item_rows:
         return set()
+
+    if lang in _RAPIDOCR_REC_SPECS:
+        rapid_names = _run_rapidocr(item_rows, lang)
+        if rapid_names is not None:
+            return rapid_names
 
     n = len(item_rows)
     workers = min(MAX_OCR_WORKERS, math.ceil(n / MIN_OCR_CHUNK_ROWS))
@@ -291,13 +376,15 @@ def _fuzzy_thresholds(length: int) -> Tuple[float, float, float]:
 
 def _normalize_cjk_for_match(text: str, locale: str) -> str:
     """Applies light lossless normalization for CJK matching after raw DB lookup misses."""
-    s = text.strip(" ,|\\'").replace('‧', '・').replace('·', '・')
+    s = text.strip(" ,|\\'").replace('‧', '・').replace('·', '・').casefold()
     if locale == 'ja-jp':
         for dash in '‐-—―−':
             s = s.replace(dash, 'ー')
         s = _PROLONGED_STUTTER_RE.sub('ー', s)
     elif locale in ('zh-tw', 'zh-cn'):
         s = s.replace('‐', '-')
+        if locale == 'zh-tw':
+            s = s.replace('摇', '搖')
     return s
 
 
