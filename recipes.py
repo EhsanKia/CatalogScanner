@@ -1,9 +1,10 @@
-from common import ScanMode, ScanResult, iter_frames
+from common import ScanMode, ScanResult, crop_720p_roi, slice_720p
 
 import collections
 import cv2
 import functools
 import json
+import logging
 import numpy
 import os
 
@@ -13,6 +14,9 @@ from typing import Dict, Iterable, List, Tuple
 BG_COLOR = (194, 222, 228)
 WOOD_COLOR = (115, 175, 228)
 KITCHEN_COLOR = (160, 163, 243)
+
+MAX_MATCH_DISTANCE = 35.0
+COARSE_TOP_K = 16
 
 # Items that look very alike and can be mixed up.
 CONFUSED_ITEMS = {
@@ -36,7 +40,7 @@ class RecipeCard:
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing DIY recipes."""
-    color = frame[:20, 1200:1240].mean(axis=(0, 1))
+    color = slice_720p(frame, None, 20, 1200, 1240).mean(axis=(0, 1))
     if numpy.linalg.norm(color - WOOD_COLOR) < 15:
         raise AssertionError('Workbench scanning is not supported.')
     if numpy.linalg.norm(color - KITCHEN_COLOR) < 15:
@@ -47,22 +51,21 @@ def detect(frame: numpy.ndarray) -> bool:
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
     """Scans a video of scrolling through recipes list and returns all recipes found."""
     recipe_cards = parse_video(video_file)
-    recipe_names = match_recipes(recipe_cards)
+    recipe_names, unmatched = match_recipes(recipe_cards)
     results = translate_names(recipe_names, locale)
 
     return ScanResult(
         mode=ScanMode.RECIPES,
         items=results,
         locale=locale.replace('auto', 'en-us'),
+        unmatched=unmatched,
     )
 
 
 def parse_video(filename: str) -> List[numpy.ndarray]:
     """Parses a whole video and returns images for all recipe cards found."""
     all_cards: List[numpy.ndarray] = []
-    for i, frame in enumerate(_read_frames(filename)):
-        if i % 4 != 0:
-            continue  # Skip every 4th frame
+    for frame in _read_frames(filename, step=4):
         for new_cards in _parse_frame(frame):
             if _is_duplicate_cards(all_cards, new_cards):
                 continue  # Skip non-moving frames
@@ -70,26 +73,41 @@ def parse_video(filename: str) -> List[numpy.ndarray]:
     return all_cards
 
 
-def match_recipes(recipe_cards: List[numpy.ndarray]) -> List[str]:
+def match_recipes(recipe_cards: List[numpy.ndarray]) -> Tuple[List[str], List[str]]:
     """Matches icons against database of recipe images, finding best matches."""
     matched_recipes = set()
-    for card in recipe_cards:
-        # Check if the card is just the background color.
-        card_center_color = card[28:84, 28:84].mean(axis=(0, 1))
-        if numpy.linalg.norm(card_center_color - BG_COLOR) < 5:
-            continue  # Skip blank card slots.
+    unmatched: List[str] = []
+    valid_cards = [
+        card for card in recipe_cards
+        if numpy.linalg.norm(card[28:84, 28:84].mean(axis=(0, 1)) - BG_COLOR) >= 5
+    ]
+    if not valid_cards:
+        return [], unmatched
 
-        possible_recipes = list(_get_candidate_recipes(card))
-        best_match = _find_best_match(card, possible_recipes)
+    card_vecs = numpy.stack([
+        cv2.resize(card, (16, 16), interpolation=cv2.INTER_AREA).reshape(-1)
+        for card in valid_cards
+    ]).astype(numpy.float32)
+
+    for card, card_vec in zip(valid_cards, card_vecs):
+        candidates = _get_candidate_recipes(card, card_vec)
+        best_match, best_dist = _find_best_match(card, candidates)
+        if best_dist >= MAX_MATCH_DISTANCE:
+            logging.warning(
+                'Rejected recipe card with L1 distance %.1f (closest: %s)',
+                best_dist, best_match.name,
+            )
+            unmatched.append(f'{best_match.name}?d={best_dist:.1f}')
+            continue
+
         item_name = best_match.name
-
         # If the item is already in our list, it might be confused with a similar item.
         if item_name in matched_recipes and item_name in CONFUSED_ITEMS:
             item_name = CONFUSED_ITEMS[item_name]
 
         matched_recipes.add(item_name)
 
-    return sorted(matched_recipes)
+    return sorted(matched_recipes), unmatched
 
 
 def translate_names(recipe_names: List[str], locale: str) -> List[str]:
@@ -103,11 +121,47 @@ def translate_names(recipe_names: List[str], locale: str) -> List[str]:
     return [translations[name][locale] for name in recipe_names]
 
 
-def _read_frames(filename: str) -> Iterable[numpy.ndarray]:
+def _read_frames(filename: str, step: int = 4) -> Iterable[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region."""
-    for frame, _ in iter_frames(filename, detect):
-        # Crop the region containing recipe cards.
-        yield frame[110:720, 45:730]
+    cap = cv2.VideoCapture(filename)
+    seen_valid = False
+    can_skip = False
+    pending_gap = 0
+    total_gap_frames = 0
+    try:
+        while True:
+            if can_skip and step > 1:
+                for _ in range(step - 1):
+                    if not cap.grab():
+                        return
+
+            ret, frame = cap.read()
+            if not ret or frame is None:
+                break
+
+            try:
+                is_valid = detect(frame)
+            except AssertionError:
+                if not seen_valid:
+                    raise
+                is_valid = False
+
+            if not is_valid:
+                can_skip = False
+                if seen_valid:
+                    pending_gap += 1
+                continue
+
+            if pending_gap:
+                total_gap_frames += pending_gap
+                pending_gap = 0
+            seen_valid = True
+            can_skip = True
+            yield crop_720p_roi(frame, 110, 720, 45, 730)
+    finally:
+        cap.release()
+        if total_gap_frames:
+            logging.warning('Skipped %d non-matching mid-video frames in %s', total_gap_frames, filename)
 
 
 def _parse_frame(frame: numpy.ndarray) -> Iterable[List[numpy.ndarray]]:
@@ -189,47 +243,74 @@ def _get_color_db() -> Dict[int, Tuple[int, int, int]]:
             for color_id, (r, g, b) in colors_data.items()}
 
 
-def _get_candidate_recipes(card: numpy.ndarray) -> Iterable[RecipeCard]:
-    """Guesses the recipe color and returns all recipes the card could be"""
+@functools.lru_cache()
+def _get_color_table() -> Tuple[List[int], numpy.ndarray]:
+    """Returns color IDs and a float32 BGR matrix for vectorized distance lookup."""
     color_db = _get_color_db()
-    recipe_db = _get_recipe_db()
+    color_ids = list(color_db.keys())
+    color_arr = numpy.array([color_db[cid] for cid in color_ids], dtype=numpy.float32)
+    return color_ids, color_arr
+
+
+@functools.lru_cache()
+def _get_recipe_coarse_db() -> Dict[int, Tuple[List[RecipeCard], numpy.ndarray, numpy.ndarray]]:
+    """Precomputes 16x16 flattened float32 templates and squared norms per recipe color bucket."""
+    coarse_db: Dict[int, Tuple[List[RecipeCard], numpy.ndarray, numpy.ndarray]] = {}
+    for color_id, recipe_list in _get_recipe_db().items():
+        small = numpy.stack([
+            cv2.resize(r.img, (16, 16), interpolation=cv2.INTER_AREA).reshape(-1)
+            for r in recipe_list
+        ]).astype(numpy.float32)
+        norms = (small * small).sum(axis=1)
+        coarse_db[color_id] = (recipe_list, small, norms)
+    return coarse_db
+
+
+def _get_candidate_recipes(card: numpy.ndarray, card_vec: numpy.ndarray) -> List[RecipeCard]:
+    """Filters by card color and returns the top COARSE_TOP_K closest 16x16 candidates."""
+    color_ids, color_arr = _get_color_table()
+    coarse_db = _get_recipe_coarse_db()
 
     # Cut a small piece from the corner and calculate the average color.
     bg_color = card[104:107, 62:66, :].mean(axis=(0, 1))
+    cdists = numpy.linalg.norm(color_arr - bg_color, axis=1)
+    min_cd = cdists.min()
+    matching_cids = [color_ids[i] for i in numpy.nonzero(cdists - min_cd <= 10)[0]]
 
-    # Calculate how close each color is to the card's background color.
-    distance_func = lambda x: numpy.linalg.norm(bg_color - color_db[x])
-    color_distances = sorted((distance_func(c), c) for c in color_db)
-    for distance, color_id in color_distances:
-        # Stop if the candidate is much worse than best candidate.
-        if distance - color_distances[0][0] > 10:
-            break
-        yield from recipe_db[color_id]
+    cand_scores: List[numpy.ndarray] = []
+    cand_objs: List[RecipeCard] = []
+    for cid in matching_cids:
+        if cid not in coarse_db:
+            continue
+        bucket_recipes, templates, norms = coarse_db[cid]
+        cand_scores.append(norms - 2.0 * (templates @ card_vec))
+        cand_objs.extend(bucket_recipes)
+
+    if len(cand_objs) <= COARSE_TOP_K:
+        return cand_objs
+
+    all_d2 = cand_scores[0] if len(cand_scores) == 1 else numpy.concatenate(cand_scores)
+    top_indices = numpy.argpartition(all_d2, COARSE_TOP_K - 1)[:COARSE_TOP_K]
+    return [cand_objs[int(i)] for i in top_indices]
 
 
-def _find_best_match(card: numpy.ndarray, recipes: List[RecipeCard]) -> RecipeCard:
-    """Finds the closest matching recipe for the given card."""
-    if len(recipes) == 1:
-        return recipes[0]
+def _find_best_match(card: numpy.ndarray, candidates: List[RecipeCard]) -> Tuple[RecipeCard, float]:
+    """Finds the closest matching recipe and its mean L1 pixel distance."""
+    sims = [float(cv2.absdiff(card, r.img).mean()) for r in candidates]
+    if len(candidates) == 1 and sims[0] < MAX_MATCH_DISTANCE:
+        return candidates[0], sims[0]
 
-    fast_similarity_metric = lambda r: cv2.absdiff(card, r.img).mean()
-    similarities = list(map(fast_similarity_metric, recipes))
-    sim1, sim2 = numpy.partition(similarities, kth=min(2, len(recipes) - 1))[:2]
+    if len(candidates) > 1:
+        order = numpy.argsort(sims)
+        if sims[int(order[1])] - sims[int(order[0])] > 3 and sims[int(order[0])] < MAX_MATCH_DISTANCE:
+            best_idx = int(order[0])
+            return candidates[best_idx], sims[best_idx]
 
-    # If the match seems obvious, return the quick result.
-    if abs(sim1 - sim2) > 3:
-        return recipes[numpy.argmin(similarities)]
-
-    # Otherwise, we use a slower matching, which tries various shifts.
-    def slow_similarity_metric(recipe):
-        diffs = []
-        for y in [-2, -1, 0, 1, 2]:
-            shifted = numpy.roll(card, y, axis=0)
-            diffs.append(cv2.absdiff(shifted, recipe.img).sum())
-        return min(diffs)  # Return lowest diff across shifts.
-
-    similarities = list(map(slow_similarity_metric, recipes))
-    return recipes[numpy.argmin(similarities)]
+    # Try small vertical shifts when the match is ambiguous or above threshold.
+    shifted_cards = [numpy.roll(card, y, axis=0) for y in (-2, -1, 0, 1, 2)]
+    best_dists = [min(float(cv2.absdiff(sc, r.img).mean()) for sc in shifted_cards) for r in candidates]
+    best_idx = int(numpy.argmin(best_dists))
+    return candidates[best_idx], best_dists[best_idx]
 
 
 if __name__ == "__main__":
