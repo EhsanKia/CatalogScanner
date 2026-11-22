@@ -52,6 +52,26 @@ SCRIPT_MAP: Dict[str, List[str]] = {
               'es-eu', 'es-us', 'it-eu', 'nl-eu']
 }
 
+# Items renamed across AC:NH patches (e.g. 1.3 / 2.0) mapped to current canonical names.
+LEGACY_ALIASES: Dict[str, Dict[str, str]] = {
+    'en-us': {
+        'Writing desk': 'Study desk',
+        'Writing chair': 'Study chair',
+        'Writing poster': 'Study poster',
+        'Teacup ride': 'Plaza teacup ride',
+        'Fish and chips': 'Fish-and-chips',
+        'Tee with silicon bib': 'Tee with silicone bib',
+    },
+    'en-eu': {
+        'Writing desk': 'Study desk',
+        'Writing chair': 'Study chair',
+        'Writing poster': 'Study poster',
+        'Teacup ride': 'Plaza teacup ride',
+        'Fish and chips': 'Fish-and-chips',
+        'Tee with silicon bib': 'Tee with silicone bib',
+    },
+}
+
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing Nook Shopping catalog."""
@@ -136,7 +156,9 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
     no_match_items = []
     matched_items = set()
     item_db = _get_item_db(locale)
+    aliases = LEGACY_ALIASES.get(locale, {})
     for item in sorted(item_names):
+        item = aliases.get(item, item)
         if item in item_db:
             # If item name exists is in the DB, add it as is
             matched_items.add(item)
@@ -290,8 +312,9 @@ def _get_tesseract_config(lang: str) -> str:
 def _cleanup_name(item_name: str, lang: str) -> str:
     """Applies some manual name cleanup to fix OCR issues and improve matching."""
     item_name = item_name.strip()
+    item_name = item_name.replace('’', "'").replace('‘', "'")
     item_name = item_name.replace('Ao dai', 'Áo dài')
-    item_name = item_name.replace('Bail', 'Ball')
+    item_name = item_name.replace('Bail', 'Ball').replace(' bail', ' ball')
 
     # Normalize unicode characters for better matching.
     item_name = unicodedata.normalize('NFKC', item_name)
