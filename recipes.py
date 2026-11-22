@@ -8,7 +8,7 @@ import logging
 import numpy
 import os
 
-from typing import Dict, Iterable, List, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple
 
 # The expected color for the video background.
 BG_COLOR = (194, 222, 228)
@@ -65,7 +65,7 @@ def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
 def parse_video(filename: str) -> List[numpy.ndarray]:
     """Parses a whole video and returns images for all recipe cards found."""
     all_cards: List[numpy.ndarray] = []
-    for frame in _read_frames(filename, step=4):
+    for frame in _read_frames(filename):
         for new_cards in _parse_frame(frame):
             if _is_duplicate_cards(all_cards, new_cards):
                 continue  # Skip non-moving frames
@@ -121,9 +121,12 @@ def translate_names(recipe_names: List[str], locale: str) -> List[str]:
     return [translations[name][locale] for name in recipe_names]
 
 
-def _read_frames(filename: str, step: int = 4) -> Iterable[numpy.ndarray]:
+def _read_frames(filename: str, step: Optional[int] = None) -> Iterable[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region."""
     cap = cv2.VideoCapture(filename)
+    if step is None:
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        step = max(1, round(4 * fps / 30.0)) if fps > 0 else 4
     seen_valid = False
     can_skip = False
     pending_gap = 0

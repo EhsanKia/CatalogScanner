@@ -97,12 +97,20 @@ class ScannerTest(absltest.TestCase):
 
     def test_legacy_aliases_and_fuzzy_guards(self):
         matched, unmatched = catalog.match_items(
-            {'Writing desk', 'Teacup ride', 'Fish and chips', 'Tee with silicon bib'},
+            {
+                'Writing desk', 'Teacup ride', 'Fish and chips', 'Tee with silicon bib',
+                'Beige desert-tile flooring', 'Blue desert-tile flooring',
+                'Olive desert-tile wall', 'Purple desert-tile flooring', 'Paper bag',
+            },
             locale='en-us',
         )
         self.assertEqual(
             matched,
-            ['Fish-and-chips', 'Plaza teacup ride', 'Study desk', 'Tee with silicone bib'],
+            [
+                'Beige Moroccan flooring', 'Blue Moroccan flooring', 'Fish-and-chips',
+                'Olive Moroccan wall', 'Paper-bag hood', 'Plaza teacup ride',
+                'Purple Moroccan flooring', 'Study desk', 'Tee with silicone bib',
+            ],
         )
         self.assertEqual(unmatched, [])
 

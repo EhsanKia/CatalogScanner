@@ -14,7 +14,8 @@ from typing import Dict, Iterator, List, Tuple
 
 # The expected color for the video background.
 BG_COLOR = numpy.array([207, 238, 240])
-MAX_MATCH_DISTANCE = 35.0
+# Blurred slow-scroll icons (e.g. dace in critters_slow.mp4) can reach ~36 L1; noise/blank boxes are >75.
+MAX_MATCH_DISTANCE = 42.0
 COARSE_TOP_K = 12
 
 
@@ -140,6 +141,8 @@ def _read_frames(filename: str) -> Iterator[Tuple[CritterType, numpy.ndarray]]:
     good_frames: Dict[Tuple[CritterType, int], numpy.ndarray] = {}
 
     cap = cv2.VideoCapture(filename)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    section_skip = max(15, round(15 * fps / 30.0)) if fps > 0 else 15
     try:
         while True:
             if frame_skip > 0:
@@ -173,7 +176,7 @@ def _read_frames(filename: str) -> Iterator[Tuple[CritterType, numpy.ndarray]]:
 
             if critter_section != last_section:
                 if last_section is not None:
-                    frame_skip = 15
+                    frame_skip = section_skip
                 last_section = critter_section
                 continue
 

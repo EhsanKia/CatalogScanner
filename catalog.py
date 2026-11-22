@@ -87,23 +87,26 @@ LOCALE_TIEBREAK_ORDER: List[str] = [
 ]
 
 # Items renamed across AC:NH patches (e.g. 1.3 / 2.0) mapped to current canonical names.
+_EN_LEGACY_ALIASES: Dict[str, str] = {
+    'Writing desk': 'Study desk',
+    'Writing chair': 'Study chair',
+    'Writing poster': 'Study poster',
+    'Teacup ride': 'Plaza teacup ride',
+    'Fish and chips': 'Fish-and-chips',
+    'Tee with silicon bib': 'Tee with silicone bib',
+    'Beige desert-tile flooring': 'Beige Moroccan flooring',
+    'Beige desert-tile wall': 'Beige Moroccan wall',
+    'Blue desert-tile flooring': 'Blue Moroccan flooring',
+    'Blue desert-tile wall': 'Blue Moroccan wall',
+    'Olive desert-tile flooring': 'Olive Moroccan flooring',
+    'Olive desert-tile wall': 'Olive Moroccan wall',
+    'Purple desert-tile flooring': 'Purple Moroccan flooring',
+    'Purple desert-tile wall': 'Purple Moroccan wall',
+    'Paper bag': 'Paper-bag hood',
+}
 LEGACY_ALIASES: Dict[str, Dict[str, str]] = {
-    'en-us': {
-        'Writing desk': 'Study desk',
-        'Writing chair': 'Study chair',
-        'Writing poster': 'Study poster',
-        'Teacup ride': 'Plaza teacup ride',
-        'Fish and chips': 'Fish-and-chips',
-        'Tee with silicon bib': 'Tee with silicone bib',
-    },
-    'en-eu': {
-        'Writing desk': 'Study desk',
-        'Writing chair': 'Study chair',
-        'Writing poster': 'Study poster',
-        'Teacup ride': 'Plaza teacup ride',
-        'Fish and chips': 'Fish-and-chips',
-        'Tee with silicon bib': 'Tee with silicone bib',
-    },
+    'en-us': _EN_LEGACY_ALIASES,
+    'en-eu': _EN_LEGACY_ALIASES,
 }
 
 # Player-specific tent/moving-kit names contain arbitrary player names and should be ignored.
@@ -159,8 +162,15 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     """Parses a whole video and returns deduplicated row images for all items found."""
     cap = cv2.VideoCapture(filename)
     fps = cap.get(cv2.CAP_PROP_FPS)
-    # Native 30fps Switch captures stay on each page for ~3 frames; lower FPS needs smaller step.
-    frame_step = 3 if (fps <= 0 or fps >= 29.0) else (2 if fps >= 20.0 else 1)
+    # Native 30fps Switch captures stay on each page for ~3 frames; scale for 60fps capture cards.
+    if fps <= 0:
+        frame_step = 3
+    elif fps >= 29.0:
+        frame_step = max(3, round(fps / 10.0))
+    elif fps >= 20.0:
+        frame_step = 2
+    else:
+        frame_step = 1
 
     unfinished_page = False
     prev_raw_rows: List[numpy.ndarray] = []
