@@ -1,13 +1,19 @@
-from common import ScanMode, ScanResult, is_image_file, to_720p
+from common import ScanMode, ScanResult, is_image_file, slice_720p, to_720p
 
 import cv2
 import itertools
 import functools
 import json
+import logging
 import numpy
 import os
 
-from typing import Dict, Iterator, List, Optional
+from typing import Dict, Iterator, List, Optional, Tuple
+
+# The expected color for the reactions background.
+BG_COLOR = (254, 221, 244)
+MAX_MATCH_DISTANCE = 48.0
+COARSE_TOP_K = 10
 
 # The expected color for the reactions background.
 BG_COLOR = (254, 221, 244)
@@ -41,20 +47,21 @@ class ReactionImage:
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing reactions list."""
-    color = frame[370:380, 290:300].mean(axis=(0, 1))
+    color = slice_720p(frame, 370, 380, 290, 300).mean(axis=(0, 1))
     return bool(numpy.linalg.norm(color - BG_COLOR) < 14)
 
 
 def scan(image_file: str, locale: str = 'en-us') -> ScanResult:
     """Scans an image of reactions list and returns all reactions found."""
     reaction_icons = parse_image(image_file)
-    reaction_names = match_reactions(reaction_icons)
+    reaction_names, unmatched = match_reactions(reaction_icons)
     results = translate_names(reaction_names, locale)
 
     return ScanResult(
         mode=ScanMode.REACTIONS,
         items=results,
         locale=locale.replace('auto', 'en-us'),
+        unmatched=unmatched,
     )
 
 
@@ -64,23 +71,23 @@ def parse_image(filename: str) -> List[numpy.ndarray]:
     assertion_error: Optional[AssertionError] = None
 
     cap = cv2.VideoCapture(filename)
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break  # Video is over
+    try:
+        while True:
+            ret, frame = cap.read()
+            if not ret or frame is None:
+                break  # Video is over
 
-        frame = to_720p(frame)
+            if not detect(frame):
+                continue  # Skip frames not containing reactions.
 
-        if not detect(frame):
-            continue  # Skip frames not containing reactions.
-
-        try:
-            new_icons = list(_parse_frame(frame))
-            icon_pages[len(new_icons)] = new_icons
-        except AssertionError as e:
-            assertion_error = e
-
-    cap.release()
+            frame = to_720p(frame)
+            try:
+                new_icons = list(_parse_frame(frame))
+                icon_pages[len(new_icons)] = new_icons
+            except AssertionError as e:
+                assertion_error = e
+    finally:
+        cap.release()
 
     if assertion_error and (is_image_file(filename) or not icon_pages):
         raise assertion_error
@@ -88,14 +95,37 @@ def parse_image(filename: str) -> List[numpy.ndarray]:
     return [icon for page in icon_pages.values() for icon in page]
 
 
-def match_reactions(reaction_icons: List[numpy.ndarray]) -> List[str]:
+def match_reactions(reaction_icons: List[numpy.ndarray]) -> Tuple[List[str], List[str]]:
     """Matches icons against database of reactions images, finding best matches."""
     matched_reactions = set()
-    reaction_db = _get_reaction_db()
-    for icon in reaction_icons:
-        best_match = _find_best_match(icon, reaction_db)
+    unmatched: List[str] = []
+    if not reaction_icons:
+        return [], unmatched
+
+    reaction_db, templates, norms = _get_reaction_coarse_db()
+    icon_vecs = numpy.stack([
+        cv2.resize(ic, (16, 16), interpolation=cv2.INTER_AREA).reshape(-1)
+        for ic in reaction_icons
+    ]).astype(numpy.float32)
+
+    for icon, icon_vec in zip(reaction_icons, icon_vecs):
+        if len(reaction_db) > COARSE_TOP_K:
+            d2 = norms - 2.0 * (templates @ icon_vec)
+            top_idx = numpy.argpartition(d2, COARSE_TOP_K - 1)[:COARSE_TOP_K]
+            candidates = [reaction_db[int(i)] for i in top_idx]
+        else:
+            candidates = reaction_db
+
+        best_match, best_dist = _find_best_match(icon, candidates)
+        if best_dist >= MAX_MATCH_DISTANCE:
+            logging.warning(
+                'Rejected reaction icon with L1 distance %.1f (closest: %s)',
+                best_dist, best_match.reaction_name,
+            )
+            unmatched.append(f'{best_match.reaction_name}?d={best_dist:.1f}')
+            continue
         matched_reactions.add(best_match.reaction_name)
-    return sorted(matched_reactions)
+    return sorted(matched_reactions), unmatched
 
 
 def translate_names(reaction_names: List[str], locale: str) -> List[str]:
@@ -141,26 +171,38 @@ def _get_reaction_db() -> List[ReactionImage]:
     return [ReactionImage(name, img) for name, img, _ in reaction_data]
 
 
-def _find_best_match(icon: numpy.ndarray, reactions: List[ReactionImage]) -> ReactionImage:
-    """Finds the closest matching reaction for the given icon."""
-    fast_similarity_metric = lambda r: cv2.absdiff(icon, r.img).mean()
-    similarities = list(map(fast_similarity_metric, reactions))
-    sim1, sim2 = numpy.partition(similarities, kth=2)[:2]
+@functools.lru_cache()
+def _get_reaction_coarse_db() -> Tuple[List[ReactionImage], numpy.ndarray, numpy.ndarray]:
+    """Precomputes 16x16 flattened float32 templates and squared norms for reactions."""
+    reaction_db = _get_reaction_db()
+    small = numpy.stack([
+        cv2.resize(r.img, (16, 16), interpolation=cv2.INTER_AREA).reshape(-1)
+        for r in reaction_db
+    ]).astype(numpy.float32)
+    norms = (small * small).sum(axis=1)
+    return reaction_db, small, norms
 
-    # If the match seems obvious, return the quick result.
-    if abs(sim1 - sim2) > 3:
-        return reactions[numpy.argmin(similarities)]
 
-    # Otherwise, we use a slower matching, which tries various shifts.
-    def slow_similarity_metric(reaction):
-        diffs = []
-        for x, y in itertools.product([-1, 0, 1], repeat=2):
-            shifted = numpy.roll(numpy.roll(icon, x, axis=1), y, axis=0)
-            diffs.append(cv2.absdiff(shifted, reaction.img).sum())
-        return min(diffs)  # Return lowest diff across shifts.
+def _find_best_match(icon: numpy.ndarray, candidates: List[ReactionImage]) -> Tuple[ReactionImage, float]:
+    """Finds the closest matching reaction and its mean L1 pixel distance."""
+    sims = [float(cv2.absdiff(icon, r.img).mean()) for r in candidates]
+    if len(candidates) == 1 and sims[0] < MAX_MATCH_DISTANCE:
+        return candidates[0], sims[0]
 
-    similarities = list(map(slow_similarity_metric, reactions))
-    return reactions[numpy.argmin(similarities)]
+    if len(candidates) > 1:
+        order = numpy.argsort(sims)
+        if sims[int(order[1])] - sims[int(order[0])] > 3 and sims[int(order[0])] < MAX_MATCH_DISTANCE:
+            best_idx = int(order[0])
+            return candidates[best_idx], sims[best_idx]
+
+    # Try small (x, y) shifts when the match is ambiguous or above threshold.
+    shifted_icons = [
+        numpy.roll(numpy.roll(icon, x, axis=1), y, axis=0)
+        for x, y in itertools.product((-1, 0, 1), repeat=2)
+    ]
+    best_dists = [min(float(cv2.absdiff(si, r.img).mean()) for si in shifted_icons) for r in candidates]
+    best_idx = int(numpy.argmin(best_dists))
+    return candidates[best_idx], best_dists[best_idx]
 
 
 if __name__ == "__main__":

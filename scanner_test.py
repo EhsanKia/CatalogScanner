@@ -7,7 +7,10 @@ import numpy
 from absl.testing import absltest, parameterized
 
 import catalog
+import critters
 import music
+import reactions
+import recipes
 import scanner
 from common import ScanMode, crop_720p_roi, is_image_file, slice_720p
 
@@ -188,6 +191,27 @@ class ScannerTest(absltest.TestCase):
         self.assertEqual(matched, [])
         self.assertEqual(len(unmatched), 1)
         self.assertIn('?d=', unmatched[0])
+
+    def test_icon_matchers_reject_noise(self):
+        rng = numpy.random.default_rng(42)
+        noise_recipe = rng.integers(0, 256, size=(112, 112, 3), dtype=numpy.uint8)
+        r_matched, r_unmatched = recipes.match_recipes([noise_recipe])
+        self.assertEqual(r_matched, [])
+        self.assertEqual(len(r_unmatched), 1)
+        self.assertIn('?d=', r_unmatched[0])
+
+        noise_critter = rng.integers(0, 256, size=(80, 80, 3), dtype=numpy.uint8).view(critters.CritterIcon)
+        noise_critter.critter_type = critters.CritterType.INSECTS
+        c_matched, c_unmatched = critters.match_critters([noise_critter])
+        self.assertEqual(c_matched, [])
+        self.assertEqual(len(c_unmatched), 1)
+        self.assertIn('?d=', c_unmatched[0])
+
+        noise_reaction = rng.integers(0, 256, size=(64, 64, 3), dtype=numpy.uint8)
+        re_matched, re_unmatched = reactions.match_reactions([noise_reaction])
+        self.assertEqual(re_matched, [])
+        self.assertEqual(len(re_unmatched), 1)
+        self.assertIn('?d=', re_unmatched[0])
 
 
 class ScannerExtraTest(parameterized.TestCase):

@@ -1,11 +1,12 @@
 import itertools
-from common import ScanMode, ScanResult, is_image_file, to_720p
+from common import ScanMode, ScanResult, crop_720p_roi, is_image_file, slice_720p
 
 import collections
 import cv2
 import enum
 import functools
 import json
+import logging
 import numpy
 import os
 
@@ -13,6 +14,8 @@ from typing import Dict, Iterator, List, Tuple
 
 # The expected color for the video background.
 BG_COLOR = numpy.array([207, 238, 240])
+MAX_MATCH_DISTANCE = 35.0
+COARSE_TOP_K = 12
 
 
 class CritterType(enum.Enum):
@@ -47,20 +50,21 @@ class CritterIcon(numpy.ndarray):
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing Critterpedia."""
-    color = frame[:20, 1100:1150].mean(axis=(0, 1))
+    color = slice_720p(frame, None, 20, 1100, 1150).mean(axis=(0, 1))
     return bool(numpy.linalg.norm(color - BG_COLOR) < 12)
 
 
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
     """Scans a video of scrolling through Critterpedia and returns all critters found."""
     critter_icons = parse_video(video_file)
-    critter_names = match_critters(critter_icons)
+    critter_names, unmatched = match_critters(critter_icons)
     results = translate_names(critter_names, locale)
 
     return ScanResult(
         mode=ScanMode.CRITTERS,
         items=results,
         locale=locale.replace('auto', 'en-us'),
+        unmatched=unmatched,
     )
 
 
@@ -83,14 +87,38 @@ def parse_video(filename: str) -> List[CritterIcon]:
     return _remove_blanks(all_icons)
 
 
-def match_critters(critter_icons: List[CritterIcon]) -> List[str]:
+def match_critters(critter_icons: List[CritterIcon]) -> Tuple[List[str], List[str]]:
     """Matches icons against database of critter images, finding best matches."""
     matched_critters = set()
-    critter_db = _get_critter_db()
-    for icon in critter_icons:
-        best_match = _find_best_match(icon, critter_db[icon.critter_type])
+    unmatched: List[str] = []
+    if not critter_icons:
+        return [], unmatched
+
+    coarse_db = _get_critter_coarse_db()
+    icon_vecs = numpy.stack([
+        cv2.resize(ic, (16, 16), interpolation=cv2.INTER_AREA).reshape(-1)
+        for ic in critter_icons
+    ]).astype(numpy.float32)
+
+    for icon, icon_vec in zip(critter_icons, icon_vecs):
+        clist, templates, norms = coarse_db[icon.critter_type]
+        if len(clist) > COARSE_TOP_K:
+            d2 = norms - 2.0 * (templates @ icon_vec)
+            top_idx = numpy.argpartition(d2, COARSE_TOP_K - 1)[:COARSE_TOP_K]
+            candidates = [clist[int(i)] for i in top_idx]
+        else:
+            candidates = clist
+
+        best_match, best_dist = _find_best_match(icon, candidates)
+        if best_dist >= MAX_MATCH_DISTANCE:
+            logging.warning(
+                'Rejected critter icon with L1 distance %.1f (closest: %s)',
+                best_dist, best_match.critter_name,
+            )
+            unmatched.append(f'{best_match.critter_name}?d={best_dist:.1f}')
+            continue
         matched_critters.add(best_match.critter_name)
-    return sorted(matched_critters)
+    return sorted(matched_critters), unmatched
 
 
 def translate_names(critter_names: List[str], locale: str) -> List[str]:
@@ -109,65 +137,64 @@ def _read_frames(filename: str) -> Iterator[Tuple[CritterType, numpy.ndarray]]:
     frame_skip = 0
     last_section = None
     last_frame = None
-
     good_frames: Dict[Tuple[CritterType, int], numpy.ndarray] = {}
 
     cap = cv2.VideoCapture(filename)
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break  # Video is over
+    try:
+        while True:
+            if frame_skip > 0:
+                if not cap.grab():
+                    break
+                frame_skip -= 1
+                continue
 
-        if frame_skip > 0:
-            frame_skip -= 1
-            continue
+            ret, frame = cap.read()
+            if not ret or frame is None:
+                break  # Video is over
 
-        # Resize frames to 720p since matching is built for 720p.
-        frame = to_720p(frame)
+            if not detect(frame):
+                continue  # Skip frames that are not showing critterpedia.
 
-        if not detect(frame):
-            continue  # Skip frames that are not showing critterpedia.
+            # Detect a dark line that shows up only in Pictures Mode.
+            mode_detector = slice_720p(frame, 20, 24, 600, 800).mean(axis=(0, 1))
+            if numpy.linalg.norm(mode_detector - (199, 234, 237)) > 50:
+                raise AssertionError('Critterpedia is in Pictures Mode.')
 
-        # Detect a dark line that shows up only in Pictures Mode.
-        mode_detector = frame[20:24, 600:800].mean(axis=(0, 1))
-        if numpy.linalg.norm(mode_detector - (199, 234, 237)) > 50:
-            raise AssertionError('Critterpedia is in Pictures Mode.')
+            tab_gray = cv2.cvtColor(crop_720p_roi(frame, 70, 75, 65, 260), cv2.COLOR_BGR2GRAY)
+            critter_section = _detect_critter_section(tab_gray)
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        if is_image_file(filename):  # Handle screenshots
-            yield _detect_critter_section(gray), frame[149:623, :]
-            continue
+            if is_image_file(filename):  # Handle screenshots
+                yield critter_section, crop_720p_roi(frame, 149, 623, None, None)
+                continue
 
-        if last_frame is None:
+            if last_frame is None:
+                last_frame = frame
+                continue
+
+            if critter_section != last_section:
+                if last_section is not None:
+                    frame_skip = 15
+                last_section = critter_section
+                continue
+
+            # Grab the last frame for each side and section combination.
+            if slice_720p(last_frame, 570, 600, None, 70)[:, :, 2].min() > 230:
+                good_frames[critter_section, 0] = last_frame
+            elif slice_720p(last_frame, 570, 600, -70, None)[:, :, 2].min() > 230:
+                good_frames[critter_section, 1] = last_frame
+
             last_frame = frame
-            continue
-
-        critter_section = _detect_critter_section(gray)
-        if critter_section != last_section:
-            if last_section is not None:
-                frame_skip = 15
-            last_section = critter_section
-            continue
-
-        # Grab the last frame for each side and section combination.
-        if last_frame[570:600, :70, 2].min() > 230:
-            good_frames[critter_section, 0] = last_frame
-        elif last_frame[570:600, -70:, 2].min() > 230:
-            good_frames[critter_section, 1] = last_frame
-
-        last_frame = frame
-
-    cap.release()
+    finally:
+        cap.release()
 
     for (critter_type, _), frame in good_frames.items():
         # Crop the region containing critter icons.
-        yield critter_type, frame[149:623, :]
+        yield critter_type, crop_720p_roi(frame, 149, 623, None, None)
 
 
-def _detect_critter_section(gray_frame: numpy.ndarray) -> CritterType:
+def _detect_critter_section(tab_gray: numpy.ndarray) -> CritterType:
     for i, critter_type in enumerate(CritterType):
-        start_x, end_x = 65 + i * 65, 65 + (i + 1) * 65
-        section_icon = gray_frame[70:75, start_x:end_x]
+        section_icon = tab_gray[:, i * 65:(i + 1) * 65]
         if section_icon.min() > 150:
             return critter_type
     raise AssertionError('Invalid Critterpedia page')
@@ -230,26 +257,37 @@ def _get_critter_db() -> Dict[CritterType, List[CritterImage]]:
     return critter_db
 
 
-def _find_best_match(icon: numpy.ndarray, critters: List[CritterImage]) -> CritterImage:
-    """Finds the closest matching critter for the given icon."""
-    fast_similarity_metric = lambda r: cv2.absdiff(icon, r.img).mean()
-    similarities = list(map(fast_similarity_metric, critters))
-    sim1, sim2 = numpy.partition(similarities, kth=2)[:2]
+@functools.lru_cache()
+def _get_critter_coarse_db() -> Dict[CritterType, Tuple[List[CritterImage], numpy.ndarray, numpy.ndarray]]:
+    """Precomputes 16x16 flattened float32 templates and squared norms per CritterType."""
+    coarse_db: Dict[CritterType, Tuple[List[CritterImage], numpy.ndarray, numpy.ndarray]] = {}
+    for critter_type, critter_list in _get_critter_db().items():
+        small = numpy.stack([
+            cv2.resize(c.img, (16, 16), interpolation=cv2.INTER_AREA).reshape(-1)
+            for c in critter_list
+        ]).astype(numpy.float32)
+        norms = (small * small).sum(axis=1)
+        coarse_db[critter_type] = (critter_list, small, norms)
+    return coarse_db
 
-    # If the match seems obvious, return the quick result.
-    if abs(sim1 - sim2) > 3:
-        return critters[numpy.argmin(similarities)]
 
-    # Otherwise, we use a slower matching, which tries various shifts.
-    def slow_similarity_metric(critter):
-        diffs = []
-        for x in [-2, -1, 0, 1, 2]:
-            shifted = numpy.roll(icon, x, axis=1)
-            diffs.append(cv2.absdiff(shifted, critter.img).sum())
-        return min(diffs)  # Return lowest diff across shifts.
+def _find_best_match(icon: numpy.ndarray, candidates: List[CritterImage]) -> Tuple[CritterImage, float]:
+    """Finds the closest matching critter and its mean L1 pixel distance."""
+    sims = [float(cv2.absdiff(icon, c.img).mean()) for c in candidates]
+    if len(candidates) == 1 and sims[0] < MAX_MATCH_DISTANCE:
+        return candidates[0], sims[0]
 
-    similarities = list(map(slow_similarity_metric, critters))
-    return critters[numpy.argmin(similarities)]
+    if len(candidates) > 1:
+        order = numpy.argsort(sims)
+        if sims[int(order[1])] - sims[int(order[0])] > 3 and sims[int(order[0])] < MAX_MATCH_DISTANCE:
+            best_idx = int(order[0])
+            return candidates[best_idx], sims[best_idx]
+
+    # Try small horizontal shifts when the match is ambiguous or above threshold.
+    shifted_icons = [numpy.roll(icon, x, axis=1) for x in (-2, -1, 0, 1, 2)]
+    best_dists = [min(float(cv2.absdiff(si, c.img).mean()) for si in shifted_icons) for c in candidates]
+    best_idx = int(numpy.argmin(best_dists))
+    return candidates[best_idx], best_dists[best_idx]
 
 
 if __name__ == "__main__":
