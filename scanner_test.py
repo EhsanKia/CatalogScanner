@@ -168,6 +168,7 @@ class ScannerTest(absltest.TestCase):
         matched, unmatched = music.match_songs([noise_cover])
         self.assertEqual(matched, [])
         self.assertEqual(len(unmatched), 1)
+        self.assertIn('?d=', unmatched[0])
 
 
 class ScannerExtraTest(parameterized.TestCase):

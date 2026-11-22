@@ -75,11 +75,13 @@ def match_songs(song_covers: List[numpy.ndarray]) -> Tuple[List[str], List[str]]
     for cover in song_covers:
         image = Image.fromarray(cover)
         test_hash = imagehash.phash(image, hash_size=18)
-        best_match = min(song_db, key=lambda x: x.icon_hash - test_hash)
-        dist = best_match.icon_hash - test_hash
+        dist, best_match = min(
+            ((song.icon_hash - test_hash, song) for song in song_db),
+            key=lambda pair: pair[0],
+        )
         if dist > MAX_PHASH_DISTANCE:
             logging.warning('Rejected music cover crop with pHash distance %d (closest: %s)', dist, best_match.song_name)
-            unmatched_covers.append(f'phash_dist={dist}')
+            unmatched_covers.append(f'{best_match.song_name}?d={dist}')
             continue
         matched_songs.add(best_match.song_name)
     return sorted(matched_songs), unmatched_covers
