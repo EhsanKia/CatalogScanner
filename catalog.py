@@ -8,7 +8,6 @@ import logging
 import numpy
 import os
 import pytesseract
-import random
 import typing
 import unicodedata
 
@@ -48,16 +47,6 @@ LOCALE_MAP: Dict[str, str] = {
     'ru-eu': 'rus',
     'zh-cn': 'chi_sim',
     'zh-tw': 'chi_tra',
-}
-
-SCRIPT_MAP: Dict[str, List[str]] = {
-    'Japanese': ['ja-jp'],
-    'Cyrillic': ['ru-eu'],
-    'HanS': ['zh-cn'],
-    'HanT': ['zh-tw'],
-    'Hangul': ['ko-kr'],
-    'Latin': ['en-us', 'en-eu', 'fr-eu', 'fr-us', 'de-eu',
-              'es-eu', 'es-us', 'it-eu', 'nl-eu'],
 }
 
 # Candidate OCR models and locales used for deterministic DB-scored locale detection.
@@ -384,45 +373,71 @@ def _get_item_list(locale: str) -> List[str]:
 
 
 def _detect_locale(item_rows: List[numpy.ndarray], locale: str) -> str:
-    """Detects the right locale for the given items if required."""
+    """Deterministically detects the catalog locale by scoring candidate OCR outputs against item DBs."""
     if locale != 'auto':
-        # If locale is already specified, return as is.
         return locale
 
-    # Sample a subset of the rows and convert to Pillow image.
-    if len(item_rows) > 300:
-        item_rows = random.sample(item_rows, 300)
-    image = Image.fromarray(cv2.vconcat(item_rows))
+    # Deterministically pick up to 40 evenly spaced rows across the video.
+    sample_size = min(40, len(item_rows))
+    indices = numpy.linspace(0, len(item_rows) - 1, sample_size, dtype=int)
+    sample_rows = [item_rows[int(i)] for i in indices]
+    sample_image = Image.fromarray(cv2.vconcat(sample_rows))
+    config = _get_tesseract_config('eng')
 
-    try:
-        osd_data = typing.cast(Dict[str, str], pytesseract.image_to_osd(
-            image, output_type=pytesseract.Output.DICT))
-    except pytesseract.TesseractError:
-        return 'en-us'
+    def _score_candidate(lang: str) -> Tuple[Dict[str, int], Dict[str, Set[str]]]:
+        try:
+            parsed = pytesseract.image_to_string(sample_image, lang=lang, config=config)
+        except pytesseract.TesseractError:
+            if lang == 'script/Latin':
+                parsed = pytesseract.image_to_string(sample_image, lang='eng', config=config)
+            else:
+                return {}, {}
+        names = {_cleanup_name(line, lang) for line in parsed.split('\n')} - {''}
+        exact_scores: Dict[str, int] = {}
+        parsed_by_loc: Dict[str, Set[str]] = {}
+        for loc in DETECTION_CANDIDATES[lang]:
+            db = _get_item_db(loc)
+            aliases = LEGACY_ALIASES.get(loc, {})
+            exact_scores[loc] = sum(1 for n in names if aliases.get(n, n) in db)
+            parsed_by_loc[loc] = names
+        return exact_scores, parsed_by_loc
 
-    possible_locales = SCRIPT_MAP.get(osd_data['script'])
-    assert possible_locales, 'Failed to automatically detect language.'
+    exact_scores: Dict[str, int] = {}
+    parsed_by_loc: Dict[str, Set[str]] = {}
+    workers = min(len(DETECTION_CANDIDATES), max(2, MAX_OCR_WORKERS))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+        for scores, names_map in executor.map(_score_candidate, DETECTION_CANDIDATES):
+            exact_scores.update(scores)
+            parsed_by_loc.update(names_map)
 
-    # If we can uniquely guess the language from the script, use that.
-    if len(possible_locales) == 1:
-        logging.info('Detected locale: %s', possible_locales[0])
-        return possible_locales[0]
+    assert exact_scores, 'Failed to automatically detect language.'
+    best_locale = max(
+        exact_scores,
+        key=lambda loc: (exact_scores[loc], -LOCALE_TIEBREAK_ORDER.index(loc)),
+    )
 
-    # Otherwise, run OCR on the first few items and try to find the best matching locale.
-    if len(item_rows) > 30:
-        item_rows = random.sample(item_rows, 30)
-    item_names = run_ocr(item_rows, lang='script/Latin')
+    # Fallback to high-confidence fuzzy hits on tiny/noisy clips where exact hits are 0.
+    if exact_scores[best_locale] == 0:
+        fuzzy_scores: Dict[str, int] = {}
+        for loc, names in parsed_by_loc.items():
+            if not names:
+                fuzzy_scores[loc] = 0
+                continue
+            item_list = _get_item_list(loc)
+            fuzzy_scores[loc] = sum(
+                1 for n in names
+                if len(n) >= 3 and bool(process.extractOne(n, item_list, scorer=fuzz.ratio, score_cutoff=80.0))
+            )
+        best_locale = max(
+            fuzzy_scores,
+            key=lambda loc: (fuzzy_scores[loc], -LOCALE_TIEBREAK_ORDER.index(loc)),
+        )
+        assert fuzzy_scores[best_locale] > 0, 'Failed to automatically detect language.'
 
-    def match_score_func(locale):
-        """Computes how many items match for a given locale."""
-        item_db = _get_item_db(locale)
-        return sum(name in item_db for name in item_names)
-
-    best_locale = max(possible_locales, key=match_score_func)
-    logging.info('Detected locale: %s', best_locale)
+    logging.info('Detected locale: %s (exact=%d/%d)', best_locale, exact_scores[best_locale], sample_size)
     return best_locale
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     results = scan('examples/catalog.mp4')
     print('\n'.join(results.items))
