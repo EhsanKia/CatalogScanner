@@ -6,6 +6,7 @@ import cv2
 import functools
 import json
 import logging
+import math
 import numpy
 import os
 import pytesseract
@@ -20,9 +21,20 @@ from typing import Dict, Iterator, List, Optional, Set, Tuple, Union
 # Prevent OpenMP-enabled Tesseract builds from oversubscribing 1-2 vCPU hosts.
 os.environ.setdefault('OMP_THREAD_LIMIT', '1')
 
-# Maximum rows per Tesseract invocation and parallel worker cap.
-OCR_CHUNK_SIZE = 250
-MAX_OCR_WORKERS = min(4, os.cpu_count() or 2)
+
+def _available_cpus() -> int:
+    """Returns usable CPU count, respecting Linux cgroup/affinity limits when available."""
+    if hasattr(os, 'sched_getaffinity'):
+        return max(1, len(os.sched_getaffinity(0)))  # type: ignore[attr-defined]
+    return os.cpu_count() or 2
+
+
+# Chunk size bounds per Tesseract call (900 rows * 35px = 31.5k, safely below Tesseract's 32k height limit).
+MIN_OCR_CHUNK_ROWS = 250
+MAX_OCR_CHUNK_ROWS = 900
+MAX_OCR_WORKERS = min(4, _available_cpus())
+
+TESSERACT_CONFIG = '--psm 6 -c preserve_interword_spaces=1 -c tessedit_do_invert=0'
 
 # The expected color for the video background (BGR).
 TOP_COLOR = (110, 233, 238)
@@ -169,12 +181,12 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     return _dedupe_rows(all_rows)
 
 
-def _ocr_chunk(chunk: List[numpy.ndarray], lang: str, config: str) -> Set[str]:
+def _ocr_chunk(chunk: List[numpy.ndarray], lang: str) -> Set[str]:
     """Runs Tesseract OCR on a single chunk of vertically concatenated row strips."""
     parsed_text = pytesseract.image_to_string(
         Image.fromarray(cv2.vconcat(chunk)),
         lang=lang,
-        config=config,
+        config=TESSERACT_CONFIG,
     )
     assert isinstance(parsed_text, str), 'Tesseract returned bytes'
     return {_cleanup_name(item, lang) for item in parsed_text.split('\n')} - {''}
@@ -185,25 +197,18 @@ def run_ocr(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
     if not item_rows:
         return set()
 
-    chunks = [
-        item_rows[i:i + OCR_CHUNK_SIZE]
-        for i in range(0, len(item_rows), OCR_CHUNK_SIZE)
-    ]
-    config = _get_tesseract_config(lang)
-    logging.debug('Running Tesseract (%s) on %d rows across %d chunk(s)', lang, len(item_rows), len(chunks))
+    n = len(item_rows)
+    workers = min(MAX_OCR_WORKERS, math.ceil(n / MIN_OCR_CHUNK_ROWS))
+    n_chunks = max(workers, math.ceil(n / MAX_OCR_CHUNK_ROWS))
+    chunk_size = math.ceil(n / n_chunks)
+    chunks = [item_rows[i:i + chunk_size] for i in range(0, n, chunk_size)]
+    logging.debug('Running Tesseract (%s) on %d rows across %d chunk(s) (%d worker(s))', lang, n, len(chunks), workers)
 
-    if len(chunks) == 1 or MAX_OCR_WORKERS <= 1:
-        return _ocr_chunk(chunks[0], lang, config) if len(chunks) == 1 else set().union(
-            *(_ocr_chunk(c, lang, config) for c in chunks)
-        )
+    if workers <= 1:
+        return set().union(*(_ocr_chunk(chunk, lang) for chunk in chunks))
 
-    workers = min(len(chunks), MAX_OCR_WORKERS)
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
-        futures = [executor.submit(_ocr_chunk, chunk, lang, config) for chunk in chunks]
-        results: Set[str] = set()
-        for future in futures:
-            results |= future.result()
-        return results
+        return set().union(*executor.map(lambda chunk: _ocr_chunk(chunk, lang), chunks))
 
 
 def _fuzzy_thresholds(length: int) -> Tuple[float, float, float]:
@@ -241,8 +246,6 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
         cutoff, min_margin, high_conf = _fuzzy_thresholds(len(item))
         if cutoff >= 100.0:
             no_match_items.append(raw_item)
-            assert len(no_match_items) <= max(3, int(0.3 * len(item_names))), \
-                'Failed to match multiple items, wrong language?'
             continue
 
         candidates = process.extract(item, item_list, scorer=fuzz.ratio, limit=2, score_cutoff=cutoff)
@@ -256,11 +259,12 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
                 continue
 
         no_match_items.append(raw_item)
-        assert len(no_match_items) <= max(3, int(0.3 * len(item_names))), \
-            'Failed to match multiple items, wrong language?'
 
     if no_match_items:
         logging.warning('Failed to match %d items: %s', len(no_match_items), no_match_items)
+        # Allow a floor of 3 unmatched items on tiny catalogs so 1-3 OCR glitches don't abort them.
+        assert len(no_match_items) <= max(3, int(0.3 * len(item_names))), \
+            'Failed to match multiple items, wrong language?'
 
     return sorted(matched_items), no_match_items
 
@@ -362,12 +366,6 @@ def _dedupe_rows(all_rows: List[numpy.ndarray]) -> List[numpy.ndarray]:
     return deduped_rows
 
 
-def _get_tesseract_config(lang: str) -> str:
-    """Generates Tesseract configurations for the given language."""
-    del lang  # LSTM engine ignores legacy Tesseract 3 CJK parameters.
-    return '--psm 6 -c preserve_interword_spaces=1 -c tessedit_do_invert=0'
-
-
 def _cleanup_name(item_name: str, lang: str) -> str:
     """Applies manual name cleanup and Unicode normalization to fix common OCR artifacts."""
     item_name = item_name.strip()
@@ -411,17 +409,16 @@ def _detect_locale(item_rows: List[numpy.ndarray], locale: str) -> str:
     sample_size = min(40, len(item_rows))
     indices = numpy.linspace(0, len(item_rows) - 1, sample_size, dtype=int)
     sample_array = cv2.vconcat([item_rows[int(i)] for i in indices])
-    config = _get_tesseract_config('eng')
 
     def _score_candidate(lang: str) -> Tuple[Dict[str, int], Dict[str, Set[str]]]:
         image = Image.fromarray(sample_array)
         try:
-            parsed = pytesseract.image_to_string(image, lang=lang, config=config)
+            parsed = pytesseract.image_to_string(image, lang=lang, config=TESSERACT_CONFIG)
         except pytesseract.TesseractError as err:
             if lang == 'script/Latin':
                 logging.warning('Tesseract language %r unavailable (%s); falling back to eng', lang, err)
                 try:
-                    parsed = pytesseract.image_to_string(image, lang='eng', config=config)
+                    parsed = pytesseract.image_to_string(image, lang='eng', config=TESSERACT_CONFIG)
                 except pytesseract.TesseractError as fallback_err:
                     logging.warning('Tesseract fallback lang eng unavailable: %s', fallback_err)
                     return {}, {}
