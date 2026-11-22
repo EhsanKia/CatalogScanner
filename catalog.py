@@ -107,6 +107,8 @@ PLAYER_ITEM_PATTERNS: Dict[str, re.Pattern] = {
     'zh-tw': re.compile(r'^.+的帳篷$'),
 }
 
+_BAIL_RE = re.compile(r'\b([Bb])ail\b')
+
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing Nook Shopping catalog."""
@@ -369,7 +371,7 @@ def _cleanup_name(item_name: str, lang: str) -> str:
     item_name = item_name.strip()
     item_name = item_name.replace('’', "'").replace('‘', "'")
     item_name = item_name.replace('Ao dai', 'Áo dài')
-    item_name = item_name.replace('Bail', 'Ball').replace(' bail', ' ball')
+    item_name = _BAIL_RE.sub(r'\1all', item_name)
 
     # Normalize unicode characters for better matching.
     item_name = unicodedata.normalize('NFKC', item_name)

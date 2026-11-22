@@ -140,6 +140,12 @@ class ScannerTest(absltest.TestCase):
         self.assertEqual(ko_matched, ['박물관 이전 키트'])
         self.assertEqual(ko_unmatched, [])
 
+    def test_cleanup_name_whole_word_bail(self):
+        self.assertEqual(catalog._cleanup_name('Moss bail', 'eng'), 'Moss ball')
+        self.assertEqual(catalog._cleanup_name('Bail', 'eng'), 'Ball')
+        self.assertEqual(catalog._cleanup_name('Máscara de baile', 'spa'), 'Máscara de baile')
+        self.assertEqual(catalog._cleanup_name('Bailarina Trini', 'spa'), 'Bailarina Trini')
+
     def test_case_insensitive_image_extensions(self):
         self.assertTrue(is_image_file('photo.JPG'))
         self.assertTrue(is_image_file('page_%d.PNG'))
