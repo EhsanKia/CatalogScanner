@@ -6,6 +6,7 @@ import os
 import pathlib
 import re
 import time
+from typing import Optional
 import zlib
 
 from absl import app, logging
@@ -20,6 +21,7 @@ import simple_colors
 import catalog
 import constants
 import scanner
+import web_server
 
 ERROR_EMOJI = ':exclamation:'
 SUCCESS_EMOJI = ':tada:'
@@ -38,8 +40,9 @@ bot = commands.Bot(intents=intents)
 
 hashid_client = hashids.Hashids(salt=constants.SALT, min_length=6)
 _datastore_client = None
+_web_runner = None
 _UNINDEXED_FIELDS = (
-    'hash', 'data', 'locale', 'type',
+    'hash', 'data', 'locale', 'type', 'source',
     'discord_user', 'discord_user_name', 'cache_filename', 'unmatched',
 )
 
@@ -76,7 +79,12 @@ def _prune_cache_dir(cache_dir: pathlib.Path) -> None:
         logging.warning('Failed to prune cache directory.', exc_info=True)
 
 
-def upload_to_datastore(result, discord_user: discord.User, cache_filename: str) -> datastore.Entity:
+def upload_to_datastore(
+    result,
+    discord_user: Optional[discord.User],
+    cache_filename: str,
+    source: str = 'discord',
+) -> datastore.Entity:
     datastore_client = _get_datastore_client()
 
     temp_key = datastore_client.key('Catalog')
@@ -93,12 +101,14 @@ def upload_to_datastore(result, discord_user: discord.User, cache_filename: str)
             'data': catalog_data,
             'locale': result.locale,
             'type': result.mode.name.lower(),
+            'source': source,
             'created': datetime.datetime.now(datetime.timezone.utc),
-            'discord_user': discord_user.id,
-            'discord_user_name': discord_user.name,
             'cache_filename': cache_filename,
         }
     )
+    if discord_user is not None:
+        entity['discord_user'] = discord_user.id
+        entity['discord_user_name'] = discord_user.name
     if result.unmatched:
         unmatched_data = '\n'.join(result.unmatched).encode('utf-8')
         entity['unmatched'] = unmatched_data
@@ -190,7 +200,7 @@ async def reply(ctx: discord.ApplicationContext, message: str) -> None:
             logging.warning('DM fallback also failed for %s', ctx.user)
 
 
-def improve_error_message(message: str) -> str:
+def improve_error_message(message: str, source: str = 'discord') -> str:
     """Adds some more details to the error message."""
     if 'is too long' in message:
         message += ' Make sure you scroll with the correct analog stick (see instructions),'
@@ -208,7 +218,11 @@ def improve_error_message(message: str) -> str:
     if 'x224' in message:
         message += '\n(It seems like you\'re downloading the video from your Facebook and '
         message += 're-posting it; try downloading it directly from your Switch instead)'
-    if 'x360' in message:
+    if source == 'web' and ('x360' in message or 'x480' in message):
+        message += '\nIt looks like your video was compressed before uploading; '
+        message += 'export it directly from your Switch Album (Send to Smart Device or USB-C/microSD) '
+        message += 'rather than saving it from Discord or a chat app.'
+    elif 'x360' in message:
         message += '\nIt looks like you might have Data Saving Mode enabled; '
         message += 'go to *Settings -> Chat*, uncheck Data Saving Mode and make sure *Video Uploads* is set to **Best Quality**.'
     elif 'x480' in message:
@@ -293,7 +307,7 @@ async def scan(
 
     # Queue system that handles requests one at a time.
     global _pending_scans
-    ahead = _pending_scans
+    ahead = _pending_scans + (1 if (_pending_scans == 0 and WAIT_LOCK.locked()) else 0)
     _pending_scans += 1
     try:
         if ahead > 0:
@@ -308,8 +322,17 @@ async def scan(
 
 @bot.event
 async def on_ready():
+    global _web_runner
     assert bot.user, 'Failed to login'
     logging.info('Bot logged in as %s', bot.user)
+    if _web_runner is None:
+        _web_runner = await web_server.start_server(
+            wait_lock=WAIT_LOCK,
+            async_scan_fn=async_scan,
+            upload_fn=upload_to_datastore,
+            error_fn=improve_error_message,
+            turnstile_secret=getattr(constants, 'TURNSTILE_SECRET', ''),
+        )
 
 
 _LOG_PREFIX_RE = re.compile(r'^(\w\d{4} [\d:]{8})\.\d+\s+\d+\s+')
