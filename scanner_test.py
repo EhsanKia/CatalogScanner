@@ -126,6 +126,65 @@ class ScannerTest(absltest.TestCase):
         self.assertIn('ごの', ja_unmatched)
         self.assertNotIn('みの', ja_matched)
 
+    def test_cjk_confusion_matching(self):
+        # Note: keep total noisy items <= max(3, int(0.3 * len(items))) so assert isn't tripped.
+        ja_matched, ja_unmatched = catalog.match_items(
+            {
+                'アーガイルベスト', 'あきいろチェックワンピース', 'あさがおのゆかた',
+                'アノラック', 'あみ', 'おり', 'かめ', 'そり',
+                'ポシテージ', 'スワック,', '避三ールチェア', 'エジェタターラツタ',
+                'フルーツウォーーターサーバー', 'ボンテ一ジ',
+                'ごの', 'アップ', 'ジック',
+            },
+            locale='ja-jp',
+        )
+        self.assertEqual(
+            set(ja_matched),
+            {
+                'アーガイルベスト', 'あきいろチェックワンピース', 'あさがおのゆかた',
+                'アノラック', 'あみ', 'おり', 'かめ', 'そり',
+                'エフェクターラック', 'スワッグ', 'ビニールチェア',
+                'フルーツウォーターサーバー', 'ボンテージ',
+            },
+        )
+        self.assertEqual(ja_unmatched, ['ごの', 'アップ', 'ジック'])
+
+        ko_matched, ko_unmatched = catalog.match_items(
+            {
+                '1UP버섯', '3D안경', '5층탑', '거미', '검', '고민', '곤란', '광차',
+                '짐볼', '닷 장식', '발랫대마', '70 피규어', '7ᅮ0 오디오',
+                '불', '분추', '이스터 풍선 6',
+            },
+            locale='ko-kr',
+        )
+        for expected in ('TOY 오디오', 'TOY 피규어', '닻 장식', '빨랫대야', '짐 볼'):
+            self.assertIn(expected, ko_matched)
+        self.assertEqual(ko_unmatched, ['분추', '불', '이스터 풍선 6'])
+
+        tw_matched, tw_unmatched = catalog.match_items(
+            {
+                '冰桌', '冰桶', '冰箱', '和服架', '飛鏢靶',
+                '樸春DIY作業台', '穴烤爐', '波斯菊花決',
+                '復活節廟子', '火火',
+            },
+            locale='zh-tw',
+        )
+        for expected in ('樸素DIY作業台', '波斯菊花灑', '窯烤爐'):
+            self.assertIn(expected, tw_matched)
+        self.assertEqual(tw_unmatched, ['復活節廟子', '火火'])
+
+        cn_matched, cn_unmatched = catalog.match_items(
+            {
+                '书堆', '冰桶', '户外长凳', '电子闹钟', '黄金柏',
+                '青蔡庭院五', '水果蓝', '公园攀仆加',
+                '复活节受子',
+            },
+            locale='zh-cn',
+        )
+        for expected in ('公园攀爬架', '水果篮', '青苔庭院石'):
+            self.assertIn(expected, cn_matched)
+        self.assertEqual(cn_unmatched, ['复活节受子'])
+
     def test_player_named_items_skipped(self):
         matched, unmatched = catalog.match_items(
             {"Ehsan's tent", "Ehsan's kit", "Bob's tent", "Kids' tent"},

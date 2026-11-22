@@ -2,7 +2,7 @@
   "catalog_ja.mp4": {
     "expected_locale": "ja-jp",
     "min_items": 187,
-    "max_unmatched": 7,
+    "max_unmatched": 5,
     "required_items": [
       "あかちゃんのぼうし",
       "アラビアひめなふく",
@@ -13,7 +13,7 @@
   "catalog_zhtw.mp4": {
     "expected_locale": "zh-tw",
     "min_items": 180,
-    "max_unmatched": 13,
+    "max_unmatched": 11,
     "required_items": [
       "DIY作業台",
       "和服架",
@@ -24,7 +24,7 @@
   "catalog_zhcn.mp4": {
     "expected_locale": "zh-cn",
     "min_items": 154,
-    "max_unmatched": 12,
+    "max_unmatched": 9,
     "required_items": [
       "Nintendo Switch",
       "户外长凳",
@@ -35,7 +35,7 @@
   "catalog_ko.mp4": {
     "expected_locale": "ko-kr",
     "min_items": 174,
-    "max_unmatched": 5,
+    "max_unmatched": 4,
     "required_items": [
       "20인치 벽걸이 TV",
       "늠름한 조각",

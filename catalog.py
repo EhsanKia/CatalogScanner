@@ -1,5 +1,6 @@
 from common import ScanMode, ScanResult, crop_720p_roi, slice_720p
 
+import collections
 import concurrent.futures
 import contextlib
 import cv2
@@ -17,7 +18,7 @@ import unicodedata
 
 from PIL import Image
 from rapidfuzz import fuzz, process
-from typing import Dict, Iterator, List, Optional, Set, Tuple, Union
+from typing import Dict, FrozenSet, Iterable, Iterator, List, Optional, Set, Tuple, Union
 
 # Prevent OpenMP-enabled Tesseract builds from oversubscribing 1-2 vCPU hosts.
 os.environ.setdefault('OMP_THREAD_LIMIT', '1')
@@ -85,6 +86,53 @@ LOCALE_TIEBREAK_ORDER: List[str] = [
     'en-us', 'en-eu', 'zh-tw', 'zh-cn', 'ja-jp', 'ko-kr',
     'fr-eu', 'fr-us', 'de-eu', 'es-eu', 'es-us', 'it-eu', 'nl-eu', 'ru-eu',
 ]
+
+CJK_LOCALES: FrozenSet[str] = frozenset({'ja-jp', 'zh-cn', 'zh-tw', 'ko-kr'})
+
+
+def _build_confusion_map(groups: Iterable[Iterable[str]]) -> Dict[str, FrozenSet[str]]:
+    """Builds a symmetric char -> confusable-peers lookup from character pairs or groups."""
+    mapping: Dict[str, Set[str]] = collections.defaultdict(set)
+    for group in groups:
+        chars = tuple(group)
+        for ch in chars:
+            mapping[ch].update(other for other in chars if other != ch)
+    return {ch: frozenset(peers) for ch, peers in mapping.items()}
+
+
+_JA_SMALL_TO_LARGE = str.maketrans(
+    'ぁぃぅぇぉっゃゅょゎァィゥェォヵヶッャュョヮ',
+    'あいうえおつやゆよわアイウエオカケツヤユヨワ',
+)
+_JA_SMALL_CHARS: FrozenSet[str] = frozenset('ぁぃぅぇぉっゃゅょゎァィゥェォヵヶッャュョヮ')
+_JA_VISUAL_CONFUSIONS = _build_confusion_map([
+    ('シ', 'ツ', 'ン'), ('ソ', 'ン'), ('ロ', '口'), ('カ', '力'),
+    ('ニ', '二', '三'), ('エ', '工'), ('ハ', '八'),
+    ('ー', '一'), ('ー', '二'), ('ー', 'ニ'), ('ー', '三'),
+])
+_ZH_VISUAL_CONFUSIONS = _build_confusion_map([
+    ('五', '石'), ('蓝', '篮'), ('圖', '圓'), ('图', '圆'), ('晴', '蜻'),
+    ('春', '素'), ('決', '灑'), ('沁', '灑'), ('綢', '繩'), ('繹', '繩'), ('绸', '绳'),
+    ('穴', '窯'), ('窗', '窑'), ('窒', '窑'),
+])
+_KO_JAMO_CONFUSIONS = _build_confusion_map([
+    'ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅅㅆㅊ', 'ㅈㅉㅊ',
+    'ㅏㅑ', 'ㅓㅕ', 'ㅗㅛ', 'ㅜㅠ', 'ㅐㅔ',
+])
+
+_CHOSEONG = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'
+_JUNGSEONG = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ'
+_JONGSEONG = (
+    '', 'ㄱ', 'ㄲ', 'ㄱㅅ', 'ㄴ', 'ㄴㅈ', 'ㄴㅎ', 'ㄷ', 'ㄹ', 'ㄹㄱ', 'ㄹㅁ', 'ㄹㅂ',
+    'ㄹㅅ', 'ㄹㅌ', 'ㄹㅍ', 'ㄹㅎ', 'ㅁ', 'ㅂ', 'ㅂㅅ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ',
+    'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ',
+)
+_HANGUL_JAMO_TO_COMPAT: Dict[str, str] = {
+    **{chr(0x1100 + i): c for i, c in enumerate(_CHOSEONG)},
+    **{chr(0x1161 + i): c for i, c in enumerate(_JUNGSEONG)},
+    **{chr(0x11A7 + i): c for i, c in enumerate(_JONGSEONG) if c},
+}
+_PROLONGED_STUTTER_RE = re.compile(r'ー{2,}')
 
 # Items renamed across AC:NH patches (e.g. 1.3 / 2.0) mapped to current canonical names.
 _EN_LEGACY_ALIASES: Dict[str, str] = {
@@ -241,6 +289,158 @@ def _fuzzy_thresholds(length: int) -> Tuple[float, float, float]:
     return 56.0, 3.5, 88.0
 
 
+def _normalize_cjk_for_match(text: str, locale: str) -> str:
+    """Applies light lossless normalization for CJK matching after raw DB lookup misses."""
+    s = text.strip(" ,|\\'").replace('‧', '・').replace('·', '・')
+    if locale == 'ja-jp':
+        for dash in '‐-—―−':
+            s = s.replace(dash, 'ー')
+        s = _PROLONGED_STUTTER_RE.sub('ー', s)
+    elif locale in ('zh-tw', 'zh-cn'):
+        s = s.replace('‐', '-')
+    return s
+
+
+def _to_ko_jamo(text: str) -> str:
+    """Decomposes Korean Hangul syllables into space-free compatibility jamo tokens."""
+    nfd = unicodedata.normalize('NFD', text.replace(' ', ''))
+    return ''.join(_HANGUL_JAMO_TO_COMPAT.get(ch, ch) for ch in nfd)
+
+
+@functools.lru_cache(maxsize=None)
+def _ja_kana_parts(ch: str) -> Tuple[str, str, bool, bool]:
+    """Returns (large_hiragana_base, diacritic_marks, is_katakana, is_small) for a char."""
+    is_small = ch in _JA_SMALL_CHARS
+    is_kata = ('\u30a1' <= ch <= '\u30f6') or ch == 'ー'
+    nfd = unicodedata.normalize('NFD', ch)
+    marks = ''.join(c for c in nfd[1:] if c in ('\u3099', '\u309a'))
+    base = nfd[0]
+    if '\u30a1' <= base <= '\u30f6':
+        base = chr(ord(base) - 0x60)
+    base = base.translate(_JA_SMALL_TO_LARGE)
+    return base, marks, is_kata, is_small
+
+
+@functools.lru_cache(maxsize=None)
+def _cjk_char_cost(a: str, b: str, locale: str) -> float:
+    """Returns weighted substitution cost in [0.0, 1.0] for two CJK comparison tokens."""
+    if a == b:
+        return 0.0
+    if locale == 'ko-kr':
+        return 0.3 if b in _KO_JAMO_CONFUSIONS.get(a, ()) else 1.0
+    if locale == 'ja-jp':
+        if b in _JA_VISUAL_CONFUSIONS.get(a, ()):
+            return 0.35
+        ba, ma, ka, sa = _ja_kana_parts(a)
+        bb, mb, kb, sb = _ja_kana_parts(b)
+        if ba == bb:
+            diffs = (ma != mb) + (ka != kb) + (sa != sb)
+            if diffs == 1:
+                return 0.2
+            if diffs == 2:
+                return 0.4
+        return 1.0
+    return 0.35 if b in _ZH_VISUAL_CONFUSIONS.get(a, ()) else 1.0
+
+
+def _cjk_similarity(a: str, b: str, locale: str) -> float:
+    """Computes normalized 0-100 similarity from confusion-weighted Levenshtein distance."""
+    na, nb = len(a), len(b)
+    max_len = max(na, nb)
+    if max_len == 0:
+        return 100.0
+    prev = [float(j) for j in range(nb + 1)]
+    for i, ca in enumerate(a, 1):
+        curr = [float(i)]
+        for j, cb in enumerate(b, 1):
+            sub = prev[j - 1] + (0.0 if ca == cb else _cjk_char_cost(ca, cb, locale))
+            curr.append(min(prev[j] + 1.0, curr[j - 1] + 1.0, sub))
+        prev = curr
+    return 100.0 * (1.0 - prev[nb] / max_len)
+
+
+def _cjk_index_tokens(text: str, locale: str) -> Set[str]:
+    """Extracts unigram and bigram keys used for fast CJK candidate generation."""
+    if locale == 'ja-jp':
+        text = ''.join(_ja_kana_parts(ch)[0] for ch in text)
+    tokens = set(text)
+    tokens.update(text[i:i + 2] for i in range(len(text) - 1))
+    return tokens
+
+
+@functools.lru_cache(maxsize=None)
+def _get_cjk_search_index(locale: str) -> Tuple[
+    Dict[str, str],
+    List[Tuple[str, str]],
+    Dict[str, Tuple[int, ...]],
+    List[str],
+]:
+    """Builds and caches normalized lookup, representations, and char/bigram index for a CJK locale."""
+    items = _get_item_list(locale)
+    norm_db: Dict[str, str] = {}
+    item_repr: List[Tuple[str, str]] = []
+    raw_inv: Dict[str, List[int]] = collections.defaultdict(list)
+
+    for idx, name in enumerate(items):
+        norm_clean = _normalize_cjk_for_match(name, locale)
+        norm_key = norm_clean.replace(' ', '') if locale == 'ko-kr' else norm_clean
+        norm_db.setdefault(norm_key, name)
+        rep = _to_ko_jamo(norm_clean) if locale == 'ko-kr' else norm_clean
+        item_repr.append((name, rep))
+        for tok in _cjk_index_tokens(rep, locale):
+            raw_inv[tok].append(idx)
+
+    inv_index = {tok: tuple(idxs) for tok, idxs in raw_inv.items()}
+    rf_targets = [rep for _, rep in item_repr]
+    return norm_db, item_repr, inv_index, rf_targets
+
+
+def _match_cjk_item(norm_clean: str, locale: str) -> Optional[str]:
+    """Runs Pass-2 confusion-aware matching for a CJK OCR string and returns best match if valid."""
+    q_len = len(norm_clean)
+    if q_len <= 2:
+        return None
+
+    _, item_repr, inv_index, rf_targets = _get_cjk_search_index(locale)
+    cutoff, min_margin, high_conf = _fuzzy_thresholds(q_len)
+    if q_len == 3:
+        # Require low-cost confusion (score >= 78) on 3-char Pass-2 so unrelated 2/3 overlaps don't match.
+        cutoff = max(cutoff, 78.0)
+
+    q_rep = _to_ko_jamo(norm_clean) if locale == 'ko-kr' else norm_clean
+    counts: collections.Counter[int] = collections.Counter()
+    for tok in _cjk_index_tokens(q_rep, locale):
+        for idx in inv_index.get(tok, ()):
+            counts[idx] += 1
+
+    cand_ids = {idx for idx, _ in counts.most_common(25)}
+    for _, _, idx in process.extract(q_rep, rf_targets, scorer=fuzz.ratio, limit=15):
+        cand_ids.add(idx)
+
+    q_words = norm_clean.split() if locale == 'ko-kr' else []
+    scored: List[Tuple[float, str]] = []
+    for idx in cand_ids:
+        cand_name, cand_rep = item_repr[idx]
+        if locale == 'ko-kr' and len(q_words) > 1 and cand_name == q_words[-1]:
+            continue
+        scored.append((_cjk_similarity(q_rep, cand_rep, locale), cand_name))
+
+    if not scored:
+        return None
+    scored.sort(reverse=True)
+    best_score, best_name = scored[0]
+    second_score = scored[1][0] if len(scored) > 1 else 0.0
+    margin = best_score - second_score
+
+    if best_score >= cutoff and (
+        margin >= min_margin or (best_score >= high_conf and margin >= 1.5)
+    ):
+        return best_name
+    if locale in ('zh-tw', 'zh-cn') and q_len >= 4 and best_score >= 58.0 and margin >= 12.0:
+        return best_name
+    return None
+
+
 def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str], List[str]]:
     """Matches parsed OCR strings against the locale item database using exact + guarded fuzzy matching."""
     no_match_items: List[str] = []
@@ -249,6 +449,8 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
     item_list = _get_item_list(locale)
     aliases = LEGACY_ALIASES.get(locale, {})
     player_pattern = PLAYER_ITEM_PATTERNS.get(locale)
+    is_cjk = locale in CJK_LOCALES
+    cjk_norm_db = _get_cjk_search_index(locale)[0] if is_cjk else {}
 
     for raw_item in sorted(item_names):
         item = aliases.get(raw_item, raw_item)
@@ -256,22 +458,36 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
             matched_items.add(item)
             continue
 
+        if is_cjk:
+            norm_clean = _normalize_cjk_for_match(item, locale)
+            norm_key = norm_clean.replace(' ', '') if locale == 'ko-kr' else norm_clean
+            if norm_key and norm_key in cjk_norm_db:
+                matched_items.add(aliases.get(cjk_norm_db[norm_key], cjk_norm_db[norm_key]))
+                continue
+        else:
+            norm_clean = item
+
         if player_pattern and player_pattern.match(item):
             logging.debug('Skipping player-named item %r', raw_item)
             continue
 
         cutoff, min_margin, high_conf = _fuzzy_thresholds(len(item))
-        if cutoff >= 100.0:
-            no_match_items.append(raw_item)
-            continue
+        if cutoff < 100.0:
+            candidates = process.extract(item, item_list, scorer=fuzz.ratio, limit=2, score_cutoff=cutoff)
+            if candidates:
+                best_name, best_score, _ = candidates[0]
+                second_score = candidates[1][1] if len(candidates) > 1 else 0.0
+                if best_score >= high_conf or (best_score - second_score) >= min_margin:
+                    resolved = aliases.get(best_name, best_name)
+                    logging.debug('Matched %r to %r (%.1f vs %.1f)', raw_item, resolved, best_score, second_score)
+                    matched_items.add(resolved)
+                    continue
 
-        candidates = process.extract(item, item_list, scorer=fuzz.ratio, limit=2, score_cutoff=cutoff)
-        if candidates:
-            best_name, best_score, _ = candidates[0]
-            second_score = candidates[1][1] if len(candidates) > 1 else 0.0
-            if best_score >= high_conf or (best_score - second_score) >= min_margin:
-                resolved = aliases.get(best_name, best_name)
-                logging.debug('Matched %r to %r (%.1f vs %.1f)', raw_item, resolved, best_score, second_score)
+        if is_cjk:
+            cjk_match = _match_cjk_item(norm_clean, locale)
+            if cjk_match is not None:
+                resolved = aliases.get(cjk_match, cjk_match)
+                logging.debug('Matched CJK %r to %r', raw_item, resolved)
                 matched_items.add(resolved)
                 continue
 
