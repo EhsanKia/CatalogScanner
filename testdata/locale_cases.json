@@ -1,0 +1,90 @@
+{
+  "catalog_ja.mp4": {
+    "expected_locale": "ja-jp",
+    "min_items": 187,
+    "max_unmatched": 7,
+    "required_items": [
+      "あかちゃんのぼうし",
+      "アラビアひめなふく",
+      "チューリップハット",
+      "ヴィジュアルけいコスチューム"
+    ]
+  },
+  "catalog_zhtw.mp4": {
+    "expected_locale": "zh-tw",
+    "min_items": 180,
+    "max_unmatched": 13,
+    "required_items": [
+      "DIY作業台",
+      "和服架",
+      "沙包",
+      "飛鏢靶"
+    ]
+  },
+  "catalog_zhcn.mp4": {
+    "expected_locale": "zh-cn",
+    "min_items": 154,
+    "max_unmatched": 12,
+    "required_items": [
+      "Nintendo Switch",
+      "户外长凳",
+      "电子闹钟",
+      "黄金柏"
+    ]
+  },
+  "catalog_ko.mp4": {
+    "expected_locale": "ko-kr",
+    "min_items": 174,
+    "max_unmatched": 5,
+    "required_items": [
+      "20인치 벽걸이 TV",
+      "늠름한 조각",
+      "무사의 조각",
+      "새집"
+    ]
+  },
+  "catalog_ru.mp4": {
+    "expected_locale": "ru-eu",
+    "min_items": 173,
+    "max_unmatched": 2,
+    "required_items": [
+      "Абстрактные носки",
+      "Дождевик в горох",
+      "Костюм супергероя",
+      "Огуречная маска"
+    ]
+  },
+  "catalog_es_itemscroll.mp4": {
+    "expected_locale": "es-eu",
+    "min_items": 63,
+    "max_unmatched": 0,
+    "required_items": [
+      "Castillo de arena",
+      "Cuadro holandés",
+      "Estantería de hierro",
+      "Fonógrafo"
+    ]
+  },
+  "catalog_de_mov_bt709.mov": {
+    "expected_locale": "de-eu",
+    "min_items": 192,
+    "max_unmatched": 0,
+    "required_items": [
+      "70er-Kachelboden",
+      "Blau-Blümchentapete",
+      "Buntholzboden",
+      "Feudaltapete"
+    ]
+  },
+  "catalog_tiny.mp4": {
+    "expected_locale": "en-us",
+    "min_items": 13,
+    "max_unmatched": 0,
+    "required_items": [
+      "Canvas backpack",
+      "Log pack",
+      "Shellfish pochette",
+      "Traveler's backpack"
+    ]
+  }
+}

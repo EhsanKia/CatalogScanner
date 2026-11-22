@@ -2,7 +2,9 @@ import json
 import os
 import shutil
 import tempfile
+from unittest import mock
 
+import cv2
 import numpy
 from absl.testing import absltest, parameterized
 
@@ -20,9 +22,11 @@ def _fetch_ground_truth():
         yield json.load(fp)
     with open('testdata/extra.json', encoding='utf-8') as fp:
         yield json.load(fp)
+    with open('testdata/locale_cases.json', encoding='utf-8') as fp:
+        yield json.load(fp)
 
 
-GROUND_TRUTH, EXTRA_GROUND_TRUTH = _fetch_ground_truth()
+GROUND_TRUTH, EXTRA_GROUND_TRUTH, LOCALE_CASES = _fetch_ground_truth()
 
 
 class ScannerTest(absltest.TestCase):
@@ -252,6 +256,59 @@ class ScannerTest(absltest.TestCase):
         self.assertEqual(len(re_unmatched), 1)
         self.assertIn('?d=', re_unmatched[0])
 
+    def test_rejects_low_resolution_media(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            for width, height in ((854, 480), (640, 360)):
+                path = os.path.join(tmpdir, f'low_{width}x{height}.png')
+                cv2.imwrite(path, numpy.zeros((height, width, 3), dtype=numpy.uint8))
+                with self.assertRaisesRegex(AssertionError, f'Invalid resolution: {width}x{height}'):
+                    scanner.scan_media(path)
+
+    def test_rejects_over_duration_video(self):
+        mock_cap = mock.MagicMock()
+        mock_cap.get.side_effect = lambda prop: {
+            cv2.CAP_PROP_FPS: 30.0,
+            cv2.CAP_PROP_FRAME_COUNT: 6000.0,
+        }.get(prop, 0.0)
+        with mock.patch.object(cv2, 'VideoCapture', return_value=mock_cap):
+            with self.assertRaisesRegex(AssertionError, 'Your video is too long.'):
+                scanner.scan_media('fake_long.mp4')
+        mock_cap.release.assert_called_once()
+
+    def test_rejects_corrupt_and_non_acnh_media(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            empty_vid = os.path.join(tmpdir, 'empty.mp4')
+            with open(empty_vid, 'wb'):
+                pass
+            with self.assertRaisesRegex(AssertionError, 'Media is not showing a known scan type.'):
+                scanner.scan_media(empty_vid)
+
+            blank_img = os.path.join(tmpdir, 'non_acnh.png')
+            cv2.imwrite(blank_img, numpy.full((720, 1280, 3), 40, dtype=numpy.uint8))
+            with self.assertRaisesRegex(AssertionError, 'Media is not showing a known scan type.'):
+                scanner.scan_media(blank_img)
+
+    def test_webp_and_png_image_inputs(self):
+        img = cv2.imread('examples/reactions.jpg')
+        self.assertIsNotNone(img)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            for ext in ('.webp', '.png'):
+                out_path = os.path.join(tmpdir, f'reactions{ext}')
+                self.assertTrue(cv2.imwrite(out_path, img))
+                results = scanner.scan_media(out_path)
+                self.assertEqual(results.mode, ScanMode.REACTIONS)
+                self.assertEqual(results.items, GROUND_TRUTH['test_reactions'])
+                self.assertEqual(results.unmatched, [])
+
+    def test_explicit_locale_override(self):
+        results = scanner.scan_media('examples/extra/catalog_tiny.mp4', locale='en-us')
+        self.assertEqual(results.mode, ScanMode.CATALOG)
+        self.assertEqual(results.locale, 'en-us')
+        for required_item in LOCALE_CASES['catalog_tiny.mp4']['required_items']:
+            self.assertIn(required_item, results.items)
+        self.assertEqual(len(results.items), 13)
+        self.assertEqual(results.unmatched, [])
+
 
 class ScannerExtraTest(parameterized.TestCase):
 
@@ -263,9 +320,27 @@ class ScannerExtraTest(parameterized.TestCase):
         try:
             results = scanner.scan_media(filepath)
             actual = results.items
+            if isinstance(expected, list):
+                self.assertEqual(results.unmatched, [])
         except AssertionError as e:
             actual = str(e)
         self.assertEqual(expected, actual)
+
+
+class ScannerLocaleTest(parameterized.TestCase):
+
+    @parameterized.named_parameters([
+        (k.replace('.', '_'), k, v) for k, v in LOCALE_CASES.items()
+    ])
+    def test_locale_catalog(self, filename, case):
+        filepath = os.path.join('examples/extra', filename)
+        results = scanner.scan_media(filepath, locale='auto')
+        self.assertEqual(results.mode, ScanMode.CATALOG)
+        self.assertEqual(results.locale, case['expected_locale'])
+        self.assertGreaterEqual(len(results.items), case['min_items'])
+        self.assertLessEqual(len(results.unmatched), case['max_unmatched'])
+        for required_item in case['required_items']:
+            self.assertIn(required_item, results.items)
 
 
 if __name__ == '__main__':
