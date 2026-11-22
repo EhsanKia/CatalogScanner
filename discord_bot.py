@@ -4,6 +4,7 @@ import logging as stdlib_logging
 import os
 import datetime
 import pathlib
+import zlib
 
 from absl import app, logging
 import discord
@@ -28,17 +29,31 @@ intents = discord.Intents.default()
 bot = commands.Bot(intents=intents)
 
 hashid_client = hashids.Hashids(salt=constants.SALT, min_length=6)
+_datastore_client = None
+_UNINDEXED_FIELDS = (
+    'hash', 'data', 'locale', 'type',
+    'discord_user', 'discord_user_name', 'cache_filename', 'unmatched',
+)
+
+
+def _get_datastore_client() -> datastore.Client:
+    global _datastore_client
+    if _datastore_client is None:
+        _datastore_client = datastore.Client.from_service_account_json('catalog-scanner.json')
+    return _datastore_client
 
 
 def upload_to_datastore(result, discord_user: discord.User, cache_filename: str) -> datastore.Entity:
-    datastore_client = datastore.Client.from_service_account_json('catalog-scanner.json')
+    datastore_client = _get_datastore_client()
 
     temp_key = datastore_client.key('Catalog')
     key = datastore_client.allocate_ids(temp_key, 1)[0]
-    catalog = datastore.Entity(key, exclude_from_indexes=['data', 'unmatched'])
+    catalog = datastore.Entity(key, exclude_from_indexes=_UNINDEXED_FIELDS)
 
     key_hash = hashid_client.encode(key.id)
-    catalog_data = '\n'.join(result.items).encode('utf-8')
+    raw_data = '\n'.join(result.items).encode('utf-8')
+    compressed_data = zlib.compress(raw_data, level=6)
+    catalog_data = compressed_data if len(compressed_data) < len(raw_data) else raw_data
     catalog.update(
         {
             'hash': key_hash,
