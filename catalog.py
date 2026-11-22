@@ -1,8 +1,9 @@
-from common import ScanMode, ScanResult, iter_frames
+from common import ScanMode, ScanResult, crop_720p_roi, slice_720p
 
 import concurrent.futures
 import contextlib
 import cv2
+import dataclasses
 import functools
 import json
 import logging
@@ -33,6 +34,10 @@ def _available_cpus() -> int:
 MIN_OCR_CHUNK_ROWS = 250
 MAX_OCR_CHUNK_ROWS = 900
 MAX_OCR_WORKERS = min(4, _available_cpus())
+
+ROW_TRACK_WINDOW = 24
+ROW_DEDUPE_MEAN_THRESH = 7.5
+ROW_DEDUPE_BLOCK_THRESH = 16.0
 
 TESSERACT_CONFIG = '--psm 6 -c preserve_interword_spaces=1 -c tessedit_do_invert=0'
 
@@ -124,14 +129,14 @@ _BAIL_RE = re.compile(r'\b([Bb])ail\b')
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing Nook Shopping catalog."""
-    side_color = frame[150:160, -20:].mean(axis=(0, 1))
+    side_color = slice_720p(frame, 150, 160, -20, None).mean(axis=(0, 1))
     if numpy.linalg.norm(side_color - WARDELL_COLOR) < 20:
         raise AssertionError('Wardell catalog is not supported.')
     if numpy.linalg.norm(side_color - NOOK_MILES_COLOR) < 20:
         raise AssertionError('Nook Miles catalog is not supported.')
     if numpy.linalg.norm(side_color - SIDE_COLOR) >= 22:
         return False
-    top_color = frame[:20, -20:].mean(axis=(0, 1))
+    top_color = slice_720p(frame, None, 20, -20, None).mean(axis=(0, 1))
     return bool(numpy.linalg.norm(top_color - TOP_COLOR) < 45)
 
 
@@ -158,27 +163,29 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     frame_step = 3 if (fps <= 0 or fps >= 29.0) else (2 if fps >= 20.0 else 1)
 
     unfinished_page = False
-    item_scroll_count = 0
-    all_rows: List[numpy.ndarray] = []
+    prev_raw_rows: List[numpy.ndarray] = []
+    tracks: List[_RowTrack] = []
     with contextlib.closing(_read_frames(cap, log_label=filename)) as frames:
         for i, frame in enumerate(frames):
             if not unfinished_page and i % frame_step != 0:
                 continue  # Skip intermediate frames on the same page
             new_rows = list(_parse_frame(frame, for_sale))
-            if _is_duplicate_rows(all_rows, new_rows):
-                continue  # Skip non-moving frames
+            if not new_rows:
+                continue
+            if (
+                not unfinished_page
+                and len(prev_raw_rows) == len(new_rows) > 4
+                and cv2.absdiff(cv2.vconcat(prev_raw_rows), cv2.vconcat(new_rows)).mean() < 2.5
+            ):
+                continue  # Skip identical page frames
 
             # Switch's font rendering sometimes lags fast page scrolling, leaving bottom rows blank.
             unfinished_page = any(r.min() > 150 for r in new_rows)
+            prev_raw_rows = new_rows
+            _track_frame_rows(tracks, new_rows)
 
-            # Exit if video is not properly page scrolling.
-            item_scroll_count += _is_item_scroll(all_rows, new_rows)
-            assert item_scroll_count < 20, 'Video is scrolling too slowly.'
-            all_rows.extend(new_rows)
-
-    assert all_rows, 'No items found, invalid video?'
-
-    return _dedupe_rows(all_rows)
+    assert tracks, 'No items found, invalid video?'
+    return [t.ref for t in tracks]
 
 
 def _ocr_chunk(chunk: List[numpy.ndarray], lang: str) -> Set[str]:
@@ -273,24 +280,60 @@ def _read_frames(
     source: Union[str, cv2.VideoCapture],
     log_label: Optional[str] = None,
 ) -> Iterator[numpy.ndarray]:
-    """Parses frames of the given video and returns the relevant region in grayscale."""
+    """Parses frames of the given video and returns the catalog list region in grayscale."""
+    cap = cv2.VideoCapture(source) if isinstance(source, str) else source
+    label = log_label or (source if isinstance(source, str) else '<video>')
+    seen_valid = False
+    pending_gap = 0
+    total_gap_frames = 0
     scroll_positions: List[int] = []
-    for frame, gap_before in iter_frames(source, detect, log_label=log_label):
-        if gap_before >= 5:
-            scroll_positions = []  # Reset scroll positions on catalog section change.
+    try:
+        while True:
+            ret, frame = cap.read()
+            if not ret or frame is None:
+                break
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            try:
+                is_valid = detect(frame)
+            except AssertionError:
+                if not seen_valid:
+                    raise
+                is_valid = False
 
-        # Crop scrollbar region and get scroll position, then warn about bad scrolling.
-        scrollbar = gray[160:570, 1235:1245].mean(axis=1)
-        dark = scrollbar < 150
-        if dark.any():
-            scroll_positions.append(int(numpy.argmax(dark)))
-            if _is_inconsistent_scroll(scroll_positions):
-                raise AssertionError('Video is scrolling inconsistently.')
+            if not is_valid:
+                if seen_valid:
+                    pending_gap += 1
+                continue
 
-        # Crop the region containing item name and price.
-        yield gray[150:630, 635:1220]
+            gap_before = pending_gap
+            if pending_gap:
+                total_gap_frames += pending_gap
+                pending_gap = 0
+            seen_valid = True
+
+            if gap_before >= 5:
+                scroll_positions = []  # Reset scroll positions on catalog section change.
+
+            # Crop scrollbar region and get scroll position, then warn about bad scrolling.
+            scrollbar = cv2.cvtColor(
+                crop_720p_roi(frame, 160, 570, 1235, 1245),
+                cv2.COLOR_BGR2GRAY,
+            ).mean(axis=1)
+            dark = scrollbar < 150
+            if dark.any():
+                scroll_positions.append(int(numpy.argmax(dark)))
+                if _is_inconsistent_scroll(scroll_positions):
+                    raise AssertionError('Video is scrolling inconsistently.')
+
+            # Crop only the item name and price ROI before resizing/grayscaling.
+            yield cv2.cvtColor(
+                crop_720p_roi(frame, 150, 630, 635, 1220),
+                cv2.COLOR_BGR2GRAY,
+            )
+    finally:
+        cap.release()
+        if total_gap_frames:
+            logging.warning('Skipped %d non-matching mid-video frames in %s', total_gap_frames, label)
 
 
 def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray]:
@@ -318,29 +361,104 @@ def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray
         yield row[:, :415]  # Return the name region
 
 
-def _is_duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
-    """Checks if the new set of rows are the same as the previous seen rows."""
-    if not len(all_rows) > len(new_rows) > 4:
-        return False
-
-    # Check a few middle rows to avoid the hovered row.
-    old_concat = cv2.vconcat(all_rows[-5:-2])
-    new_concat = cv2.vconcat(new_rows[-5:-2])
-    diff = cv2.absdiff(old_concat, new_concat)
-    return bool(diff.mean() < 4)
+@dataclasses.dataclass
+class _RowTrack:
+    ref: numpy.ndarray
+    ink_width: int
+    is_hovered: bool
+    sharpness: float
 
 
-def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
-    """Checks whether the video is item scrolling instead of page scrolling."""
-    if len(all_rows) < 3 or len(new_rows) < 3:
-        return False
+def _normalize_row(row: numpy.ndarray) -> Tuple[numpy.ndarray, bool]:
+    """Lifts the dark diagonal hover highlight background to white while preserving dark glyph ink."""
+    if float(numpy.percentile(row, 90)) >= 235.0:
+        return row, False
+    right = row[:, 350:415]
+    stripe_lo = float(numpy.percentile(right, 5)) if right.min() > 170 else 200.0
+    stripe_lo = max(190.0, min(215.0, stripe_lo))
+    scale = 105.0 / max(10.0, stripe_lo - 140.0)
+    row_f = row.astype(numpy.float32)
+    stretched = numpy.where(row_f <= 140.0, row_f, 140.0 + (row_f - 140.0) * scale)
+    return numpy.clip(stretched, 0, 245).astype(numpy.uint8), True
 
-    # Items move by only one position when item scrolling.
-    if cv2.absdiff(all_rows[-2], new_rows[-3]).mean() < 4:
-        return True
-    if cv2.absdiff(all_rows[-3], new_rows[-2]).mean() < 4:
-        return True
-    return False
+
+def _ink_width(row: numpy.ndarray) -> int:
+    """Returns the padded horizontal extent of dark glyph ink inside a normalized row."""
+    cols = numpy.nonzero((row < 180).any(axis=0))[0]
+    return min(row.shape[1], int(cols[-1]) + 4) if len(cols) else 0
+
+
+def _row_sharpness(row: numpy.ndarray, width: int) -> float:
+    """Estimates glyph edge sharpness via mean L1 gradient within the inked region."""
+    if width < 2 or row.shape[0] <= 6:
+        return 0.0
+    sub = row[3:-3, :width].astype(numpy.int16)
+    return float(numpy.abs(numpy.diff(sub, axis=1)).mean() + numpy.abs(numpy.diff(sub, axis=0)).mean())
+
+
+def _align_row_diff(a: numpy.ndarray, b: numpy.ndarray, width: int) -> Tuple[float, float, int]:
+    """Computes minimum (mean_diff, max_16px_block_diff, dy) across small vertical alignments."""
+    best_mean, best_blk, best_dy = 999.0, 999.0, 0
+    h = a.shape[0]
+    a_mid = a[2:-2, :width]
+    n_blk = width // 16
+    w_trim = n_blk * 16
+    for dy in (0, -1, 1, -2, 2):
+        diff = cv2.absdiff(a_mid, b[2 + dy:h - 2 + dy, :width])
+        mean_diff = float(diff.mean())
+        if mean_diff < best_mean:
+            if w_trim > 0:
+                blk_diff = float(diff[:, :w_trim].reshape(diff.shape[0], n_blk, 16).mean(axis=(0, 2)).max())
+                if width > w_trim:
+                    blk_diff = max(blk_diff, float(diff[:, w_trim:].mean()))
+            else:
+                blk_diff = mean_diff
+            best_mean, best_blk, best_dy = mean_diff, blk_diff, dy
+            if mean_diff < 3.0 and blk_diff < 10.0:
+                break
+    return best_mean, best_blk, best_dy
+
+
+def _track_frame_rows(tracks: List[_RowTrack], new_rows: List[numpy.ndarray]) -> None:
+    """Merges normalized non-blank rows into recent tracks, keeping the sharpest unhovered crop."""
+    start = max(0, len(tracks) - ROW_TRACK_WINDOW)
+    for raw in new_rows:
+        if raw.min() > 150:
+            continue
+        norm, hov = _normalize_row(raw)
+        w = _ink_width(norm)
+        if w < 8:
+            continue
+        sharp = _row_sharpness(norm, w)
+
+        matched_track: Optional[_RowTrack] = None
+        best_mean = ROW_DEDUPE_MEAN_THRESH
+        for ti in range(len(tracks) - 1, start - 1, -1):
+            t = tracks[ti]
+            if abs(t.ink_width - w) > 8:
+                continue
+            mean_diff, blk_diff, _ = _align_row_diff(t.ref, norm, max(t.ink_width, w))
+            if mean_diff < best_mean and blk_diff < ROW_DEDUPE_BLOCK_THRESH:
+                best_mean = mean_diff
+                matched_track = t
+                if mean_diff < 3.0:
+                    break
+
+        if matched_track is not None:
+            if (matched_track.is_hovered and not hov) or (
+                (not hov or matched_track.is_hovered) and sharp > matched_track.sharpness * 1.12
+            ):
+                matched_track.ref = norm
+                matched_track.ink_width = w
+                matched_track.is_hovered = hov
+                matched_track.sharpness = sharp
+        else:
+            tracks.append(_RowTrack(
+                ref=norm,
+                ink_width=w,
+                is_hovered=hov,
+                sharpness=sharp,
+            ))
 
 
 def _is_inconsistent_scroll(scroll_positions: List[int]) -> bool:
@@ -349,21 +467,6 @@ def _is_inconsistent_scroll(scroll_positions: List[int]) -> bool:
     downscroll_count = numpy.count_nonzero(scroll_deltas > 2)
     upscroll_count = numpy.count_nonzero(scroll_deltas < -2)
     return bool(downscroll_count > 10 and upscroll_count > 10)
-
-
-def _dedupe_rows(all_rows: List[numpy.ndarray]) -> List[numpy.ndarray]:
-    """Dedupe rows by using image hashing and remove blank rows."""
-    row_set: Set[str] = set()
-    deduped_rows: List[numpy.ndarray] = []
-    for row in all_rows:
-        if row.min() > 150:
-            continue  # Blank row
-        row_hash = str(cv2.img_hash.blockMeanHash(row, mode=1)[0])
-        if row_hash in row_set:
-            continue  # Row already seen
-        row_set.add(row_hash)
-        deduped_rows.append(row)
-    return deduped_rows
 
 
 def _cleanup_name(item_name: str, lang: str) -> str:

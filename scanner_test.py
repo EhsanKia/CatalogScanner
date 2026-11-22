@@ -149,6 +149,37 @@ class ScannerTest(absltest.TestCase):
         self.assertEqual(catalog._cleanup_name('Máscara de baile', 'spa'), 'Máscara de baile')
         self.assertEqual(catalog._cleanup_name('Bailarina Trini', 'spa'), 'Bailarina Trini')
 
+    def test_catalog_normalize_hovered_row(self):
+        normal_row = numpy.full((35, 415), 245, dtype=numpy.uint8)
+        normal_row[8:26, 20:100] = 55
+        out_normal, is_hov = catalog._normalize_row(normal_row)
+        self.assertFalse(is_hov)
+        self.assertTrue(numpy.array_equal(out_normal, normal_row))
+
+        hovered_row = numpy.full((35, 415), 208, dtype=numpy.uint8)
+        hovered_row[:, ::2] = 220
+        hovered_row[8:26, 20:100] = 35
+        out_hov, is_hov2 = catalog._normalize_row(hovered_row)
+        self.assertTrue(is_hov2)
+        self.assertGreaterEqual(int(out_hov[:, 350:415].min()), 240)
+        self.assertEqual(int(out_hov[8:26, 20:100].min()), 35)
+
+    def test_catalog_align_diff_distinguishes_single_char(self):
+        row_a = numpy.full((35, 415), 245, dtype=numpy.uint8)
+        row_a[10:26, 16:196] = 60
+        row_shifted = numpy.full_like(row_a, 245)
+        row_shifted[1:, :] = row_a[:-1, :]
+        mean_same, blk_same, dy_same = catalog._align_row_diff(row_a, row_shifted, 200)
+        self.assertEqual(dy_same, 1)
+        self.assertLess(mean_same, 2.0)
+        self.assertLess(blk_same, 5.0)
+
+        row_b = row_a.copy()
+        row_b[12:24, 96:112] = 180  # Differ in one 16px character block inside a longer label
+        mean_diff, blk_diff, _ = catalog._align_row_diff(row_a, row_b, 200)
+        self.assertLess(mean_diff, catalog.ROW_DEDUPE_MEAN_THRESH)
+        self.assertGreater(blk_diff, catalog.ROW_DEDUPE_BLOCK_THRESH)
+
     def test_case_insensitive_image_extensions(self):
         self.assertTrue(is_image_file('photo.JPG'))
         self.assertTrue(is_image_file('page_%d.PNG'))
