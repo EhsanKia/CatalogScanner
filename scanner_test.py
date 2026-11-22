@@ -88,6 +88,25 @@ class ScannerTest(absltest.TestCase):
         self.assertEqual(results.items, GROUND_TRUTH[self.name])
         self.assertEqual(results.locale, 'ja-jp')
 
+    def test_legacy_aliases_and_fuzzy_guards(self):
+        matched, unmatched = catalog.match_items(
+            {'Writing desk', 'Teacup ride', 'Fish and chips', 'Tee with silicon bib'},
+            locale='en-us',
+        )
+        self.assertEqual(
+            matched,
+            ['Fish-and-chips', 'Plaza teacup ride', 'Study desk', 'Tee with silicone bib'],
+        )
+        self.assertEqual(unmatched, [])
+
+        # Short noisy CJK strings must not false-match unrelated items.
+        ja_matched, ja_unmatched = catalog.match_items(
+            {'アーガイルベスト', 'あきいろチェックワンピース', 'あさがおのゆかた', 'アノラック', 'ごの'},
+            locale='ja-jp',
+        )
+        self.assertIn('ごの', ja_unmatched)
+        self.assertNotIn('みの', ja_matched)
+
 
 class ScannerExtraTest(parameterized.TestCase):
 

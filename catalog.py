@@ -1,24 +1,33 @@
 from common import ScanMode, ScanResult
 
+import concurrent.futures
 import cv2
-import difflib
 import functools
 import json
 import logging
 import numpy
+import os
 import pytesseract
 import random
 import typing
 import unicodedata
 
 from PIL import Image
-from typing import Dict, Iterator, List, Set, Tuple
+from rapidfuzz import fuzz, process
+from typing import Dict, Iterator, List, Optional, Set, Tuple
 
-# The expected color for the video background.
+# Prevent OpenMP-enabled Tesseract builds from oversubscribing 1-2 vCPU hosts.
+os.environ.setdefault('OMP_THREAD_LIMIT', '1')
+
+# Maximum rows per Tesseract invocation and parallel worker cap.
+OCR_CHUNK_SIZE = 250
+MAX_OCR_WORKERS = min(4, os.cpu_count() or 2)
+
+# The expected color for the video background (BGR).
 TOP_COLOR = (110, 233, 238)
 SIDE_COLOR = (180, 253, 254)
 
-# Bad background colors
+# Bad background colors (BGR).
 WARDELL_COLOR = (211, 214, 248)
 NOOK_MILES_COLOR = (243, 207, 200)
 
@@ -41,7 +50,6 @@ LOCALE_MAP: Dict[str, str] = {
     'zh-tw': 'chi_tra',
 }
 
-# Mapping of Tesseract scripts to possible locales.
 SCRIPT_MAP: Dict[str, List[str]] = {
     'Japanese': ['ja-jp'],
     'Cyrillic': ['ru-eu'],
@@ -49,8 +57,26 @@ SCRIPT_MAP: Dict[str, List[str]] = {
     'HanT': ['zh-tw'],
     'Hangul': ['ko-kr'],
     'Latin': ['en-us', 'en-eu', 'fr-eu', 'fr-us', 'de-eu',
-              'es-eu', 'es-us', 'it-eu', 'nl-eu']
+              'es-eu', 'es-us', 'it-eu', 'nl-eu'],
 }
+
+# Candidate OCR models and locales used for deterministic DB-scored locale detection.
+DETECTION_CANDIDATES: Dict[str, List[str]] = {
+    'script/Latin': [
+        'en-us', 'en-eu', 'es-eu', 'es-us',
+        'fr-eu', 'fr-us', 'de-eu', 'it-eu', 'nl-eu',
+    ],
+    'jpn': ['ja-jp'],
+    'chi_sim': ['zh-cn'],
+    'chi_tra': ['zh-tw'],
+    'kor': ['ko-kr'],
+    'rus': ['ru-eu'],
+}
+
+LOCALE_TIEBREAK_ORDER: List[str] = [
+    'en-us', 'en-eu', 'zh-tw', 'zh-cn', 'ja-jp', 'ko-kr',
+    'fr-eu', 'fr-us', 'de-eu', 'es-eu', 'es-us', 'it-eu', 'nl-eu', 'ru-eu',
+]
 
 # Items renamed across AC:NH patches (e.g. 1.3 / 2.0) mapped to current canonical names.
 LEGACY_ALIASES: Dict[str, Dict[str, str]] = {
@@ -99,7 +125,7 @@ def scan(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> Scan
 
 
 def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
-    """Parses a whole video and returns an image containing all the items found."""
+    """Parses a whole video and returns deduplicated row images for all items found."""
     unfinished_page = False
     item_scroll_count = 0
     all_rows: List[numpy.ndarray] = []
@@ -110,10 +136,7 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
         if _is_duplicate_rows(all_rows, new_rows):
             continue  # Skip non-moving frames
 
-        # There's an issue in Switch's font rendering where it struggles to
-        # keep up with page scrolling, leading to bottom rows sometimes being empty.
-        # Since we parse every third frame, this can lead to items getting missed.
-        # The fix is to search for empty rows and force a scan of the next frame.
+        # Switch's font rendering sometimes lags fast page scrolling, leaving bottom rows blank.
         unfinished_page = any(r.min() > 150 for r in new_rows)
 
         # Exit if video is not properly page scrolling.
@@ -123,60 +146,93 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
 
     assert all_rows, 'No items found, invalid video?'
 
-    # Concatenate all rows into a single image.
     return _dedupe_rows(all_rows)
 
 
-def run_ocr(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
-    """Runs tesseract OCR on an image of item names and returns all items found."""
-    if not item_rows:
-        return set()  # Recursive base case.
-
-    # For larger catalogs, recursively split scans to avoid Tesseract's 32k limit.
-    # Each row is 35px high; 900 x 35 = 31.5k which is below the limit.
-    item_rows, remaining_rows = item_rows[:900], item_rows[900:]
-
-    logging.debug('Running Tesseract on %s rows', len(item_rows))
+def _ocr_chunk(chunk: List[numpy.ndarray], lang: str, config: str) -> Set[str]:
+    """Runs Tesseract OCR on a single chunk of vertically concatenated row strips."""
     parsed_text = pytesseract.image_to_string(
-        Image.fromarray(cv2.vconcat(item_rows)),
-        lang=lang, config=_get_tesseract_config(lang))
+        Image.fromarray(cv2.vconcat(chunk)),
+        lang=lang,
+        config=config,
+    )
     assert isinstance(parsed_text, str), 'Tesseract returned bytes'
+    return {_cleanup_name(item, lang) for item in parsed_text.split('\n')} - {''}
 
-    # Split the results and remove empty lines.
-    clean_names = {_cleanup_name(item, lang)
-                   for item in parsed_text.split('\n')}
 
-    # Add recursive results and remove empty lines.
-    remaining_names = run_ocr(remaining_rows, lang)
-    return (clean_names | remaining_names) - {''}
+def run_ocr(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
+    """Runs Tesseract OCR across item rows in parallel chunks and returns all parsed lines."""
+    if not item_rows:
+        return set()
+
+    chunks = [
+        item_rows[i:i + OCR_CHUNK_SIZE]
+        for i in range(0, len(item_rows), OCR_CHUNK_SIZE)
+    ]
+    config = _get_tesseract_config(lang)
+    logging.debug('Running Tesseract (%s) on %d rows across %d chunk(s)', lang, len(item_rows), len(chunks))
+
+    if len(chunks) == 1 or MAX_OCR_WORKERS <= 1:
+        return _ocr_chunk(chunks[0], lang, config) if len(chunks) == 1 else set().union(
+            *(_ocr_chunk(c, lang, config) for c in chunks)
+        )
+
+    workers = min(len(chunks), MAX_OCR_WORKERS)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+        futures = [executor.submit(_ocr_chunk, chunk, lang, config) for chunk in chunks]
+        results: Set[str] = set()
+        for future in futures:
+            results |= future.result()
+        return results
+
+
+def _fuzzy_thresholds(length: int) -> Tuple[float, float, float]:
+    """Returns (min_score_cutoff, min_margin_over_second, high_confidence_bypass) on 0-100 scale."""
+    if length <= 2:
+        return 100.0, 100.0, 100.0
+    if length == 3:
+        return 66.0, 8.0, 90.0
+    if length == 4:
+        return 70.0, 5.0, 88.0
+    if length <= 6:
+        return 65.0, 4.0, 86.0
+    return 56.0, 3.5, 88.0
 
 
 def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str], List[str]]:
-    """Matches a list of names against a database of items, finding best matches."""
-    no_match_items = []
-    matched_items = set()
+    """Matches parsed OCR strings against the locale item database using exact + guarded fuzzy matching."""
+    no_match_items: List[str] = []
+    matched_items: Set[str] = set()
     item_db = _get_item_db(locale)
+    item_list = _get_item_list(locale)
     aliases = LEGACY_ALIASES.get(locale, {})
-    for item in sorted(item_names):
-        item = aliases.get(item, item)
+
+    for raw_item in sorted(item_names):
+        item = aliases.get(raw_item, raw_item)
         if item in item_db:
-            # If item name exists is in the DB, add it as is
             matched_items.add(item)
             continue
 
-        # Otherwise, try to find closest name in the DB with a cutoff.
-        matches = difflib.get_close_matches(item, item_db, n=1, cutoff=0.5)
-        if not matches:
-            no_match_items.append(item)
-            assert len(no_match_items) <= 0.3 * len(item_names), \
+        cutoff, min_margin, high_conf = _fuzzy_thresholds(len(item))
+        if cutoff >= 100.0:
+            no_match_items.append(raw_item)
+            assert len(no_match_items) <= max(3, int(0.3 * len(item_names))), \
                 'Failed to match multiple items, wrong language?'
             continue
 
-        # Calculate difference ratio for better logging
-        ratio = difflib.SequenceMatcher(None, item, matches[0]).ratio()
-        logging.debug('Matched %r to %r (%.2f)', item, matches[0], ratio)
+        candidates = process.extract(item, item_list, scorer=fuzz.ratio, limit=2, score_cutoff=cutoff)
+        if candidates:
+            best_name, best_score, _ = candidates[0]
+            second_score = candidates[1][1] if len(candidates) > 1 else 0.0
+            if best_score >= high_conf or (best_score - second_score) >= min_margin:
+                resolved = aliases.get(best_name, best_name)
+                logging.debug('Matched %r to %r (%.1f vs %.1f)', raw_item, resolved, best_score, second_score)
+                matched_items.add(resolved)
+                continue
 
-        matched_items.add(matches[0])  # type: ignore
+        no_match_items.append(raw_item)
+        assert len(no_match_items) <= max(3, int(0.3 * len(item_names))), \
+            'Failed to match multiple items, wrong language?'
 
     if no_match_items:
         logging.warning('Failed to match %d items: %s', len(no_match_items), no_match_items)
@@ -216,28 +272,23 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
 
 def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray]:
     """Parses an individual frame and extracts item rows from the list."""
-    # Detect the dashed lines and iterate over pairs of dashed lines
-    # Last line has dashes after but first line doesn't have dashes before,
-    # therefore we prepend the list with zero for the starting line.
     y_lines = list((frame[:, 0] < 200).nonzero()[0])
     if not y_lines:
         return
 
-    # Normalize row lines by taking the average of all of them.
-    # We know they are 53.45px apart, so we find the best offset from given lines.
+    # Normalize row lines by taking the median offset modulo row height (53.45px).
     centers = [numpy.fmod(y, 53.45) for y in y_lines]
     centroid = round(numpy.median(centers))
     y_positions = numpy.arange(centroid, 480, 53.45).astype(int)
 
     for y in y_positions:
         if y < 40:
-            # Skip rows that are offscreen
-            continue
+            continue  # Skip rows that are offscreen
 
-        # Cut row slightly below and above the dashed line
+        # Cut row slightly below and above the dashed line.
         row = frame[y - 40:y - 5, :]
 
-        # Skip items that are not for sale (price region is lighter)
+        # Skip items that are not for sale (price region is lighter).
         if for_sale and row[:, 430:].min() > 100:
             continue
 
@@ -253,7 +304,7 @@ def _is_duplicate_rows(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarr
     old_concat = cv2.vconcat(all_rows[-5:-2])
     new_concat = cv2.vconcat(new_rows[-5:-2])
     diff = cv2.absdiff(old_concat, new_concat)
-    return diff.mean() < 4
+    return bool(diff.mean() < 4)
 
 
 def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]) -> bool:
@@ -274,7 +325,7 @@ def _is_inconsistent_scroll(scroll_positions: List[int]) -> bool:
     scroll_deltas = typing.cast(numpy.ndarray, numpy.diff(scroll_positions))
     downscroll_count = numpy.count_nonzero(scroll_deltas > 0)
     upscroll_count = numpy.count_nonzero(scroll_deltas < 0)
-    return downscroll_count > 10 and upscroll_count > 10
+    return bool(downscroll_count > 10 and upscroll_count > 10)
 
 
 def _dedupe_rows(all_rows: List[numpy.ndarray]) -> List[numpy.ndarray]:
@@ -294,23 +345,12 @@ def _dedupe_rows(all_rows: List[numpy.ndarray]) -> List[numpy.ndarray]:
 
 def _get_tesseract_config(lang: str) -> str:
     """Generates Tesseract configurations for the given language."""
-    configs = [
-        '--psm 6',  # Manually specify that we know orientation / shape.
-        '-c preserve_interword_spaces=1',  # Fixes spacing between logograms.
-        '-c tessedit_do_invert=0',  # Speed up skipping invert check.
-    ]
-    if lang in ['jpn', 'chi_sim', 'chi_tra']:
-        # Parameters specific to parsing logograms.
-        configs.extend([
-            '-c language_model_ngram_on=0',
-            '-c textord_force_make_prop_words=F',
-            '-c edges_max_children_per_outline=40',
-        ])
-    return ' '.join(configs)
+    del lang  # LSTM engine ignores legacy Tesseract 3 CJK parameters.
+    return '--psm 6 -c preserve_interword_spaces=1 -c tessedit_do_invert=0'
 
 
 def _cleanup_name(item_name: str, lang: str) -> str:
-    """Applies some manual name cleanup to fix OCR issues and improve matching."""
+    """Applies manual name cleanup and Unicode normalization to fix common OCR artifacts."""
     item_name = item_name.strip()
     item_name = item_name.replace('’', "'").replace('‘', "'")
     item_name = item_name.replace('Ao dai', 'Áo dài')
@@ -330,9 +370,17 @@ def _cleanup_name(item_name: str, lang: str) -> str:
 
 @functools.lru_cache(maxsize=None)
 def _get_item_db(locale: str) -> Set[str]:
-    """Fetches the item database for a given locale, with caching."""
-    with open('items/%s.json' % locale, encoding='utf-8') as fp:
+    """Fetches the item database set for a given locale, with caching."""
+    with open(f'items/{locale}.json', encoding='utf-8') as fp:
         return set(json.load(fp))
+
+
+@functools.lru_cache(maxsize=None)
+def _get_item_list(locale: str) -> List[str]:
+    """Fetches a sorted list of items (plus legacy aliases) for rapidfuzz matching."""
+    items = set(_get_item_db(locale))
+    items.update(LEGACY_ALIASES.get(locale, {}).keys())
+    return sorted(items)
 
 
 def _detect_locale(item_rows: List[numpy.ndarray], locale: str) -> str:
