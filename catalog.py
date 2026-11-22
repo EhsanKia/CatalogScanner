@@ -142,8 +142,8 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     """Parses a whole video and returns deduplicated row images for all items found."""
     cap = cv2.VideoCapture(filename)
     fps = cap.get(cv2.CAP_PROP_FPS)
-    # Native 30fps Switch captures stay on each page for ~3 frames; VFR/re-encoded <29fps videos (<3 frames/page) need step<=2.
-    frame_step = 3 if (fps <= 0 or fps >= 29.0) else 2
+    # Native 30fps Switch captures stay on each page for ~3 frames; lower FPS needs smaller step.
+    frame_step = 3 if (fps <= 0 or fps >= 29.0) else (2 if fps >= 20.0 else 1)
 
     unfinished_page = False
     item_scroll_count = 0
@@ -279,9 +279,11 @@ def _read_frames(
 
         # Crop scrollbar region and get scroll position, then warn about bad scrolling.
         scrollbar = gray[160:570, 1235:1245].mean(axis=1)
-        scroll_positions.append(int(numpy.argmax(scrollbar < 150)))
-        if _is_inconsistent_scroll(scroll_positions):
-            raise AssertionError('Video is scrolling inconsistently.')
+        dark = scrollbar < 150
+        if dark.any():
+            scroll_positions.append(int(numpy.argmax(dark)))
+            if _is_inconsistent_scroll(scroll_positions):
+                raise AssertionError('Video is scrolling inconsistently.')
 
         # Crop the region containing item name and price.
         yield gray[150:630, 635:1220]
@@ -338,10 +340,10 @@ def _is_item_scroll(all_rows: List[numpy.ndarray], new_rows: List[numpy.ndarray]
 
 
 def _is_inconsistent_scroll(scroll_positions: List[int]) -> bool:
-    """Detect when the user is not scrolling in a consistent direction."""
+    """Detect when the user is not scrolling in a consistent direction (ignoring +-2px jitter)."""
     scroll_deltas = typing.cast(numpy.ndarray, numpy.diff(scroll_positions))
-    downscroll_count = numpy.count_nonzero(scroll_deltas > 0)
-    upscroll_count = numpy.count_nonzero(scroll_deltas < 0)
+    downscroll_count = numpy.count_nonzero(scroll_deltas > 2)
+    upscroll_count = numpy.count_nonzero(scroll_deltas < -2)
     return bool(downscroll_count > 10 and upscroll_count > 10)
 
 
