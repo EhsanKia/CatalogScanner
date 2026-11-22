@@ -1,5 +1,5 @@
 from common import ScanResult
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import catalog
 import critters
@@ -51,27 +51,37 @@ def scan_media(filename: str, mode: str = 'auto', locale: str = 'auto', for_sale
 
 def _detect_media_type(filename: str) -> str:
     video_capture = cv2.VideoCapture(filename)
+    try:
+        unsupported_error: Optional[AssertionError] = None
 
-    # Check the first 100 frames for a match.
-    for _ in range(100):
-        success, frame = video_capture.read()
-        if not success or frame is None:
-            break
+        # Check the first 100 frames for a match.
+        for _ in range(100):
+            success, frame = video_capture.read()
+            if not success or frame is None:
+                break
 
-        # Resolution must be at least 720p.
-        assert frame.shape[0] >= 720, \
-            'Invalid resolution: {1}x{0}'.format(*frame.shape)
+            # Resolution must be at least 720p.
+            assert frame.shape[0] >= 720, \
+                'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
-        # Resize frames to 720p since matching is built for 720p.
-        # This is to handle 1080p videos from the Switch 2.
-        if frame.shape[:2] != (720, 1280):
-            frame = cv2.resize(frame, (1280, 720))
+            # Resize frames to 720p since matching is built for 720p.
+            # This is to handle 1080p videos from the Switch 2.
+            if frame.shape[:2] != (720, 1280):
+                frame = cv2.resize(frame, (1280, 720))
 
-        for mode, scanner in SCANNERS.items():
-            if scanner.detect(frame):
-                return mode
+            for mode, scanner in SCANNERS.items():
+                try:
+                    if scanner.detect(frame):
+                        return mode
+                except AssertionError as e:
+                    if unsupported_error is None:
+                        unsupported_error = e
 
-    raise AssertionError('Media is not showing a known scan type.')
+        if unsupported_error is not None:
+            raise unsupported_error
+        raise AssertionError('Media is not showing a known scan type.')
+    finally:
+        video_capture.release()
 
 
 def main(argv):

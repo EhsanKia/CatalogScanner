@@ -158,7 +158,7 @@ def _is_duplicate_cards(all_covers: List[numpy.ndarray], new_covers: List[numpy.
         old_concat = cv2.hconcat(all_covers[ind])
         if old_concat is None:
             continue
-        if cv2.absdiff(new_concat, old_concat).mean() < 15:
+        if cv2.absdiff(new_concat, old_concat).mean() < 20:
             return True
     return False
 
@@ -175,13 +175,13 @@ def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
 
 
 def _is_background(color: numpy.ndarray) -> bool:
-    if numpy.linalg.norm(color - BG_COLOR1) < 15:
+    if numpy.linalg.norm(color - BG_COLOR1) < 20:
         return True
-    if numpy.linalg.norm(color - BG_COLOR2) < 15:
+    if numpy.linalg.norm(color - BG_COLOR2) < 20:
         return True
-    if numpy.linalg.norm(color - BG_COLOR3) < 15:
+    if numpy.linalg.norm(color - BG_COLOR3) < 20:
         return True
-    if numpy.linalg.norm(color - BG_COLOR4) < 15:
+    if numpy.linalg.norm(color - BG_COLOR4) < 20:
         return True
     return False
 

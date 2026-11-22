@@ -4,6 +4,7 @@ import collections
 import cv2
 import functools
 import json
+import logging
 import numpy
 import os
 
@@ -37,11 +38,11 @@ class RecipeCard:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing DIY recipes."""
     color = frame[:20, 1200:1240].mean(axis=(0, 1))
-    if numpy.linalg.norm(color - WOOD_COLOR) < 10:
+    if numpy.linalg.norm(color - WOOD_COLOR) < 15:
         raise AssertionError('Workbench scanning is not supported.')
-    if numpy.linalg.norm(color - KITCHEN_COLOR) < 10:
+    if numpy.linalg.norm(color - KITCHEN_COLOR) < 15:
         raise AssertionError('Kitchen scanning is not supported.')
-    return numpy.linalg.norm(color - BG_COLOR) < 10
+    return bool(numpy.linalg.norm(color - BG_COLOR) < 15)
 
 
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
@@ -106,6 +107,9 @@ def translate_names(recipe_names: List[str], locale: str) -> List[str]:
 def _read_frames(filename: str) -> Iterable[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region."""
     cap = cv2.VideoCapture(filename)
+    seen_valid = False
+    pending_gap = 0
+    total_gap_frames = 0
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -115,12 +119,29 @@ def _read_frames(filename: str) -> Iterable[numpy.ndarray]:
         if frame.shape[:2] != (720, 1280):
             frame = cv2.resize(frame, (1280, 720))
 
-        if not detect(frame):
+        try:
+            is_valid = detect(frame)
+        except AssertionError:
+            if not seen_valid:
+                cap.release()
+                raise
+            is_valid = False
+
+        if not is_valid:
+            if seen_valid:
+                pending_gap += 1
             continue  # Skip frames that are not showing recipes.
+
+        if pending_gap:
+            total_gap_frames += pending_gap
+            pending_gap = 0
+        seen_valid = True
 
         # Crop the region containing recipe cards.
         yield frame[110:720, 45:730]
     cap.release()
+    if total_gap_frames:
+        logging.warning('Skipped %d non-matching mid-video frames in %s', total_gap_frames, filename)
 
 
 def _parse_frame(frame: numpy.ndarray) -> Iterable[List[numpy.ndarray]]:

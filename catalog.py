@@ -91,11 +91,14 @@ LEGACY_ALIASES: Dict[str, Dict[str, str]] = {
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing Nook Shopping catalog."""
     side_color = frame[150:160, -20:].mean(axis=(0, 1))
-    if numpy.linalg.norm(side_color - WARDELL_COLOR) < 10:
+    if numpy.linalg.norm(side_color - WARDELL_COLOR) < 20:
         raise AssertionError('Wardell catalog is not supported.')
-    if numpy.linalg.norm(side_color - NOOK_MILES_COLOR) < 10:
+    if numpy.linalg.norm(side_color - NOOK_MILES_COLOR) < 20:
         raise AssertionError('Nook Miles catalog is not supported.')
-    return numpy.linalg.norm(side_color - SIDE_COLOR) < 10
+    if numpy.linalg.norm(side_color - SIDE_COLOR) >= 22:
+        return False
+    top_color = frame[:20, -20:].mean(axis=(0, 1))
+    return bool(numpy.linalg.norm(top_color - TOP_COLOR) < 45)
 
 
 def scan(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> ScanResult:
@@ -115,12 +118,18 @@ def scan(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> Scan
 
 def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     """Parses a whole video and returns deduplicated row images for all items found."""
+    cap_probe = cv2.VideoCapture(filename)
+    fps = cap_probe.get(cv2.CAP_PROP_FPS)
+    cap_probe.release()
+    # Native 30fps Switch captures stay on each page for ~3 frames; VFR/re-encoded <29fps videos (<3 frames/page) need step<=2.
+    frame_step = 3 if (fps <= 0 or fps >= 29.0) else 2
+
     unfinished_page = False
     item_scroll_count = 0
     all_rows: List[numpy.ndarray] = []
     for i, frame in enumerate(_read_frames(filename)):
-        if not unfinished_page and i % 3 != 0:
-            continue  # Only parse every third frame (3 frames per page)
+        if not unfinished_page and i % frame_step != 0:
+            continue  # Skip intermediate frames on the same page
         new_rows = list(_parse_frame(frame, for_sale))
         if _is_duplicate_rows(all_rows, new_rows):
             continue  # Skip non-moving frames
@@ -231,7 +240,10 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
 
 def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region in grayscale."""
-    scroll_positions = []
+    scroll_positions: List[int] = []
+    seen_valid = False
+    pending_gap = 0
+    total_gap_frames = 0
     cap = cv2.VideoCapture(filename)
     while True:
         ret, frame = cap.read()
@@ -242,21 +254,40 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         if frame.shape[:2] != (720, 1280):
             frame = cv2.resize(frame, (1280, 720))
 
-        if not detect(frame):
-            scroll_positions = []  # Reset scroll positions on catalog change.
+        try:
+            is_catalog = detect(frame)
+        except AssertionError:
+            if not seen_valid:
+                cap.release()
+                raise
+            is_catalog = False
+
+        if not is_catalog:
+            if seen_valid:
+                pending_gap += 1
+                if pending_gap >= 5:
+                    scroll_positions = []  # Reset scroll positions on catalog section change.
             continue  # Skip frames where item list is not visible.
+
+        if pending_gap:
+            total_gap_frames += pending_gap
+            pending_gap = 0
+        seen_valid = True
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # Crop scrollbar region and get scroll position, then warn about bad scrolling.
         scrollbar = gray[160:570, 1235:1245].mean(axis=1)
-        scroll_positions.append(numpy.argmax(scrollbar < 150))
+        scroll_positions.append(int(numpy.argmax(scrollbar < 150)))
         if _is_inconsistent_scroll(scroll_positions):
+            cap.release()
             raise AssertionError('Video is scrolling inconsistently.')
 
         # Crop the region containing item name and price.
         yield gray[150:630, 635:1220]
     cap.release()
+    if total_gap_frames:
+        logging.warning('Skipped %d non-matching mid-video frames in %s', total_gap_frames, filename)
 
 
 def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray]:

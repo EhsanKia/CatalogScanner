@@ -42,7 +42,7 @@ class ReactionImage:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing reactions list."""
     color = frame[370:380, 290:300].mean(axis=(0, 1))
-    return numpy.linalg.norm(color - BG_COLOR) < 5
+    return bool(numpy.linalg.norm(color - BG_COLOR) < 14)
 
 
 def scan(image_file: str, locale: str = 'en-us') -> ScanResult:
