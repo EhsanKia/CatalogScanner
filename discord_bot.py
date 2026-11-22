@@ -1,29 +1,37 @@
 import asyncio
 import concurrent.futures
+import datetime
 import logging as stdlib_logging
 import os
-import datetime
 import pathlib
+import time
 import zlib
 
 from absl import app, logging
 import discord
+from discord import option
 from discord.enums import IntegrationType, InteractionContextType
 from discord.ext import commands
-from discord import option
 from google.cloud import datastore
 import hashids
 import simple_colors
 
+import catalog
 import constants
 import scanner
+
+os.environ.setdefault('OMP_THREAD_LIMIT', '1')
 
 ERROR_EMOJI = ':exclamation:'
 SUCCESS_EMOJI = ':tada:'
 SCANNING_EMOJI = ':mag:'
 WAIT_EMOJI = ':hourglass:'
 
+CACHE_MAX_AGE_SECONDS = 14 * 24 * 3600  # 14 days
+CACHE_MAX_TOTAL_BYTES = 500 * 1024 * 1024  # 500 MiB
+
 WAIT_LOCK = asyncio.Lock()
+SCAN_EXECUTOR = concurrent.futures.ThreadPoolExecutor(max_workers=1)
 
 intents = discord.Intents.default()
 bot = commands.Bot(intents=intents)
@@ -43,18 +51,43 @@ def _get_datastore_client() -> datastore.Client:
     return _datastore_client
 
 
+def _prune_cache_dir(cache_dir: pathlib.Path) -> None:
+    """Bounds cache directory size and age while keeping recent uploads for debugging."""
+    try:
+        now = time.time()
+        entries = []
+        for entry in cache_dir.iterdir():
+            if not entry.is_file():
+                continue
+            stat = entry.stat()
+            if (now - stat.st_mtime) > CACHE_MAX_AGE_SECONDS:
+                entry.unlink(missing_ok=True)
+            else:
+                entries.append((stat.st_mtime, stat.st_size, entry))
+
+        total_bytes = sum(size for _, size, _ in entries)
+        if total_bytes > CACHE_MAX_TOTAL_BYTES:
+            for _, size, entry in sorted(entries, key=lambda x: x[0]):
+                entry.unlink(missing_ok=True)
+                total_bytes -= size
+                if total_bytes <= CACHE_MAX_TOTAL_BYTES:
+                    break
+    except OSError:
+        logging.warning('Failed to prune cache directory.', exc_info=True)
+
+
 def upload_to_datastore(result, discord_user: discord.User, cache_filename: str) -> datastore.Entity:
     datastore_client = _get_datastore_client()
 
     temp_key = datastore_client.key('Catalog')
     key = datastore_client.allocate_ids(temp_key, 1)[0]
-    catalog = datastore.Entity(key, exclude_from_indexes=_UNINDEXED_FIELDS)
+    entity = datastore.Entity(key, exclude_from_indexes=_UNINDEXED_FIELDS)
 
     key_hash = hashid_client.encode(key.id)
     raw_data = '\n'.join(result.items).encode('utf-8')
     compressed_data = zlib.compress(raw_data, level=6)
     catalog_data = compressed_data if len(compressed_data) < len(raw_data) else raw_data
-    catalog.update(
+    entity.update(
         {
             'hash': key_hash,
             'data': catalog_data,
@@ -68,60 +101,72 @@ def upload_to_datastore(result, discord_user: discord.User, cache_filename: str)
     )
     if result.unmatched:
         unmatched_data = '\n'.join(result.unmatched).encode('utf-8')
-        catalog['unmatched'] = unmatched_data
+        entity['unmatched'] = unmatched_data
 
-    datastore_client.put(catalog)
-    return catalog
+    datastore_client.put(entity)
+    return entity
 
 
 async def handle_scan(
     ctx: discord.ApplicationContext,
     attachment: discord.Attachment,
     filetype: str,
+    locale: str = 'auto',
+    for_sale: bool = False,
 ) -> None:
     """Downloads the file, runs the scans and uploads the results, while updating the user along the way."""
     await reply(ctx, f'{SCANNING_EMOJI} Scan started, your results will be ready soon!')
 
     tmp_dir = pathlib.Path('cache')
+    tmp_dir.mkdir(parents=True, exist_ok=True)
 
-    logging.info('Downloading attachment %s', attachment.id)
+    logging.info('Downloading attachment %s (%s)', attachment.id, attachment.filename)
     file = await attachment.to_file()
     tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
-    tmp_file.parent.mkdir(parents=True, exist_ok=True)
     await attachment.save(tmp_file)
 
     try:
-        result = await async_scan(tmp_file)
+        result = await async_scan(tmp_file, locale=locale, for_sale=for_sale)
     except AssertionError as e:
+        logging.warning('Scan rejected for %s (%s): %s', ctx.user, tmp_file.name, e)
         error_message = improve_error_message(str(e))
         await reply(ctx, f'{ERROR_EMOJI} Failed to scan: {error_message}')
         return
     except Exception:
-        logging.exception('Unexpected scan error.')
+        logging.exception('Unexpected scan error on %s.', tmp_file.name)
         await reply(
             ctx,
             f'{ERROR_EMOJI} Failed to scan media. Make sure you have a valid {filetype}.',
         )
         return
+    finally:
+        _prune_cache_dir(tmp_dir)
 
     if not result.items:
+        logging.warning('Scan found 0 items for %s (%s)', ctx.user, tmp_file.name)
         await reply(ctx, f'{ERROR_EMOJI} Did not find any items.')
         return
 
-    catalog = upload_to_datastore(result, ctx.user, tmp_file.name)
-    url = 'https://nook.lol/{}'.format(catalog['hash'])
-    logging.info('Found %s items with %s: %s', len(result.items), result.mode, url)
+    entity = upload_to_datastore(result, ctx.user, tmp_file.name)
+    url = 'https://nook.lol/{}'.format(entity['hash'])
+    logging.info('Found %s items with %s [%s]: %s', len(result.items), result.mode, result.locale, url)
     await reply(
         ctx,
         f'{SUCCESS_EMOJI} Found {len(result.items)} items in your {filetype}.\nResults: {url}',
     )
 
 
-async def async_scan(filename: os.PathLike) -> scanner.ScanResult:
-    """Runs the scan asynchronously in a thread pool."""
-    pool = concurrent.futures.ThreadPoolExecutor()
-    future = pool.submit(scanner.scan_media, str(filename))
-    return await asyncio.wrap_future(future)
+async def async_scan(
+    filename: os.PathLike,
+    locale: str = 'auto',
+    for_sale: bool = False,
+) -> scanner.ScanResult:
+    """Runs the scan asynchronously on the shared scan executor."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(
+        SCAN_EXECUTOR,
+        lambda: scanner.scan_media(str(filename), locale=locale, for_sale=for_sale),
+    )
 
 
 async def reply(ctx: discord.ApplicationContext, message: str) -> None:
@@ -170,6 +215,7 @@ def improve_error_message(message: str) -> str:
         message += ' Make sure to record and download the video using the Switch\'s media gallery.'
     return message
 
+
 @bot.slash_command(
     name='ping',
     description='Responds with the bot latency.',
@@ -177,6 +223,7 @@ def improve_error_message(message: str) -> str:
 async def ping(ctx: discord.ApplicationContext):
     latency = bot.latency * 1000  # Convert to milliseconds
     await ctx.respond(f'Pong! Latency is {latency:.2f} ms')
+
 
 @bot.slash_command(
     name='scan',
@@ -190,8 +237,31 @@ async def ping(ctx: discord.ApplicationContext):
     description='The video or image to scan',
     required=True,
 )
-async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
-    logging.info('Got request from %s with type %r', ctx.user, attachment.content_type)
+@option(
+    'locale',
+    str,
+    description='Game language (auto-detected by default)',
+    choices=list(catalog.LOCALE_MAP),
+    default='auto',
+    required=False,
+)
+@option(
+    'for_sale',
+    bool,
+    description='Only include purchasable catalog items',
+    default=False,
+    required=False,
+)
+async def scan(
+    ctx: discord.ApplicationContext,
+    attachment: discord.Attachment,
+    locale: str = 'auto',
+    for_sale: bool = False,
+):
+    logging.info(
+        'Got request from %s with type %r (locale=%s, for_sale=%s)',
+        ctx.user, attachment.content_type, locale, for_sale,
+    )
 
     if not attachment or not attachment.content_type:
         await reply(ctx, f'{ERROR_EMOJI} Invalid or no attachment.')
@@ -205,13 +275,13 @@ async def scan(ctx: discord.ApplicationContext, attachment: discord.Attachment):
 
     await ctx.interaction.response.defer(ephemeral=True, invisible=False)
 
-    # Have a queue system that handles requests one at a time.
-    if WAIT_LOCK.locked and (waiters := WAIT_LOCK._waiters):  # type: ignore
+    # Queue system that handles requests one at a time.
+    if WAIT_LOCK.locked() and (waiters := getattr(WAIT_LOCK, '_waiters', None)):
         logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, len(waiters))
         await reply(ctx, f'{WAIT_EMOJI} You are #{len(waiters)} in the queue, your scan will start soon.')
 
     async with WAIT_LOCK:
-        await handle_scan(ctx, attachment, filetype)
+        await handle_scan(ctx, attachment, filetype, locale=locale, for_sale=for_sale)
 
 
 @bot.event
@@ -233,7 +303,10 @@ class ColorFormatter(logging.PythonFormatter):
         log = super().format(record)
         log = log[:16] + ' ' + log[30:]
         prefix, sep, message = log.partition(']')
-        color, style = self.COLORS.get(record.levelname)
+        entry = self.COLORS.get(record.levelname)
+        if not entry:
+            return log
+        color, style = entry
         return color(prefix + sep, style) + message
 
 
@@ -246,7 +319,7 @@ if __name__ == '__main__':
     # Set color log formatter to write to both file and terminal.
     file_handler = stdlib_logging.FileHandler('logs.txt')
     file_handler.setFormatter(ColorFormatter())
-    logging.get_absl_logger().addHandler(file_handler)
+    logging.get_absl_logger().addHandler(file_handler)  # type: ignore
     logging.get_absl_handler().setFormatter(ColorFormatter())
 
     # Disable noise discord logs.
