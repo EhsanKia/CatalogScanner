@@ -9,7 +9,7 @@ from absl.testing import absltest, parameterized
 import catalog
 import music
 import scanner
-from common import ScanMode, is_image_file
+from common import ScanMode, crop_720p_roi, is_image_file, slice_720p
 
 
 def _fetch_ground_truth():
@@ -161,6 +161,25 @@ class ScannerTest(absltest.TestCase):
             shutil.copyfile('examples/extra/critters_seacreatures_img.jpg', critter_upper)
             c_res = scanner.scan_media(critter_upper)
             self.assertEqual(c_res.items, EXTRA_GROUND_TRUTH['critters_seacreatures_img.jpg'])
+
+    def test_slice_and_crop_720p_roi(self):
+        frame_720 = numpy.zeros((720, 1280, 3), dtype=numpy.uint8)
+        sliced_720 = slice_720p(frame_720, 150, 160, -20, None)
+        self.assertEqual(sliced_720.shape, (10, 20, 3))
+        self.assertTrue(numpy.shares_memory(sliced_720, frame_720))
+
+        cropped_720 = crop_720p_roi(frame_720, 110, 720, 45, 730)
+        self.assertEqual(cropped_720.shape, (610, 685, 3))
+        self.assertTrue(numpy.shares_memory(cropped_720, frame_720))
+
+        frame_1080 = numpy.zeros((1080, 1920, 3), dtype=numpy.uint8)
+        sliced_1080 = slice_720p(frame_1080, None, 20, -20, None)
+        self.assertEqual(sliced_1080.shape, (30, 30, 3))
+
+        cropped_1080 = crop_720p_roi(frame_1080, 110, 720, 45, 730)
+        self.assertEqual(cropped_1080.shape, (610, 685, 3))
+        self.assertEqual(crop_720p_roi(frame_1080, 149, 623, None, None).shape, (474, 1280, 3))
+        self.assertEqual(crop_720p_roi(frame_1080, 70, 75, 65, 260).shape, (5, 195, 3))
 
     def test_music_phash_rejects_noise_cover(self):
         rng = numpy.random.default_rng(42)
