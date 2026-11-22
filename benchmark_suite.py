@@ -3,7 +3,7 @@
 Runs real non-English (ja-jp, zh-tw, zh-cn, ko-kr, ru-eu, es-eu), English, and
 re-encoded (.mov vs .mp4) catalog videos from `examples/more/`, verifying:
   1. 100% deterministic `locale='auto'` accuracy across all scripts/locales
-  2. Stage-by-stage latency (`parse`, `detect_locale`, `ocr`, `match`, `total`)
+  2. Stage-by-stage latency (`detect_mode`, `parse`, `detect_locale`, `ocr`, `match`, `total`)
   3. Exact DB hit rate, guarded fuzzy matches, unmatched items, and item counts
   4. `.mov` re-encode parity against `.mp4` (>= 99% item recall)
 
@@ -16,7 +16,7 @@ import dataclasses
 import json
 import os
 import time
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from absl import app
 from absl import flags
@@ -28,7 +28,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_bool(
     'save_baseline',
     False,
-    'If true, writes current metrics to testdata/multilocale_baseline.json.',
+    'If true, writes current metrics to testdata/multilocale_baseline.json when all cases pass.',
 )
 flags.DEFINE_string(
     'baseline_file',
@@ -64,21 +64,25 @@ CASES: List[BenchmarkCase] = [
 ]
 
 
-def run_case(case: BenchmarkCase) -> Optional[Dict[str, object]]:
+def run_case(case: BenchmarkCase) -> Optional[Dict[str, Any]]:
     if not os.path.exists(case.path):
         return None
 
-    t0 = time.perf_counter()
-    mode = scanner._detect_media_type(case.path)
-    t1 = time.perf_counter()
-    rows = catalog.parse_video(case.path)
-    t2 = time.perf_counter()
-    detected_locale = catalog._detect_locale(rows, 'auto')
-    t3 = time.perf_counter()
-    raw_names = catalog.run_ocr(rows, lang=catalog.LOCALE_MAP[detected_locale])
-    t4 = time.perf_counter()
-    matched, unmatched = catalog.match_items(raw_names, detected_locale)
-    t5 = time.perf_counter()
+    try:
+        t0 = time.perf_counter()
+        mode = scanner._detect_media_type(case.path)
+        assert mode == 'catalog', f'Expected catalog mode, got {mode!r}'
+        t1 = time.perf_counter()
+        rows = catalog.parse_video(case.path)
+        t2 = time.perf_counter()
+        detected_locale = catalog._detect_locale(rows, 'auto')
+        t3 = time.perf_counter()
+        raw_names = catalog.run_ocr(rows, lang=catalog.LOCALE_MAP[detected_locale])
+        t4 = time.perf_counter()
+        matched, unmatched = catalog.match_items(raw_names, detected_locale)
+        t5 = time.perf_counter()
+    except Exception as exc:
+        return {'name': case.name, 'error': f'{type(exc).__name__}: {exc}'}
 
     db = catalog._get_item_db(detected_locale)
     aliases = catalog.LEGACY_ALIASES.get(detected_locale, {})
@@ -97,7 +101,8 @@ def run_case(case: BenchmarkCase) -> Optional[Dict[str, object]]:
         'exact_pct': round(exact_pct, 1),
         'matched_items': len(matched),
         'unmatched_count': len(unmatched),
-        'parse_s': round(t2 - t0, 2),
+        'detect_mode_s': round(t1 - t0, 3),
+        'parse_s': round(t2 - t1, 2),
         'detect_loc_s': round(t3 - t2, 2),
         'ocr_s': round(t4 - t3, 2),
         'match_s': round(t5 - t4, 3),
@@ -109,12 +114,13 @@ def run_case(case: BenchmarkCase) -> Optional[Dict[str, object]]:
 
 def main(argv):
     del argv
-    results: Dict[str, Dict[str, object]] = {}
+    results: Dict[str, Dict[str, Any]] = {}
     failures: List[str] = []
 
     header = (
         f"{'Case':18s} | {'Locale':13s} | {'Rows':>4s} | {'Exact%':>6s} | "
-        f"{'Items':>5s} | {'Unm':>3s} | {'Parse':>5s} | {'Loc':>4s} | {'OCR':>5s} | {'Match':>5s} | {'Total':>6s}"
+        f"{'Items':>5s} | {'Unm':>3s} | {'Det':>5s} | {'Parse':>5s} | "
+        f"{'Loc':>4s} | {'OCR':>5s} | {'Match':>5s} | {'Total':>6s}"
     )
     print(header)
     print('-' * len(header))
@@ -126,13 +132,18 @@ def main(argv):
             print(f'{case.name:18s} | SKIPPED (missing {case.path})')
             continue
 
+        if 'error' in res:
+            print(f"{case.name:18s} | ERROR: {res['error']}")
+            failures.append(f"{case.name}: {res['error']}")
+            continue
+
         results[case.name] = res
         loc_tag = f"{res['detected_locale']}" + ('' if res['locale_ok'] else f"(!={case.expected_locale})")
         print(
             f"{case.name:18s} | {loc_tag:13s} | {res['rows']:4d} | "
             f"{res['exact_pct']:5.1f}% | {res['matched_items']:5d} | {res['unmatched_count']:3d} | "
-            f"{res['parse_s']:4.2f}s | {res['detect_loc_s']:3.2f}s | {res['ocr_s']:4.2f}s | "
-            f"{res['match_s']:4.2f}s | {res['total_s']:5.2f}s"
+            f"{res['detect_mode_s']:4.2f}s | {res['parse_s']:4.2f}s | {res['detect_loc_s']:3.2f}s | "
+            f"{res['ocr_s']:4.2f}s | {res['match_s']:4.2f}s | {res['total_s']:5.2f}s"
         )
 
         if not res['locale_ok']:
@@ -164,12 +175,7 @@ def main(argv):
         for k, v in results.items()
     }
 
-    if FLAGS.save_baseline:
-        with open(FLAGS.baseline_file, 'w', encoding='utf-8', newline='\n') as fp:
-            json.dump(serializable, fp, indent=2)
-            fp.write('\n')
-        print(f'Saved baseline metrics to {FLAGS.baseline_file}')
-    elif os.path.exists(FLAGS.baseline_file):
+    if os.path.exists(FLAGS.baseline_file) and not FLAGS.save_baseline:
         with open(FLAGS.baseline_file, encoding='utf-8') as fp:
             baseline = json.load(fp)
         for name, cur in serializable.items():
@@ -180,6 +186,15 @@ def main(argv):
                 failures.append(
                     f"{name}: item count regressed from baseline {base_items} -> {cur['matched_items']}"
                 )
+
+    if FLAGS.save_baseline:
+        if failures:
+            print(f'Refusing to save baseline to {FLAGS.baseline_file} due to {len(failures)} failure(s).')
+        else:
+            with open(FLAGS.baseline_file, 'w', encoding='utf-8', newline='\n') as fp:
+                json.dump(serializable, fp, indent=2)
+                fp.write('\n')
+            print(f'Saved baseline metrics to {FLAGS.baseline_file}')
 
     if failures:
         raise SystemExit('BENCHMARK FAILURES:\n  - ' + '\n  - '.join(failures))
