@@ -4,6 +4,7 @@ import datetime
 import logging as stdlib_logging
 import os
 import pathlib
+import re
 import time
 import zlib
 
@@ -20,8 +21,6 @@ import catalog
 import constants
 import scanner
 
-os.environ.setdefault('OMP_THREAD_LIMIT', '1')
-
 ERROR_EMOJI = ':exclamation:'
 SUCCESS_EMOJI = ':tada:'
 SCANNING_EMOJI = ':mag:'
@@ -32,6 +31,7 @@ CACHE_MAX_TOTAL_BYTES = 500 * 1024 * 1024  # 500 MiB
 
 WAIT_LOCK = asyncio.Lock()
 SCAN_EXECUTOR = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+_pending_scans = 0
 
 intents = discord.Intents.default()
 bot = commands.Bot(intents=intents)
@@ -93,7 +93,7 @@ def upload_to_datastore(result, discord_user: discord.User, cache_filename: str)
             'data': catalog_data,
             'locale': result.locale,
             'type': result.mode.name.lower(),
-            'created': datetime.datetime.utcnow(),
+            'created': datetime.datetime.now(datetime.timezone.utc),
             'discord_user': discord_user.id,
             'discord_user_name': discord_user.name,
             'cache_filename': cache_filename,
@@ -120,9 +120,9 @@ async def handle_scan(
     tmp_dir = pathlib.Path('cache')
     tmp_dir.mkdir(parents=True, exist_ok=True)
 
-    logging.info('Downloading attachment %s (%s)', attachment.id, attachment.filename)
-    file = await attachment.to_file()
-    tmp_file = tmp_dir / f'{attachment.id}_{file.filename}'
+    safe_name = pathlib.Path(attachment.filename or f'upload.{filetype}').name
+    logging.info('Downloading attachment %s (%s)', attachment.id, safe_name)
+    tmp_file = tmp_dir / f'{attachment.id}_{safe_name}'
     await attachment.save(tmp_file)
 
     try:
@@ -147,7 +147,16 @@ async def handle_scan(
         await reply(ctx, f'{ERROR_EMOJI} Did not find any items.')
         return
 
-    entity = upload_to_datastore(result, ctx.user, tmp_file.name)
+    try:
+        entity = upload_to_datastore(result, ctx.user, tmp_file.name)
+    except Exception:
+        logging.exception('Failed to upload scan results to Datastore for %s (%s).', ctx.user, tmp_file.name)
+        await reply(
+            ctx,
+            f'{ERROR_EMOJI} Found {len(result.items)} items, but failed to save results. Please try again.',
+        )
+        return
+
     url = 'https://nook.lol/{}'.format(entity['hash'])
     logging.info('Found %s items with %s [%s]: %s', len(result.items), result.mode, result.locale, url)
     await reply(
@@ -170,8 +179,15 @@ async def async_scan(
 
 
 async def reply(ctx: discord.ApplicationContext, message: str) -> None:
-    """Responds with an ephemeral message, or updates the existing message."""
-    await ctx.respond(content=message, ephemeral=True)
+    """Sends an ephemeral interaction response or followup, falling back to DM on expired tokens."""
+    try:
+        await ctx.respond(content=message, ephemeral=True)
+    except discord.HTTPException as err:
+        logging.warning('Interaction reply failed for %s (%s); trying DM fallback. Message: %s', ctx.user, err, message)
+        try:
+            await ctx.user.send(message)
+        except discord.HTTPException:
+            logging.warning('DM fallback also failed for %s', ctx.user)
 
 
 def improve_error_message(message: str) -> str:
@@ -276,12 +292,18 @@ async def scan(
     await ctx.interaction.response.defer(ephemeral=True, invisible=False)
 
     # Queue system that handles requests one at a time.
-    if WAIT_LOCK.locked() and (waiters := getattr(WAIT_LOCK, '_waiters', None)):
-        logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, len(waiters))
-        await reply(ctx, f'{WAIT_EMOJI} You are #{len(waiters)} in the queue, your scan will start soon.')
+    global _pending_scans
+    ahead = _pending_scans
+    _pending_scans += 1
+    try:
+        if ahead > 0:
+            logging.info('%s (%s) is in queue position %s', ctx.user, attachment.id, ahead)
+            await reply(ctx, f'{WAIT_EMOJI} You are #{ahead} in the queue, your scan will start soon.')
 
-    async with WAIT_LOCK:
-        await handle_scan(ctx, attachment, filetype, locale=locale, for_sale=for_sale)
+        async with WAIT_LOCK:
+            await handle_scan(ctx, attachment, filetype, locale=locale, for_sale=for_sale)
+    finally:
+        _pending_scans -= 1
 
 
 @bot.event
@@ -290,7 +312,15 @@ async def on_ready():
     logging.info('Bot logged in as %s', bot.user)
 
 
-class ColorFormatter(logging.PythonFormatter):
+_LOG_PREFIX_RE = re.compile(r'^(\w\d{4} [\d:]{8})\.\d+\s+\d+\s+')
+
+
+class CompactFormatter(logging.PythonFormatter):
+    def format(self, record):
+        return _LOG_PREFIX_RE.sub(r'\1 ', super().format(record), count=1)
+
+
+class ColorFormatter(CompactFormatter):
     COLORS = {
         'DEBUG': (simple_colors.cyan, 'dim'),
         'INFO': (simple_colors.black, 'bright'),
@@ -301,7 +331,6 @@ class ColorFormatter(logging.PythonFormatter):
 
     def format(self, record):
         log = super().format(record)
-        log = log[:16] + ' ' + log[30:]
         prefix, sep, message = log.partition(']')
         entry = self.COLORS.get(record.levelname)
         if not entry:
@@ -316,9 +345,9 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    # Set color log formatter to write to both file and terminal.
+    # Write plain logs to disk and colored logs to console/journal.
     file_handler = stdlib_logging.FileHandler('logs.txt')
-    file_handler.setFormatter(ColorFormatter())
+    file_handler.setFormatter(CompactFormatter())
     logging.get_absl_logger().addHandler(file_handler)  # type: ignore
     logging.get_absl_handler().setFormatter(ColorFormatter())
 
