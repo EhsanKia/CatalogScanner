@@ -1,5 +1,5 @@
 import itertools
-from common import ScanMode, ScanResult, is_image_file
+from common import ScanMode, ScanResult, is_image_file, to_720p
 
 import collections
 import cv2
@@ -123,8 +123,7 @@ def _read_frames(filename: str) -> Iterator[Tuple[CritterType, numpy.ndarray]]:
             continue
 
         # Resize frames to 720p since matching is built for 720p.
-        if frame.shape[:2] != (720, 1280):
-            frame = cv2.resize(frame, (1280, 720))
+        frame = to_720p(frame)
 
         if not detect(frame):
             continue  # Skip frames that are not showing critterpedia.

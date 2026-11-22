@@ -1,4 +1,4 @@
-from common import ScanMode, ScanResult, is_image_file
+from common import ScanMode, ScanResult, is_image_file, to_720p
 
 import cv2
 import itertools
@@ -69,8 +69,7 @@ def parse_image(filename: str) -> List[numpy.ndarray]:
         if not ret:
             break  # Video is over
 
-        if frame.shape[:2] != (720, 1280):
-            frame = cv2.resize(frame, (1280, 720))
+        frame = to_720p(frame)
 
         if not detect(frame):
             continue  # Skip frames not containing reactions.

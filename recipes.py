@@ -1,10 +1,9 @@
-from common import ScanMode, ScanResult
+from common import ScanMode, ScanResult, iter_frames
 
 import collections
 import cv2
 import functools
 import json
-import logging
 import numpy
 import os
 
@@ -106,42 +105,9 @@ def translate_names(recipe_names: List[str], locale: str) -> List[str]:
 
 def _read_frames(filename: str) -> Iterable[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region."""
-    cap = cv2.VideoCapture(filename)
-    seen_valid = False
-    pending_gap = 0
-    total_gap_frames = 0
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break  # Video is over
-
-        # Resize frames to 720p since matching is built for 720p.
-        if frame.shape[:2] != (720, 1280):
-            frame = cv2.resize(frame, (1280, 720))
-
-        try:
-            is_valid = detect(frame)
-        except AssertionError:
-            if not seen_valid:
-                cap.release()
-                raise
-            is_valid = False
-
-        if not is_valid:
-            if seen_valid:
-                pending_gap += 1
-            continue  # Skip frames that are not showing recipes.
-
-        if pending_gap:
-            total_gap_frames += pending_gap
-            pending_gap = 0
-        seen_valid = True
-
+    for frame, _ in iter_frames(filename, detect):
         # Crop the region containing recipe cards.
         yield frame[110:720, 45:730]
-    cap.release()
-    if total_gap_frames:
-        logging.warning('Skipped %d non-matching mid-video frames in %s', total_gap_frames, filename)
 
 
 def _parse_frame(frame: numpy.ndarray) -> Iterable[List[numpy.ndarray]]:

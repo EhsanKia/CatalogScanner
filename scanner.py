@@ -1,4 +1,4 @@
-from common import ScanResult, is_image_file
+from common import ScanResult, is_image_file, to_720p
 from typing import Any, Dict, Optional
 
 import catalog
@@ -74,8 +74,7 @@ def _detect_media_type(filename: str) -> str:
 
             # Resize frames to 720p since matching is built for 720p.
             # This is to handle 1080p videos from the Switch 2.
-            if frame.shape[:2] != (720, 1280):
-                frame = cv2.resize(frame, (1280, 720))
+            frame = to_720p(frame)
 
             for mode, scanner in SCANNERS.items():
                 try:

@@ -1,6 +1,7 @@
-from common import ScanMode, ScanResult
+from common import ScanMode, ScanResult, iter_frames
 
 import concurrent.futures
+import contextlib
 import cv2
 import functools
 import json
@@ -13,7 +14,7 @@ import unicodedata
 
 from PIL import Image
 from rapidfuzz import fuzz, process
-from typing import Dict, Iterator, List, Optional, Set, Tuple
+from typing import Dict, Iterator, List, Optional, Set, Tuple, Union
 
 # Prevent OpenMP-enabled Tesseract builds from oversubscribing 1-2 vCPU hosts.
 os.environ.setdefault('OMP_THREAD_LIMIT', '1')
@@ -118,29 +119,29 @@ def scan(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> Scan
 
 def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     """Parses a whole video and returns deduplicated row images for all items found."""
-    cap_probe = cv2.VideoCapture(filename)
-    fps = cap_probe.get(cv2.CAP_PROP_FPS)
-    cap_probe.release()
+    cap = cv2.VideoCapture(filename)
+    fps = cap.get(cv2.CAP_PROP_FPS)
     # Native 30fps Switch captures stay on each page for ~3 frames; VFR/re-encoded <29fps videos (<3 frames/page) need step<=2.
     frame_step = 3 if (fps <= 0 or fps >= 29.0) else 2
 
     unfinished_page = False
     item_scroll_count = 0
     all_rows: List[numpy.ndarray] = []
-    for i, frame in enumerate(_read_frames(filename)):
-        if not unfinished_page and i % frame_step != 0:
-            continue  # Skip intermediate frames on the same page
-        new_rows = list(_parse_frame(frame, for_sale))
-        if _is_duplicate_rows(all_rows, new_rows):
-            continue  # Skip non-moving frames
+    with contextlib.closing(_read_frames(cap, log_label=filename)) as frames:
+        for i, frame in enumerate(frames):
+            if not unfinished_page and i % frame_step != 0:
+                continue  # Skip intermediate frames on the same page
+            new_rows = list(_parse_frame(frame, for_sale))
+            if _is_duplicate_rows(all_rows, new_rows):
+                continue  # Skip non-moving frames
 
-        # Switch's font rendering sometimes lags fast page scrolling, leaving bottom rows blank.
-        unfinished_page = any(r.min() > 150 for r in new_rows)
+            # Switch's font rendering sometimes lags fast page scrolling, leaving bottom rows blank.
+            unfinished_page = any(r.min() > 150 for r in new_rows)
 
-        # Exit if video is not properly page scrolling.
-        item_scroll_count += _is_item_scroll(all_rows, new_rows)
-        assert item_scroll_count < 20, 'Video is scrolling too slowly.'
-        all_rows.extend(new_rows)
+            # Exit if video is not properly page scrolling.
+            item_scroll_count += _is_item_scroll(all_rows, new_rows)
+            assert item_scroll_count < 20, 'Video is scrolling too slowly.'
+            all_rows.extend(new_rows)
 
     assert all_rows, 'No items found, invalid video?'
 
@@ -238,41 +239,15 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
     return sorted(matched_items), no_match_items
 
 
-def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
+def _read_frames(
+    source: Union[str, cv2.VideoCapture],
+    log_label: Optional[str] = None,
+) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region in grayscale."""
     scroll_positions: List[int] = []
-    seen_valid = False
-    pending_gap = 0
-    total_gap_frames = 0
-    cap = cv2.VideoCapture(filename)
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break  # Video is over
-
-        # Resize frames to 720p since matching is built for 720p.
-        if frame.shape[:2] != (720, 1280):
-            frame = cv2.resize(frame, (1280, 720))
-
-        try:
-            is_catalog = detect(frame)
-        except AssertionError:
-            if not seen_valid:
-                cap.release()
-                raise
-            is_catalog = False
-
-        if not is_catalog:
-            if seen_valid:
-                pending_gap += 1
-                if pending_gap >= 5:
-                    scroll_positions = []  # Reset scroll positions on catalog section change.
-            continue  # Skip frames where item list is not visible.
-
-        if pending_gap:
-            total_gap_frames += pending_gap
-            pending_gap = 0
-        seen_valid = True
+    for frame, gap_before in iter_frames(source, detect, log_label=log_label):
+        if gap_before >= 5:
+            scroll_positions = []  # Reset scroll positions on catalog section change.
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -280,14 +255,10 @@ def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
         scrollbar = gray[160:570, 1235:1245].mean(axis=1)
         scroll_positions.append(int(numpy.argmax(scrollbar < 150)))
         if _is_inconsistent_scroll(scroll_positions):
-            cap.release()
             raise AssertionError('Video is scrolling inconsistently.')
 
         # Crop the region containing item name and price.
         yield gray[150:630, 635:1220]
-    cap.release()
-    if total_gap_frames:
-        logging.warning('Skipped %d non-matching mid-video frames in %s', total_gap_frames, filename)
 
 
 def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray]:

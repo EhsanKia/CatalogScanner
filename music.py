@@ -1,4 +1,4 @@
-from common import ScanMode, ScanResult
+from common import ScanMode, ScanResult, iter_frames
 from PIL import Image
 
 import cv2
@@ -98,23 +98,9 @@ def translate_names(song_names: List[str], locale: str) -> List[str]:
 
 def _read_frames(filename: str) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the relevant region."""
-    cap = cv2.VideoCapture(filename)
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break  # Video is over
-
-        # Resize frames to 720p since matching is built for 720p.
-        if frame.shape[:2] != (720, 1280):
-            frame = cv2.resize(frame, (1280, 720))
-
-        if not detect(frame):
-            continue  # Skip frames that are not showing music list.
-
+    for frame, _ in iter_frames(filename, detect):
         # Crop the region containing only song covers.
         yield frame[95:670, 40:1240]
-
-    cap.release()
 
 
 def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
