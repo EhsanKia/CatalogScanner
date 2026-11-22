@@ -318,7 +318,15 @@ def create_app(
                     job.error = msg
                     return
 
-                entity = upload_fn(result, None, job.cache_rel, source='web')
+                try:
+                    entity = upload_fn(result, None, job.cache_rel, source='web')
+                except Exception:
+                    logging.exception('Failed to upload web scan results to Datastore for %s', job.job_id)
+                    _archive_failed_job(job.job_dir, failed_cache_root, job.job_id, 'Failed to upload results to Datastore.')
+                    job.status = 'error'
+                    job.error = 'Found items, but failed to save results. Please try again.'
+                    return
+
                 job.url = f"https://nook.lol/{entity['hash']}"
                 job.count = len(result.items)
                 job.mode = result.mode.name.lower()
@@ -326,6 +334,9 @@ def create_app(
                 job.status = 'done'
                 _prune_old_entries(web_cache_root, WEB_CACHE_MAX_AGE_SECONDS)
         finally:
+            if job.status not in ('done', 'error'):
+                job.status = 'error'
+                job.error = job.error or 'Unexpected error during scan.'
             job.finished_at = time.time()
 
     @web.middleware
@@ -440,6 +451,12 @@ def create_app(
                     raw = await part.read(decode=False)
                     for_sale = raw.decode('utf-8', 'replace').strip().lower() in ('1', 'true', 'yes', 'on')
                 elif part.name in ('files', 'file'):
+                    if turnstile_secret and not turnstile_ok:
+                        shutil.rmtree(job_dir, ignore_errors=True)
+                        return _json_response(
+                            {'error': 'Bot verification failed. Please refresh and try again.'},
+                            status=403,
+                        )
                     if not part.filename:
                         continue
                     safe_name = _sanitize_filename(part.filename, f'upload_{len(saved_paths)}')

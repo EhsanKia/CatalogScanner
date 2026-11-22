@@ -39,8 +39,12 @@ class WebServerTest(AioHTTPTestCase):
         self.addCleanup(self.tmp_dir.cleanup)
         self.wait_lock = asyncio.Lock()
         self.uploaded_entities = []
+        self.fail_next_upload = False
 
         def fake_upload(result, discord_user, cache_filename, source='discord'):
+            if self.fail_next_upload:
+                self.fail_next_upload = False
+                raise RuntimeError('Datastore down')
             entity = {
                 'hash': f'hash{len(self.uploaded_entities) + 1:02d}',
                 'source': source,
@@ -233,6 +237,60 @@ class WebServerTest(AioHTTPTestCase):
         self.assertEqual(self.uploaded_entities[-1]['source'], 'web')
         self.assertTrue((pathlib.Path(self.tmp_dir.name) / 'web' / job_id2 / 'frame_0.png').exists())
         self.assertTrue((pathlib.Path(self.tmp_dir.name) / 'web' / job_id2 / 'frame_1.png').exists())
+
+    async def test_upload_failure_marks_job_error_and_releases_ip(self):
+        sample_path = pathlib.Path(__file__).resolve().parent / 'examples' / 'reactions.jpg'
+        if not sample_path.exists():
+            self.skipTest('examples/reactions.jpg not present')
+        raw = sample_path.read_bytes()
+
+        ip_hdr = {'Origin': 'https://nook.lol', 'CF-Connecting-IP': '203.0.113.30'}
+        self.fail_next_upload = True
+        form = _multipart_upload(
+            fields=[('cf-turnstile-response', 'ok-token')],
+            files=[('files', 'reactions.jpg', raw, 'image/jpeg')],
+        )
+        with mock.patch.object(web_server, 'verify_turnstile', new=mock.AsyncMock(return_value=True)):
+            resp = await self.client.post('/api/scan', data=form, headers=ip_hdr)
+        self.assertEqual(resp.status, 202)
+        job_id = (await resp.json())['job_id']
+
+        st = {}
+        for _ in range(60):
+            st = await (await self.client.get(f'/api/status/{job_id}')).json()
+            if st['status'] in ('done', 'error'):
+                break
+            await asyncio.sleep(0.1)
+        self.assertEqual(st['status'], 'error', st)
+        self.assertIn('failed to save results', st['error'])
+
+        # Same IP must not remain stuck with 429 on the next upload.
+        form2 = _multipart_upload(
+            fields=[('cf-turnstile-response', 'ok-token')],
+            files=[('files', 'reactions.jpg', raw, 'image/jpeg')],
+        )
+        with mock.patch.object(web_server, 'verify_turnstile', new=mock.AsyncMock(return_value=True)):
+            resp2 = await self.client.post('/api/scan', data=form2, headers=ip_hdr)
+        self.assertEqual(resp2.status, 202)
+        job_id2 = (await resp2.json())['job_id']
+        for _ in range(60):
+            st2 = await (await self.client.get(f'/api/status/{job_id2}')).json()
+            if st2['status'] in ('done', 'error'):
+                break
+            await asyncio.sleep(0.1)
+        self.assertEqual(st2['status'], 'done', st2)
+
+    async def test_files_before_turnstile_rejected_without_disk_writes(self):
+        form = aiohttp.FormData()
+        form.add_field('files', _png_bytes(1280, 720), filename='pic.png', content_type='image/png')
+        form.add_field('cf-turnstile-response', 'ok-token')
+        verify_mock = mock.AsyncMock(return_value=True)
+        with mock.patch.object(web_server, 'verify_turnstile', new=verify_mock):
+            resp = await self.client.post('/api/scan', data=form, headers=ALLOWED_ORIGIN)
+        self.assertEqual(resp.status, 403)
+        verify_mock.assert_not_awaited()
+        web_cache = pathlib.Path(self.tmp_dir.name) / 'web'
+        self.assertEqual(list(web_cache.glob('**/*')), [])
 
 
 if __name__ == '__main__':
