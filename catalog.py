@@ -410,17 +410,23 @@ def _detect_locale(item_rows: List[numpy.ndarray], locale: str) -> str:
     # Deterministically pick up to 40 evenly spaced rows across the video.
     sample_size = min(40, len(item_rows))
     indices = numpy.linspace(0, len(item_rows) - 1, sample_size, dtype=int)
-    sample_rows = [item_rows[int(i)] for i in indices]
-    sample_image = Image.fromarray(cv2.vconcat(sample_rows))
+    sample_array = cv2.vconcat([item_rows[int(i)] for i in indices])
     config = _get_tesseract_config('eng')
 
     def _score_candidate(lang: str) -> Tuple[Dict[str, int], Dict[str, Set[str]]]:
+        image = Image.fromarray(sample_array)
         try:
-            parsed = pytesseract.image_to_string(sample_image, lang=lang, config=config)
-        except pytesseract.TesseractError:
+            parsed = pytesseract.image_to_string(image, lang=lang, config=config)
+        except pytesseract.TesseractError as err:
             if lang == 'script/Latin':
-                parsed = pytesseract.image_to_string(sample_image, lang='eng', config=config)
+                logging.warning('Tesseract language %r unavailable (%s); falling back to eng', lang, err)
+                try:
+                    parsed = pytesseract.image_to_string(image, lang='eng', config=config)
+                except pytesseract.TesseractError as fallback_err:
+                    logging.warning('Tesseract fallback lang eng unavailable: %s', fallback_err)
+                    return {}, {}
             else:
+                logging.warning('Tesseract language %r unavailable: %s', lang, err)
                 return {}, {}
         names = {_cleanup_name(line, lang) for line in parsed.split('\n')} - {''}
         exact_scores: Dict[str, int] = {}
@@ -432,11 +438,25 @@ def _detect_locale(item_rows: List[numpy.ndarray], locale: str) -> str:
             parsed_by_loc[loc] = names
         return exact_scores, parsed_by_loc
 
-    exact_scores: Dict[str, int] = {}
-    parsed_by_loc: Dict[str, Set[str]] = {}
-    workers = min(len(DETECTION_CANDIDATES), max(2, MAX_OCR_WORKERS))
+    # Score Latin first: most scans are Latin, avoiding 5 extra CJK/Cyrillic OCR passes.
+    exact_scores, parsed_by_loc = _score_candidate('script/Latin')
+    fast_threshold = max(min(5, sample_size), int(0.4 * sample_size))
+    if exact_scores:
+        best_latin = max(
+            exact_scores,
+            key=lambda loc: (exact_scores[loc], -LOCALE_TIEBREAK_ORDER.index(loc)),
+        )
+        if exact_scores[best_latin] >= fast_threshold:
+            logging.info(
+                'Detected locale: %s (exact=%d/%d, latin fast-path)',
+                best_latin, exact_scores[best_latin], sample_size,
+            )
+            return best_latin
+
+    other_langs = [lang for lang in DETECTION_CANDIDATES if lang != 'script/Latin']
+    workers = min(len(other_langs), max(2, MAX_OCR_WORKERS))
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
-        for scores, names_map in executor.map(_score_candidate, DETECTION_CANDIDATES):
+        for scores, names_map in executor.map(_score_candidate, other_langs):
             exact_scores.update(scores)
             parsed_by_loc.update(names_map)
 
