@@ -39,6 +39,7 @@ class WebServerTest(AioHTTPTestCase):
         self.addCleanup(self.tmp_dir.cleanup)
         self.wait_lock = asyncio.Lock()
         self.uploaded_entities = []
+        self.scan_calls = []
         self.fail_next_upload = False
 
         def fake_upload(result, discord_user, cache_filename, source='discord'):
@@ -58,6 +59,7 @@ class WebServerTest(AioHTTPTestCase):
         self.addCleanup(executor.shutdown, False)
 
         async def fake_async_scan(filename, locale='auto', for_sale=False):
+            self.scan_calls.append({'filename': str(filename), 'locale': locale, 'for_sale': for_sale})
             loop = asyncio.get_running_loop()
             return await loop.run_in_executor(
                 executor,
@@ -291,6 +293,40 @@ class WebServerTest(AioHTTPTestCase):
         verify_mock.assert_not_awaited()
         web_cache = pathlib.Path(self.tmp_dir.name) / 'web'
         self.assertEqual(list(web_cache.glob('**/*')), [])
+
+    async def test_locale_override_forwarded_and_invalid_rejected(self):
+        bad_form = _multipart_upload(
+            fields=[('cf-turnstile-response', 'ok-token'), ('locale', 'bogus')],
+            files=[('files', 'pic.png', _png_bytes(1280, 720), 'image/png')],
+        )
+        with mock.patch.object(web_server, 'verify_turnstile', new=mock.AsyncMock(return_value=True)):
+            r_bad = await self.client.post('/api/scan', data=bad_form, headers={'Origin': 'https://nook.lol', 'CF-Connecting-IP': '203.0.113.40'})
+        self.assertEqual(r_bad.status, 400)
+        self.assertIn('Unsupported language', (await r_bad.json())['error'])
+
+        sample_path = pathlib.Path(__file__).resolve().parent / 'examples' / 'reactions.jpg'
+        if not sample_path.exists():
+            self.skipTest('examples/reactions.jpg not present')
+        raw = sample_path.read_bytes()
+
+        good_form = _multipart_upload(
+            fields=[('cf-turnstile-response', 'ok-token'), ('locale', 'ja-jp')],
+            files=[('files', 'reactions.jpg', raw, 'image/jpeg')],
+        )
+        with mock.patch.object(web_server, 'verify_turnstile', new=mock.AsyncMock(return_value=True)):
+            r_ok = await self.client.post('/api/scan', data=good_form, headers={'Origin': 'https://nook.lol', 'CF-Connecting-IP': '203.0.113.41'})
+        self.assertEqual(r_ok.status, 202)
+        job_id = (await r_ok.json())['job_id']
+
+        st = {}
+        for _ in range(60):
+            st = await (await self.client.get(f'/api/status/{job_id}')).json()
+            if st['status'] in ('done', 'error'):
+                break
+            await asyncio.sleep(0.1)
+        self.assertEqual(st['status'], 'done', st)
+        self.assertEqual(st['locale'], 'ja-jp')
+        self.assertEqual(self.scan_calls[-1]['locale'], 'ja-jp')
 
 
 if __name__ == '__main__':

@@ -14,3 +14,6 @@ catalog-scanner.json
 constants.py
 logs.txt
 cache/
+scratch/
+logs.txt.*
+requirements-venv.txt

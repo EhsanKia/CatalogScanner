@@ -16,6 +16,8 @@ import aiohttp
 from aiohttp import web
 from PIL import Image, ImageOps
 
+import catalog
+
 LISTEN_HOST = '127.0.0.1'
 LISTEN_PORT = 8787
 
@@ -40,6 +42,7 @@ FAILED_CACHE_MAX_BYTES = 1024 * 1024 * 1024
 VIDEO_EXTS = frozenset({'.mp4', '.mov'})
 IMAGE_EXTS = frozenset({'.jpg', '.jpeg', '.png', '.webp'})
 ALLOWED_EXTS = VIDEO_EXTS | IMAGE_EXTS
+VALID_LOCALES = frozenset(catalog.LOCALE_MAP)
 JOB_ID_RE = re.compile(r'^[a-f0-9]{16,32}$')
 
 
@@ -52,6 +55,7 @@ class ScanJob:
     job_dir: pathlib.Path
     for_sale: bool
     created_at: float
+    requested_locale: str = 'auto'
     status: str = 'queued'
     finished_at: float = 0.0
     url: str = ''
@@ -288,7 +292,7 @@ def create_app(
                 job.status = 'scanning'
                 try:
                     result = await asyncio.wait_for(
-                        async_scan_fn(job.scan_target, locale='auto', for_sale=job.for_sale),
+                        async_scan_fn(job.scan_target, locale=job.requested_locale, for_sale=job.for_sale),
                         timeout=SCAN_TIMEOUT_SECONDS,
                     )
                 except AssertionError as exc:
@@ -421,6 +425,7 @@ def create_app(
         job_id = uuid.uuid4().hex[:24]
         job_dir = web_cache_root / job_id
         for_sale = False
+        requested_locale = 'auto'
         turnstile_token = ''
         turnstile_checked = not bool(turnstile_secret)
         turnstile_ok = not bool(turnstile_secret)
@@ -450,6 +455,13 @@ def create_app(
                 elif part.name == 'for_sale':
                     raw = await part.read(decode=False)
                     for_sale = raw.decode('utf-8', 'replace').strip().lower() in ('1', 'true', 'yes', 'on')
+                elif part.name == 'locale':
+                    raw = await part.read(decode=False)
+                    loc = raw.decode('utf-8', 'replace').strip().lower() or 'auto'
+                    if loc not in VALID_LOCALES:
+                        shutil.rmtree(job_dir, ignore_errors=True)
+                        return _json_response({'error': f'Unsupported language: {loc}'}, status=400)
+                    requested_locale = loc
                 elif part.name in ('files', 'file'):
                     if turnstile_secret and not turnstile_ok:
                         shutil.rmtree(job_dir, ignore_errors=True)
@@ -564,6 +576,7 @@ def create_app(
             job_dir=job_dir,
             for_sale=for_sale,
             created_at=time.time(),
+            requested_locale=requested_locale,
         )
         jobs[job_id] = job
         pos = _queue_position(job_id)
