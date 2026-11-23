@@ -85,8 +85,12 @@ def run_case(case: BenchmarkCase) -> Optional[Dict[str, Any]]:
         return {'name': case.name, 'error': f'{type(exc).__name__}: {exc}'}
 
     db = catalog._get_item_db(detected_locale)
+    clean_db = catalog._get_clean_db_map(detected_locale)
     aliases = catalog.LEGACY_ALIASES.get(detected_locale, {})
-    exact_hits = sum(1 for n in raw_names if aliases.get(n, n) in db)
+    exact_hits = sum(
+        1 for n in raw_names
+        if aliases.get(n, n) in db or aliases.get(n, n).replace('\u2060', '') in clean_db
+    )
     exact_pct = (100.0 * exact_hits / len(raw_names)) if raw_names else 0.0
 
     return {

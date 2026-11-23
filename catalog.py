@@ -13,6 +13,7 @@ import numpy
 import os
 import pytesseract
 import re
+import threading
 import typing
 import unicodedata
 
@@ -117,7 +118,7 @@ _ZH_VISUAL_CONFUSIONS = _build_confusion_map([
 ])
 _KO_JAMO_CONFUSIONS = _build_confusion_map([
     'ㄱㄲㅋ', 'ㄷㄸㅌ', 'ㅂㅃㅍ', 'ㅅㅆㅊ', 'ㅈㅉㅊ',
-    'ㅏㅑ', 'ㅓㅕ', 'ㅗㅛ', 'ㅜㅠ', 'ㅐㅔ',
+    'ㅏㅑ', 'ㅓㅕ', 'ㅓㅔ', 'ㅗㅛ', 'ㅜㅠ', 'ㅐㅔ',
 ])
 
 _CHOSEONG = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'
@@ -134,49 +135,41 @@ _HANGUL_JAMO_TO_COMPAT: Dict[str, str] = {
 }
 _PROLONGED_STUTTER_RE = re.compile(r'ー{2,}')
 
-# Items renamed across AC:NH patches (e.g. 1.3 / 2.0) mapped to current canonical names.
-_EN_LEGACY_ALIASES: Dict[str, str] = {
-    'Writing desk': 'Study desk',
-    'Writing chair': 'Study chair',
-    'Writing poster': 'Study poster',
-    'Teacup ride': 'Plaza teacup ride',
-    'Fish and chips': 'Fish-and-chips',
-    'Tee with silicon bib': 'Tee with silicone bib',
-    'Beige desert-tile flooring': 'Beige Moroccan flooring',
-    'Beige desert-tile wall': 'Beige Moroccan wall',
-    'Blue desert-tile flooring': 'Blue Moroccan flooring',
-    'Blue desert-tile wall': 'Blue Moroccan wall',
-    'Olive desert-tile flooring': 'Olive Moroccan flooring',
-    'Olive desert-tile wall': 'Olive Moroccan wall',
-    'Purple desert-tile flooring': 'Purple Moroccan flooring',
-    'Purple desert-tile wall': 'Purple Moroccan wall',
-    'Paper bag': 'Paper-bag hood',
-}
-LEGACY_ALIASES: Dict[str, Dict[str, str]] = {
-    'en-us': _EN_LEGACY_ALIASES,
-    'en-eu': _EN_LEGACY_ALIASES,
-    'zh-tw': {
-        '中性色轉角': '中立轉角',
-        '旋轉咖啡杯': '廣場咖啡杯',
-    },
-    'zh-cn': {
-        '旋转咖啡杯': '广场咖啡杯',
-    },
-    'ko-kr': {
-        '빙글빙글 커피 잔': '광장의 커피 잔',
-    },
-}
+def _load_legacy_aliases() -> Dict[str, Dict[str, str]]:
+    """Loads per-locale legacy item rename mappings from items/legacy_aliases.json."""
+    alias_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'items', 'legacy_aliases.json')
+    with open(alias_path, encoding='utf-8') as fp:
+        return json.load(fp)
 
-# RapidOCR recognizer specs keyed by Tesseract language code for CJK accuracy.
-# Latin/Cyrillic and locale auto-detection continue to use Tesseract.
-_RAPIDOCR_REC_SPECS: Dict[str, Tuple[str, str, str]] = {
-    'chi_sim': ('ch', 'PP-OCRv6', 'small'),
-    'chi_tra': ('ch', 'PP-OCRv6', 'small'),
-    'jpn': ('ch', 'PP-OCRv6', 'small'),
-    'kor': ('korean', 'PP-OCRv5', 'mobile'),
+
+# Items renamed across AC:NH patches (1.3 -> 3.0) mapped to current canonical names.
+LEGACY_ALIASES: Dict[str, Dict[str, str]] = _load_legacy_aliases()
+
+# Cyrillic <-> Latin homoglyphs (plus visual near-twin 'п' -> 'n') for mixed-script Russian items.
+_RU_HOMOGLYPH_TRANS = str.maketrans('АВЕКМНОРСТУХаеорсухп', 'ABEKMHOPCTYXaeopcyxn')
+
+# Unified 14-locale Nano CTC OCR model parameters.
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+_NANO_ONNX_PATH = os.path.join(_BASE_DIR, 'models', 'acnh_nano_fp16.onnx')
+_NANO_VOCAB_PATH = os.path.join(_BASE_DIR, 'models', 'acnh_nano_vocab.json')
+_NANO_TARGET_H = 32
+_NANO_TARGET_W = 384
+_NANO_BATCH_SIZE = 64
+_OCR_TLS = threading.local()
+
+_LANG_TO_LOCALES: Dict[str, Tuple[str, ...]] = {
+    'deu': ('de-eu',),
+    'eng': ('en-us', 'en-eu'),
+    'spa': ('es-eu', 'es-us'),
+    'fra': ('fr-eu', 'fr-us'),
+    'ita': ('it-eu',),
+    'jpn': ('ja-jp',),
+    'kor': ('ko-kr',),
+    'nld': ('nl-eu',),
+    'rus': ('ru-eu',),
+    'chi_sim': ('zh-cn',),
+    'chi_tra': ('zh-tw',),
 }
-_RAPIDOCR_BATCH_NUM = 32
-_RAPIDOCR_MIN_WIDTH = 128
 
 # Player-specific tent/moving-kit names contain arbitrary player names and should be ignored.
 PLAYER_ITEM_PATTERNS: Dict[str, re.Pattern] = {
@@ -216,7 +209,7 @@ def scan(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> Scan
     """Scans a video of scrolling through a catalog and returns all items found."""
     item_rows = parse_video(video_file, for_sale)
     locale = _detect_locale(item_rows, locale)
-    item_names = run_ocr(item_rows, lang=LOCALE_MAP[locale])
+    item_names = run_ocr(item_rows, lang=LOCALE_MAP[locale], locale=locale)
     results, unmatched = match_items(item_names, locale)
 
     return ScanResult(
@@ -244,22 +237,25 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     unfinished_page = False
     prev_raw_rows: List[numpy.ndarray] = []
     tracks: List[_RowTrack] = []
-    with contextlib.closing(_read_frames(cap, log_label=filename)) as frames:
-        for i, frame in enumerate(frames):
-            if not unfinished_page and i % frame_step != 0:
-                continue  # Skip intermediate frames on the same page
+    # step_state = [frame_step, force_every_frame (0 or 1)]
+    step_state = [frame_step, 0]
+    with contextlib.closing(_read_frames(cap, log_label=filename, step_state=step_state)) as frames:
+        for frame in frames:
             new_rows = list(_parse_frame(frame, for_sale))
             if not new_rows:
+                step_state[1] = 0
                 continue
             if (
                 not unfinished_page
                 and len(prev_raw_rows) == len(new_rows) > 4
                 and cv2.absdiff(cv2.vconcat(prev_raw_rows), cv2.vconcat(new_rows)).mean() < 2.5
             ):
+                step_state[1] = 0
                 continue  # Skip identical page frames
 
             # Switch's font rendering sometimes lags fast page scrolling, leaving bottom rows blank.
             unfinished_page = any(r.min() > 150 for r in new_rows)
+            step_state[1] = 1 if unfinished_page else 0
             prev_raw_rows = new_rows
             _track_frame_rows(tracks, new_rows)
 
@@ -267,62 +263,217 @@ def parse_video(filename: str, for_sale: bool = False) -> List[numpy.ndarray]:
     return [t.ref for t in tracks]
 
 
-def _prepare_rec_crop(row: numpy.ndarray) -> numpy.ndarray:
-    """Crops a grayscale catalog row around its glyph ink and pads it for RapidOCR."""
-    width = min(row.shape[1], max(32, _ink_width(row) + 8))
-    padded = cv2.copyMakeBorder(
-        row[:, :width], 4, 4, 8, 8, cv2.BORDER_CONSTANT, value=245,
-    )
-    return cv2.cvtColor(padded, cv2.COLOR_GRAY2BGR)
+class _NanoOcrEngine:
+    """Unified 14-locale CTC recognizer and single-pass locale detector backed by ONNX Runtime."""
 
+    def __init__(self, onnx_path: str, vocab_path: str) -> None:
+        import onnxruntime as ort
 
-@functools.lru_cache(maxsize=None)
-def _get_rapidocr_rec(lang_type: str, ocr_version: str, model_type: str) -> Optional[Any]:
-    """Loads and caches a recognition-only RapidOCR session with bounded CPU threads."""
-    try:
-        from rapidocr import LangRec, ModelType, OCRVersion, RapidOCR
+        with open(vocab_path, encoding='utf-8') as fp:
+            vdata = json.load(fp)
+        self.vocab: List[str] = vdata['vocab']
+        self.locales: List[str] = vdata['locales']
+        char_to_id = {ch: idx for idx, ch in enumerate(self.vocab) if idx > 0}
 
-        engine = RapidOCR(params={
-            'Global.use_det': False,
-            'Global.use_cls': False,
-            'Global.use_rec': True,
-            'Global.log_level': 'warning',
-            'EngineConfig.onnxruntime.intra_op_num_threads': min(4, _available_cpus()),
-            'EngineConfig.onnxruntime.inter_op_num_threads': 1,
-            'EngineConfig.onnxruntime.enable_cpu_mem_arena': True,
-            'Rec.lang_type': LangRec(lang_type),
-            'Rec.ocr_version': OCRVersion(ocr_version),
-            'Rec.model_type': ModelType(model_type),
-            'Rec.rec_batch_num': _RAPIDOCR_BATCH_NUM,
-            'Rec.rec_img_shape': [3, 48, _RAPIDOCR_MIN_WIDTH],
-        })
-        return engine._load_rec_model()
-    except Exception:
-        logging.warning(
-            'RapidOCR unavailable for (%s, %s, %s); falling back to Tesseract.',
-            lang_type, ocr_version, model_type, exc_info=True,
+        self.allowed_by_locale: Dict[str, numpy.ndarray] = {}
+        for loc in self.locales:
+            db = _get_item_db(loc)
+            aliases = LEGACY_ALIASES.get(loc, {})
+            chars = set(''.join(db)) | set(''.join(aliases.keys()))
+            self.allowed_by_locale[loc] = numpy.array(
+                [0] + sorted(char_to_id[ch] for ch in chars if ch in char_to_id),
+                dtype=numpy.int32,
+            )
+
+        self.allowed_by_lang: Dict[str, numpy.ndarray] = {}
+        for lang_code, locs in _LANG_TO_LOCALES.items():
+            merged = sorted({int(tok) for loc in locs for tok in self.allowed_by_locale[loc]})
+            self.allowed_by_lang[lang_code] = numpy.array(merged, dtype=numpy.int32)
+
+        cpus = _available_cpus()
+        self.workers = min(4, cpus // 2) if cpus >= 4 else 1
+        intra_threads = max(1, min(2, cpus // self.workers)) if self.workers > 1 else max(1, cpus)
+
+        opts = ort.SessionOptions()
+        opts.intra_op_num_threads = intra_threads
+        opts.inter_op_num_threads = 1
+        opts.enable_cpu_mem_arena = True
+        opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+        self.sess = ort.InferenceSession(onnx_path, sess_options=opts, providers=['CPUExecutionProvider'])
+        self.pool = concurrent.futures.ThreadPoolExecutor(max_workers=self.workers) if self.workers > 1 else None
+        self.sess.run(None, {'images': numpy.zeros((2, 1, _NANO_TARGET_H, 192), dtype=numpy.float32)})
+
+    @staticmethod
+    def prep_rows(rows: List[numpy.ndarray]) -> Tuple[numpy.ndarray, numpy.ndarray]:
+        """Crops each row to its ink width and resizes proportionally into 32x384 strips."""
+        n = len(rows)
+        prepped = numpy.empty((n, _NANO_TARGET_H, _NANO_TARGET_W), dtype=numpy.uint8)
+        ink_ws = numpy.empty(n, dtype=numpy.int32)
+        for i, row in enumerate(rows):
+            cols = numpy.nonzero((row < 185).any(axis=0))[0]
+            raw_w = min(row.shape[1], int(cols[-1]) + 13) if len(cols) else 35
+            scaled_w = min(_NANO_TARGET_W, max(32, round(raw_w * _NANO_TARGET_W / row.shape[1])))
+            prepped[i, :, :scaled_w] = cv2.resize(
+                row[:, :raw_w], (scaled_w, _NANO_TARGET_H), interpolation=cv2.INTER_AREA,
+            )
+            if scaled_w < _NANO_TARGET_W:
+                prepped[i, :, scaled_w:] = 245
+            ink_ws[i] = scaled_w
+        return prepped, ink_ws
+
+    def decode_masked(self, logits: numpy.ndarray, allowed: numpy.ndarray) -> List[str]:
+        """Greedy CTC decode restricted to the allowed token subset for the target locale/language."""
+        pred_ids = allowed[logits[:, :, allowed].argmax(axis=-1)]
+        out: List[str] = []
+        vocab = self.vocab
+        for seq in pred_ids:
+            chars: List[str] = []
+            prev = 0
+            for tok in seq:
+                if tok != 0 and tok != prev:
+                    chars.append(vocab[tok])
+                prev = tok
+            if chars:
+                out.append(''.join(chars))
+        return out
+
+    def detect_locale(self, item_rows: List[numpy.ndarray]) -> str:
+        """Scores up to 40 evenly spaced rows across all 14 locales in a single ONNX pass."""
+        assert item_rows, 'Failed to automatically detect language.'
+        prepped, ink_ws = self.prep_rows(item_rows)
+        sample_size = min(40, len(item_rows))
+        s_idx = numpy.linspace(0, len(item_rows) - 1, sample_size, dtype=int)
+        w_s = min(_NANO_TARGET_W, max(128, ((int(ink_ws[s_idx].max()) + 15) // 16) * 16))
+        x_s = (prepped[s_idx, None, :, :w_s].astype(numpy.float32) - 127.5) * (1.0 / 127.5)
+        s_logits = self.sess.run(None, {'images': x_s})[0]
+
+        exact_scores: Dict[str, int] = {}
+        decoded_by_loc: Dict[str, Set[str]] = {}
+        for loc in LOCALE_TIEBREAK_ORDER:
+            lang = LOCALE_MAP[loc]
+            allowed = self.allowed_by_locale[loc]
+            names = {_cleanup_name(txt, lang) for txt in self.decode_masked(s_logits, allowed) if txt} - {''}
+            decoded_by_loc[loc] = names
+            db = _get_item_db(loc)
+            clean_db = _get_clean_db_map(loc)
+            aliases = LEGACY_ALIASES.get(loc, {})
+            exact_scores[loc] = sum(
+                1 for n in names
+                if aliases.get(n, n) in db or aliases.get(n, n).replace('\u2060', '') in clean_db
+            )
+
+        best_locale = max(
+            exact_scores,
+            key=lambda loc: (exact_scores[loc], -LOCALE_TIEBREAK_ORDER.index(loc)),
         )
+        if exact_scores[best_locale] == 0:
+            fuzzy_scores: Dict[str, int] = {}
+            for loc, names in decoded_by_loc.items():
+                if not names:
+                    fuzzy_scores[loc] = 0
+                    continue
+                item_list = _get_item_list(loc)
+                fuzzy_scores[loc] = sum(
+                    1 for n in names
+                    if len(n) >= 3 and bool(process.extractOne(n, item_list, scorer=fuzz.ratio, score_cutoff=80.0))
+                )
+            best_locale = max(
+                fuzzy_scores,
+                key=lambda loc: (fuzzy_scores[loc], -LOCALE_TIEBREAK_ORDER.index(loc)),
+            )
+            assert fuzzy_scores[best_locale] > 0, 'Failed to automatically detect language.'
+
+        _OCR_TLS.sample_cache = (item_rows[0], item_rows[-1], len(item_rows), prepped, ink_ws, s_idx, s_logits)
+        logging.info('Detected locale: %s (exact=%d/%d, nano-onnx)', best_locale, exact_scores[best_locale], sample_size)
+        return best_locale
+
+    def recognize_rows(
+        self,
+        item_rows: List[numpy.ndarray],
+        lang: str,
+        locale: Optional[str] = None,
+    ) -> Set[str]:
+        """Recognizes all item rows using dynamic-width batching and reuses cached sample logits if available."""
+        allowed = (
+            self.allowed_by_locale[locale]
+            if locale and locale in self.allowed_by_locale
+            else self.allowed_by_lang[lang]
+        )
+        cached = getattr(_OCR_TLS, 'sample_cache', None)
+        _OCR_TLS.sample_cache = None
+
+        names: Set[str] = set()
+        if (
+            cached is not None
+            and len(item_rows) == cached[2]
+            and item_rows[0] is cached[0]
+            and item_rows[-1] is cached[1]
+        ):
+            _, _, _, prepped, ink_ws, s_idx, s_logits = cached
+            for txt in self.decode_masked(s_logits, allowed):
+                cleaned = _cleanup_name(txt, lang)
+                if cleaned:
+                    names.add(cleaned)
+            rem_mask = numpy.ones(len(item_rows), dtype=bool)
+            rem_mask[s_idx] = False
+            rem_idx = numpy.nonzero(rem_mask)[0]
+        else:
+            prepped, ink_ws = self.prep_rows(item_rows)
+            rem_idx = numpy.arange(len(item_rows))
+
+        if len(rem_idx):
+            order = rem_idx[numpy.argsort(ink_ws[rem_idx])]
+            batches: List[numpy.ndarray] = []
+            for start in range(0, len(order), _NANO_BATCH_SIZE):
+                b_idx = order[start:start + _NANO_BATCH_SIZE]
+                w_b = min(_NANO_TARGET_W, max(128, ((int(ink_ws[b_idx].max()) + 15) // 16) * 16))
+                x_b = (prepped[b_idx, None, :, :w_b].astype(numpy.float32) - 127.5) * (1.0 / 127.5)
+                batches.append(x_b)
+
+            def _run_batch(xb: numpy.ndarray) -> List[str]:
+                logits = self.sess.run(None, {'images': xb})[0]
+                return self.decode_masked(logits, allowed)
+
+            if self.pool is not None and len(batches) > 1:
+                batch_outs = list(self.pool.map(_run_batch, batches))
+            else:
+                batch_outs = [_run_batch(xb) for xb in batches]
+
+            for lines in batch_outs:
+                for txt in lines:
+                    cleaned = _cleanup_name(txt, lang)
+                    if cleaned:
+                        names.add(cleaned)
+
+        return names
+
+
+@functools.lru_cache(maxsize=1)
+def _get_nano_ocr() -> Optional[_NanoOcrEngine]:
+    """Loads and caches the unified 14-locale Nano FP16 ONNX OCR engine."""
+    try:
+        return _NanoOcrEngine(_NANO_ONNX_PATH, _NANO_VOCAB_PATH)
+    except Exception:
+        logging.warning('Nano ONNX OCR unavailable; falling back to Tesseract.', exc_info=True)
         return None
 
 
-def _run_rapidocr(item_rows: List[numpy.ndarray], lang: str) -> Optional[Set[str]]:
-    """Runs recognition-only RapidOCR across row crops; returns None if unavailable."""
-    spec = _RAPIDOCR_REC_SPECS.get(lang)
-    if spec is None:
+def _run_nano_ocr(
+    item_rows: List[numpy.ndarray],
+    lang: str,
+    locale: Optional[str] = None,
+) -> Optional[Set[str]]:
+    """Runs unified Nano ONNX OCR across row crops; returns None on unavailability or error."""
+    if lang not in _LANG_TO_LOCALES and (not locale or locale not in LOCALE_MAP):
         return None
-    rec_model = _get_rapidocr_rec(*spec)
-    if rec_model is None:
+    engine = _get_nano_ocr()
+    if engine is None:
         return None
     try:
-        from rapidocr.ch_ppocr_rec import TextRecInput
-
-        crops = [_prepare_rec_crop(row) for row in item_rows]
-        logging.debug('Running RapidOCR (%s: %s) on %d rows', lang, spec[1], len(crops))
-        output = rec_model(TextRecInput(img=crops))
-        txts = output.txts or ()
-        return {_cleanup_name(txt, lang) for txt in txts if txt} - {''}
+        logging.debug('Running Nano ONNX OCR (lang=%s, locale=%s) on %d rows', lang, locale, len(item_rows))
+        return engine.recognize_rows(item_rows, lang=lang, locale=locale)
     except Exception:
-        logging.warning('RapidOCR failed for %s; falling back to Tesseract.', lang, exc_info=True)
+        logging.warning('Nano ONNX OCR failed for %s; falling back to Tesseract.', lang, exc_info=True)
         return None
 
 
@@ -337,15 +488,18 @@ def _ocr_chunk(chunk: List[numpy.ndarray], lang: str) -> Set[str]:
     return {_cleanup_name(item, lang) for item in parsed_text.split('\n')} - {''}
 
 
-def run_ocr(item_rows: List[numpy.ndarray], lang: str = 'eng') -> Set[str]:
-    """Runs CJK RapidOCR (with Tesseract fallback) or parallel Tesseract OCR across item rows."""
+def run_ocr(
+    item_rows: List[numpy.ndarray],
+    lang: str = 'eng',
+    locale: Optional[str] = None,
+) -> Set[str]:
+    """Runs unified Nano ONNX OCR across item rows with parallel Tesseract fallback."""
     if not item_rows:
         return set()
 
-    if lang in _RAPIDOCR_REC_SPECS:
-        rapid_names = _run_rapidocr(item_rows, lang)
-        if rapid_names is not None:
-            return rapid_names
+    nano_names = _run_nano_ocr(item_rows, lang=lang, locale=locale)
+    if nano_names is not None:
+        return nano_names
 
     n = len(item_rows)
     workers = min(MAX_OCR_WORKERS, math.ceil(n / MIN_OCR_CHUNK_ROWS))
@@ -533,6 +687,7 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
     no_match_items: List[str] = []
     matched_items: Set[str] = set()
     item_db = _get_item_db(locale)
+    clean_db = _get_clean_db_map(locale)
     item_list = _get_item_list(locale)
     aliases = LEGACY_ALIASES.get(locale, {})
     player_pattern = PLAYER_ITEM_PATTERNS.get(locale)
@@ -543,6 +698,10 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
         item = aliases.get(raw_item, raw_item)
         if item in item_db:
             matched_items.add(item)
+            continue
+        clean_key = item.replace('\u2060', '')
+        if clean_key in clean_db:
+            matched_items.add(clean_db[clean_key])
             continue
 
         if is_cjk:
@@ -570,6 +729,20 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
                     matched_items.add(resolved)
                     continue
 
+        if locale == 'ru-eu' and len(item) >= 5:
+            ru_items, ru_folded = _get_ru_folded_index()
+            q_folded = item.translate(_RU_HOMOGLYPH_TRANS).casefold()
+            ru_cands = process.extract(q_folded, ru_folded, scorer=fuzz.ratio, limit=2, score_cutoff=max(cutoff, 75.0))
+            if ru_cands:
+                _, best_score, best_idx = ru_cands[0]
+                second_score = ru_cands[1][1] if len(ru_cands) > 1 else 0.0
+                if best_score >= high_conf or (best_score - second_score) >= max(min_margin, 8.0):
+                    best_ru = ru_items[best_idx]
+                    resolved = aliases.get(best_ru, best_ru)
+                    logging.debug('Matched Russian homoglyph %r to %r (%.1f)', raw_item, resolved, best_score)
+                    matched_items.add(resolved)
+                    continue
+
         if is_cjk:
             cjk_match = _match_cjk_item(norm_clean, locale)
             if cjk_match is not None:
@@ -579,6 +752,15 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
                 continue
 
         no_match_items.append(raw_item)
+
+    if no_match_items and matched_items:
+        filtered_unmatched: List[str] = []
+        for u in no_match_items:
+            if 2 <= len(u) <= 4 and ' ' not in u and any(m.startswith(u + ' ') for m in matched_items):
+                logging.debug('Skipping partial-scroll prefix %r covered by matched item', u)
+                continue
+            filtered_unmatched.append(u)
+        no_match_items = filtered_unmatched
 
     if no_match_items:
         logging.warning('Failed to match %d items: %s', len(no_match_items), no_match_items)
@@ -592,6 +774,7 @@ def match_items(item_names: Set[str], locale: str = 'en-us') -> Tuple[List[str],
 def _read_frames(
     source: Union[str, cv2.VideoCapture],
     log_label: Optional[str] = None,
+    step_state: Optional[List[int]] = None,
 ) -> Iterator[numpy.ndarray]:
     """Parses frames of the given video and returns the catalog list region in grayscale."""
     cap = cv2.VideoCapture(source) if isinstance(source, str) else source
@@ -599,9 +782,25 @@ def _read_frames(
     seen_valid = False
     pending_gap = 0
     total_gap_frames = 0
+    valid_idx = 0
     scroll_positions: List[int] = []
     try:
         while True:
+            if step_state is not None and seen_valid and pending_gap == 0 and not step_state[1]:
+                base_step = step_state[0]
+                grab_skip = (base_step - (valid_idx % base_step)) % base_step
+            else:
+                grab_skip = 0
+
+            if grab_skip > 0:
+                eof = False
+                for _ in range(grab_skip):
+                    if not cap.grab():
+                        eof = True
+                        break
+                if eof:
+                    break
+
             ret, frame = cap.read()
             if not ret or frame is None:
                 break
@@ -615,13 +814,15 @@ def _read_frames(
 
             if not is_valid:
                 if seen_valid:
-                    pending_gap += 1
+                    pending_gap += grab_skip + 1
                 continue
 
             gap_before = pending_gap
             if pending_gap:
                 total_gap_frames += pending_gap
                 pending_gap = 0
+            else:
+                valid_idx += grab_skip
             seen_valid = True
 
             if gap_before >= 5:
@@ -635,8 +836,14 @@ def _read_frames(
             dark = scrollbar < 150
             if dark.any():
                 scroll_positions.append(int(numpy.argmax(dark)))
-                if _is_inconsistent_scroll(scroll_positions):
+                min_flips = max(5, 10 // max(1, step_state[0])) if step_state is not None else 10
+                if _is_inconsistent_scroll(scroll_positions, min_flips=min_flips):
                     raise AssertionError('Video is scrolling inconsistently.')
+
+            cur_valid_idx = valid_idx
+            valid_idx += 1
+            if step_state is not None and not step_state[1] and (cur_valid_idx % step_state[0]) != 0:
+                continue
 
             # Crop only the item name and price ROI before resizing/grayscaling.
             yield cv2.cvtColor(
@@ -774,12 +981,12 @@ def _track_frame_rows(tracks: List[_RowTrack], new_rows: List[numpy.ndarray]) ->
             ))
 
 
-def _is_inconsistent_scroll(scroll_positions: List[int]) -> bool:
+def _is_inconsistent_scroll(scroll_positions: List[int], min_flips: int = 10) -> bool:
     """Detect when the user is not scrolling in a consistent direction (ignoring +-2px jitter)."""
     scroll_deltas = typing.cast(numpy.ndarray, numpy.diff(scroll_positions))
     downscroll_count = numpy.count_nonzero(scroll_deltas > 2)
     upscroll_count = numpy.count_nonzero(scroll_deltas < -2)
-    return bool(downscroll_count > 10 and upscroll_count > 10)
+    return bool(downscroll_count > min_flips and upscroll_count > min_flips)
 
 
 def _cleanup_name(item_name: str, lang: str) -> str:
@@ -804,8 +1011,21 @@ def _cleanup_name(item_name: str, lang: str) -> str:
 @functools.lru_cache(maxsize=None)
 def _get_item_db(locale: str) -> Set[str]:
     """Fetches the item database set for a given locale, with caching."""
-    with open(f'items/{locale}.json', encoding='utf-8') as fp:
+    with open(os.path.join(_BASE_DIR, 'items', f'{locale}.json'), encoding='utf-8') as fp:
         return set(json.load(fp))
+
+
+@functools.lru_cache(maxsize=None)
+def _get_clean_db_map(locale: str) -> Dict[str, str]:
+    """Maps word-joiner-stripped item names to canonical item names."""
+    return {it.replace('\u2060', ''): it for it in _get_item_db(locale)}
+
+
+@functools.lru_cache(maxsize=None)
+def _get_ru_folded_index() -> Tuple[List[str], List[str]]:
+    """Returns (item_list, homoglyph-folded lowercase list) for Russian mixed-script matching."""
+    items = _get_item_list('ru-eu')
+    return items, [it.translate(_RU_HOMOGLYPH_TRANS).casefold() for it in items]
 
 
 @functools.lru_cache(maxsize=None)
@@ -820,6 +1040,15 @@ def _detect_locale(item_rows: List[numpy.ndarray], locale: str) -> str:
     """Deterministically detects the catalog locale by scoring candidate OCR outputs against item DBs."""
     if locale != 'auto':
         return locale
+
+    nano_engine = _get_nano_ocr()
+    if nano_engine is not None:
+        try:
+            return nano_engine.detect_locale(item_rows)
+        except AssertionError:
+            raise
+        except Exception:
+            logging.warning('Nano ONNX locale detection failed; falling back to Tesseract.', exc_info=True)
 
     # Deterministically pick up to 40 evenly spaced rows across the video.
     sample_size = min(40, len(item_rows))

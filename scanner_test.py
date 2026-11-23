@@ -126,6 +126,25 @@ class ScannerTest(absltest.TestCase):
         self.assertIn('ごの', ja_unmatched)
         self.assertNotIn('みの', ja_matched)
 
+        # Verify items/legacy_aliases.json integrity across all 14 locales + non-English renames.
+        for loc in catalog.LOCALE_TIEBREAK_ORDER:
+            db = catalog._get_item_db(loc)
+            for old_name, new_name in catalog.LEGACY_ALIASES.get(loc, {}).items():
+                self.assertNotIn(old_name, db, f'{loc} alias key {old_name!r} already in DB')
+                self.assertIn(new_name, db, f'{loc} alias target {new_name!r} missing from DB')
+
+        es_matched, es_unmatched = catalog.match_items({'Máquina de coser antigua'}, locale='es-eu')
+        self.assertEqual(es_matched, ['Máquina de coser añeja'])
+        self.assertEqual(es_unmatched, [])
+
+        # Russian legacy renames + Cyrillic/Latin homoglyph folding for mixed-script tees.
+        ru_matched, ru_unmatched = catalog.match_items(
+            {'Кусочки пластыря', 'Миленькое платье', 'Футболка Аппуеоng'},
+            locale='ru-eu',
+        )
+        self.assertEqual(ru_matched, ['Пластырь', 'Платье из грез', 'Футболка Annyeong'])
+        self.assertEqual(ru_unmatched, [])
+
     def test_cjk_confusion_matching(self):
         # Note: keep total noisy items <= max(3, int(0.3 * len(items))) so assert isn't tripped.
         ja_matched, ja_unmatched = catalog.match_items(
@@ -153,11 +172,12 @@ class ScannerTest(absltest.TestCase):
             {
                 '1UP버섯', '3D안경', '5층탑', '거미', '검', '고민', '곤란', '광차',
                 '짐볼', '닷 장식', '발랫대마', '70 피규어', '7ᅮ0 오디오',
-                '빙글빙글커피잔', '불', '분추', '이스터 풍선 6',
+                '빙글빙글커피잔', '헬로 티셔츠', '헬로',
+                '불', '분추', '이스터 풍선 6',
             },
             locale='ko-kr',
         )
-        for expected in ('TOY 오디오', 'TOY 피규어', '광장의 커피 잔', '닻 장식', '빨랫대야', '짐 볼'):
+        for expected in ('TOY 오디오', 'TOY 피규어', '광장의 커피 잔', '닻 장식', '빨랫대야', '짐 볼', '헬로 티셔츠'):
             self.assertIn(expected, ko_matched)
         self.assertEqual(ko_unmatched, ['분추', '불', '이스터 풍선 6'])
 
@@ -189,27 +209,30 @@ class ScannerTest(absltest.TestCase):
             self.assertIn(expected, cn_matched)
         self.assertEqual(cn_unmatched, ['复活节受子'])
 
-    def test_rapidocr_cjk_and_fallback(self):
+    def test_nano_onnx_ocr_and_fallback(self):
         row = numpy.full((35, 415), 245, dtype=numpy.uint8)
         row[8:26, 20:110] = 45
-        crop = catalog._prepare_rec_crop(row)
-        self.assertEqual(crop.ndim, 3)
-        self.assertEqual(crop.shape[0], row.shape[0] + 8)
-        self.assertEqual(crop.shape[2], 3)
-        self.assertLess(crop.shape[1], row.shape[1])
+        prepped, ink_ws = catalog._NanoOcrEngine.prep_rows([row])
+        self.assertEqual(prepped.shape, (1, 32, 384))
+        self.assertLess(int(ink_ws[0]), 384)
 
         rows = catalog.parse_video('examples/extra/catalog_zhcn.mp4')[:6]
-        ocr_names = catalog.run_ocr(rows, lang='chi_sim')
+        det_loc = catalog._detect_locale(rows, 'auto')
+        self.assertEqual(det_loc, 'zh-cn')
+        self.assertIsNotNone(getattr(catalog._OCR_TLS, 'sample_cache', None))
+        ocr_names = catalog.run_ocr(rows, lang='chi_sim', locale='zh-cn')
+        self.assertIsNone(getattr(catalog._OCR_TLS, 'sample_cache', None))
         db = catalog._get_item_db('zh-cn')
-        self.assertGreaterEqual(sum(1 for name in ocr_names if name in db), 4)
+        self.assertGreaterEqual(sum(1 for name in ocr_names if name in db), 5)
 
-        with mock.patch.object(catalog, '_get_rapidocr_rec', return_value=None):
+        with mock.patch.object(catalog, '_get_nano_ocr', return_value=None):
             with mock.patch.object(catalog, '_ocr_chunk', return_value={'テスト'}) as mock_tess:
                 self.assertEqual(catalog.run_ocr([row], lang='jpn'), {'テスト'})
                 mock_tess.assert_called_once()
 
-        failing_rec = mock.MagicMock(side_effect=RuntimeError('boom'))
-        with mock.patch.object(catalog, '_get_rapidocr_rec', return_value=failing_rec):
+        failing_eng = mock.MagicMock()
+        failing_eng.recognize_rows.side_effect = RuntimeError('boom')
+        with mock.patch.object(catalog, '_get_nano_ocr', return_value=failing_eng):
             with mock.patch.object(catalog, '_ocr_chunk', return_value={'테스트'}) as mock_tess:
                 self.assertEqual(catalog.run_ocr([row], lang='kor'), {'테스트'})
                 mock_tess.assert_called_once()
