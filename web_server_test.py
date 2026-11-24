@@ -163,10 +163,10 @@ class WebServerTest(AioHTTPTestCase):
                 break
             await asyncio.sleep(0.1)
 
-        # Sliding 5-per-10-min limit on a fresh IP.
+        # Sliding 10-per-10-min limit on a fresh IP.
         ip3 = {'Origin': 'https://nook.lol', 'CF-Connecting-IP': '203.0.113.12'}
         with mock.patch.object(web_server, 'verify_turnstile', new=mock.AsyncMock(return_value=True)):
-            for idx in range(5):
+            for idx in range(web_server.RATE_LIMIT_MAX_UPLOADS):
                 f = _multipart_upload(
                     fields=[('cf-turnstile-response', 'ok-token')],
                     files=[('files', f'p{idx}.png', _png_bytes(1280, 720), 'image/png')],

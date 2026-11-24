@@ -32,7 +32,7 @@ MAX_VIDEO_DURATION_SECONDS = 45.0
 MIN_FRAME_HEIGHT = 472
 MAX_QUEUE_DEPTH = 15
 RATE_LIMIT_WINDOW_SECONDS = 600
-RATE_LIMIT_MAX_UPLOADS = 5
+RATE_LIMIT_MAX_UPLOADS = 10
 SCAN_TIMEOUT_SECONDS = 90.0
 JOB_TTL_SECONDS = 1800
 WEB_CACHE_MAX_AGE_SECONDS = 14 * 24 * 3600
@@ -409,7 +409,7 @@ def create_app(
         ip_timestamps[client_ip] = recent
         if len(recent) >= RATE_LIMIT_MAX_UPLOADS:
             return _json_response(
-                {'error': 'Rate limit reached (max 5 scans per 10 minutes). Please wait a few minutes and try again.'},
+                {'error': f'Rate limit reached (max {RATE_LIMIT_MAX_UPLOADS} scans per 10 minutes). Please wait a few minutes and try again.'},
                 status=429,
             )
 
