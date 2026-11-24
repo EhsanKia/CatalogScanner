@@ -1,6 +1,7 @@
 import asyncio
 import concurrent.futures
 import datetime
+import json
 import logging as stdlib_logging
 import os
 import pathlib
@@ -42,7 +43,7 @@ hashid_client = hashids.Hashids(salt=constants.SALT, min_length=6)
 _datastore_client = None
 _web_runner = None
 _UNINDEXED_FIELDS = (
-    'hash', 'data', 'locale', 'type', 'source',
+    'hash', 'data', 'details', 'locale', 'type', 'source',
     'discord_user', 'discord_user_name', 'cache_filename', 'unmatched',
 )
 
@@ -112,6 +113,10 @@ def upload_to_datastore(
     if result.unmatched:
         unmatched_data = '\n'.join(result.unmatched).encode('utf-8')
         entity['unmatched'] = unmatched_data
+    if getattr(result, 'details', None):
+        raw_details = json.dumps(result.details, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+        comp_details = zlib.compress(raw_details, level=6)
+        entity['details'] = comp_details if len(comp_details) < len(raw_details) else raw_details
 
     datastore_client.put(entity)
     return entity

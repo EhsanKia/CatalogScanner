@@ -59,8 +59,6 @@ def scan_media(filename: str, mode: str = 'auto', locale: str = 'auto', for_sale
     if mode not in SCANNERS:
         raise RuntimeError('Invalid mode: %r' % mode)
 
-    assert mode != 'storage', 'Storage scanning is not supported.'
-
     kwargs = {}
     if mode == 'catalog':
         kwargs['for_sale'] = for_sale

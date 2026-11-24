@@ -6,7 +6,7 @@ import os
 import cv2
 import numpy
 
-from typing import Callable, Iterator, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple, Union
 
 IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.webp', '.bmp')
 
@@ -135,3 +135,4 @@ class ScanResult:
     items: List[str]
     locale: str
     unmatched: List[str] = dataclasses.field(default_factory=list)
+    details: Optional[List[Dict[str, Any]]] = None

@@ -14,6 +14,7 @@ import music
 import reactions
 import recipes
 import scanner
+import storage
 from common import ScanMode, crop_720p_roi, is_image_file, slice_720p
 
 
@@ -528,6 +529,31 @@ class ScannerTest(absltest.TestCase):
         # Verify cap.grab() frame skipping yields the exact same row count as reading all frames.
         rows_grab = catalog.parse_video('examples/extra/catalog_twopage.mp4')
         self.assertEqual(len(rows_grab), 1320)
+
+    def test_storage_scan_and_details(self):
+        res = scanner.scan_media('examples/extra/storage_sample.mp4')
+        self.assertEqual(res.mode, ScanMode.STORAGE)
+        self.assertEqual(res.locale, 'en-us')
+        self.assertEqual(res.unmatched, [])
+        self.assertEqual(len(res.items), 86)
+        self.assertIsNotNone(res.details)
+        assert res.details is not None
+        self.assertEqual(len(res.details), 88)
+        self.assertEqual(sum(d['count'] for d in res.details), 98)
+        self.assertIn({'name': 'Bath-towel wrap', 'variant': 'Green', 'pattern': '', 'count': 1}, res.details)
+
+        res_ja = scanner.scan_media('examples/extra/storage_sample.mp4', locale='ja-jp')
+        self.assertEqual(res_ja.locale, 'ja-jp')
+        self.assertEqual(len(res_ja.items), 86)
+        self.assertIn('TOYなフィギュア', res_ja.items)
+
+    def test_storage_rejects_noise(self):
+        rng = numpy.random.default_rng(42)
+        noise_tile = rng.integers(0, 256, size=(100, 100, 3), dtype=numpy.uint8)
+        details, unmatched = storage.match_items([noise_tile])
+        self.assertEqual(details, [])
+        self.assertEqual(len(unmatched), 1)
+        self.assertIn('?s=', unmatched[0])
 
 
 class ScannerExtraTest(parameterized.TestCase):
