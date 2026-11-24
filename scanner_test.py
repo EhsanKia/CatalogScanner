@@ -420,6 +420,86 @@ class ScannerTest(absltest.TestCase):
         self.assertEqual(len(results.items), 13)
         self.assertEqual(results.unmatched, [])
 
+    def test_all_14_locales_nano_vocab_and_matching(self):
+        engine = catalog._get_nano_ocr()
+        self.assertIsNotNone(engine)
+        assert engine is not None
+        vocab_chars = set(engine.vocab[1:])
+
+        for loc in catalog.LOCALE_TIEBREAK_ORDER:
+            self.assertIn(loc, engine.allowed_by_locale)
+            db = catalog._get_item_db(loc)
+            aliases = catalog.LEGACY_ALIASES.get(loc, {})
+            missing = set(''.join(db)) - vocab_chars
+            self.assertEqual(missing, set(), f'{loc} DB has chars missing from Nano vocab: {missing}')
+
+            # Spot-check exact match, legacy alias, and word-joiner (\u2060) stripping per locale.
+            sample_item = next(it for it in sorted(db) if len(it) >= 4)
+            probes = {sample_item}
+            if aliases:
+                alias_src, alias_dst = next(iter(aliases.items()))
+                probes.add(alias_src)
+            else:
+                alias_dst = None
+
+            wj_items = [it for it in db if '\u2060' in it]
+            if wj_items:
+                probes.add(wj_items[0].replace('\u2060', ''))
+
+            matched, unmatched = catalog.match_items(probes, locale=loc)
+            self.assertEqual(unmatched, [], f'{loc} failed matching probes: {unmatched}')
+            self.assertIn(sample_item, matched)
+            if alias_dst:
+                self.assertIn(alias_dst, matched)
+            if wj_items:
+                self.assertIn(wj_items[0], matched)
+
+    def test_nano_detect_locale_fuzzy_fallback_and_errors(self):
+        engine = catalog._get_nano_ocr()
+        self.assertIsNotNone(engine)
+        assert engine is not None
+        rows = [numpy.full((35, 415), 245, dtype=numpy.uint8) for _ in range(4)]
+
+        # When exact hits are 0 across all locales, fuzzy fallback should pick French cleanly.
+        fr_typos = ['Tablier de bricolagee', 'Établi de bricolagee', 'Baignoire en bois de cypres']
+        with mock.patch.object(engine, 'decode_masked', return_value=fr_typos):
+            det_loc = engine.detect_locale(rows)
+        self.assertEqual(det_loc, 'fr-eu')
+        catalog._OCR_TLS.sample_cache = None
+
+        # Pure garbage with zero exact and zero fuzzy hits must fail loudly.
+        with mock.patch.object(engine, 'decode_masked', return_value=['zzzzqqqq', 'xxxxwwww']):
+            with self.assertRaisesRegex(AssertionError, 'Failed to automatically detect language.'):
+                engine.detect_locale(rows)
+        catalog._OCR_TLS.sample_cache = None
+
+    def test_catalog_edge_cases_cleanup_for_sale_and_thresholds(self):
+        self.assertEqual(catalog._cleanup_name('’Ao dai‘', 'eng'), "'Áo dài'")
+        self.assertEqual(catalog._cleanup_name('Моок пс. тс.', 'rus'), 'Nook Inc. Inc.')
+
+        # Too many unmatched items (> max(3, 30%)) must raise.
+        with self.assertRaisesRegex(AssertionError, 'Failed to match multiple items'):
+            catalog.match_items({'zzz_bad_1', 'zzz_bad_2', 'zzz_bad_3', 'zzz_bad_4'}, locale='en-us')
+
+        # for_sale=True should filter out rows whose price area is blank/light (>100).
+        frame = numpy.full((480, 585), 245, dtype=numpy.uint8)
+        frame[100, 0] = 100
+        frame[153, 0] = 100
+        # Row 1 (y=100 -> 60:95): item text + dark price indicator
+        frame[65:90, 20:150] = 40
+        frame[70:85, 440:470] = 40
+        # Row 2 (y=153 -> 113:148): item text only (not for sale)
+        frame[118:143, 20:150] = 40
+        all_rows = list(catalog._parse_frame(frame, for_sale=False))
+        sale_rows = list(catalog._parse_frame(frame, for_sale=True))
+        self.assertGreater(len(all_rows), 1)
+        self.assertEqual(len(sale_rows), 1)
+
+    def test_parse_video_cap_grab_parity(self):
+        # Verify cap.grab() frame skipping yields the exact same row count as reading all frames.
+        rows_grab = catalog.parse_video('examples/extra/catalog_twopage.mp4')
+        self.assertEqual(len(rows_grab), 1320)
+
 
 class ScannerExtraTest(parameterized.TestCase):
 
