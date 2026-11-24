@@ -15,6 +15,7 @@ from absl import flags
 from absl import logging
 
 MAX_VIDEO_DURATION_SECONDS = 180
+MIN_FRAME_HEIGHT = 472
 
 SCANNERS: Dict[str, Any] = {
     'catalog': catalog,
@@ -78,8 +79,8 @@ def _detect_media_type(filename: str) -> str:
             if not success or frame is None:
                 break
 
-            # Resolution must be at least 720p.
-            assert frame.shape[0] >= 720, \
+            # Resolution must be at least 480p (allowing 478p mobile/WhatsApp aspect rounding).
+            assert frame.shape[0] >= MIN_FRAME_HEIGHT, \
                 'Invalid resolution: {1}x{0}'.format(*frame.shape)
 
             # Resize frames to 720p since matching is built for 720p.

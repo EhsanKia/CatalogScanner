@@ -369,11 +369,40 @@ class ScannerTest(absltest.TestCase):
 
     def test_rejects_low_resolution_media(self):
         with tempfile.TemporaryDirectory() as tmpdir:
-            for width, height in ((854, 480), (640, 360)):
+            for width, height in ((640, 360), (426, 240)):
                 path = os.path.join(tmpdir, f'low_{width}x{height}.png')
                 cv2.imwrite(path, numpy.zeros((height, width, 3), dtype=numpy.uint8))
                 with self.assertRaisesRegex(AssertionError, f'Invalid resolution: {width}x{height}'):
                     scanner.scan_media(path)
+
+    def test_accepts_480p_media(self):
+        img = cv2.imread('examples/reactions.jpg')
+        self.assertIsNotNone(img)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            img_480 = os.path.join(tmpdir, 'reactions_480.jpg')
+            cv2.imwrite(img_480, cv2.resize(img, (854, 480), interpolation=cv2.INTER_AREA))
+            r_res = scanner.scan_media(img_480)
+            self.assertEqual(r_res.mode, ScanMode.REACTIONS)
+            self.assertEqual(r_res.items, GROUND_TRUTH['test_reactions'])
+            self.assertEqual(r_res.unmatched, [])
+
+            vid_480 = os.path.join(tmpdir, 'catalog_tiny_480.mp4')
+            cap = cv2.VideoCapture('examples/extra/catalog_tiny.mp4')
+            fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+            writer = cv2.VideoWriter(vid_480, cv2.VideoWriter_fourcc(*'mp4v'), fps, (854, 480))
+            while True:
+                ok, frame = cap.read()
+                if not ok:
+                    break
+                writer.write(cv2.resize(frame, (854, 480), interpolation=cv2.INTER_AREA))
+            cap.release()
+            writer.release()
+
+            c_res = scanner.scan_media(vid_480, locale='auto')
+            self.assertEqual(c_res.mode, ScanMode.CATALOG)
+            self.assertEqual(c_res.locale, 'en-us')
+            self.assertEqual(len(c_res.items), 13)
+            self.assertEqual(c_res.unmatched, [])
 
     def test_rejects_over_duration_video(self):
         mock_cap = mock.MagicMock()
