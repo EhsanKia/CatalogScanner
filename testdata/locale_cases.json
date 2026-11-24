@@ -86,5 +86,65 @@
       "Shellfish pochette",
       "Traveler's backpack"
     ]
+  },
+  "catalog_freu.mp4": {
+    "expected_locale": "fr-eu",
+    "min_items": 25,
+    "max_unmatched": 0,
+    "required_items": [
+      "Aluminoïde",
+      "Grouikoïde",
+      "Zonzoïde"
+    ]
+  },
+  "catalog_frus.mp4": {
+    "expected_locale": "fr-us",
+    "min_items": 84,
+    "max_unmatched": 0,
+    "required_items": [
+      "2 jours plus tôt",
+      "Kéké marathon",
+      "Étude de Kéké"
+    ]
+  },
+  "catalog_iteu.mp4": {
+    "expected_locale": "it-eu",
+    "min_items": 45,
+    "max_unmatched": 0,
+    "required_items": [
+      "Tappetino arancione S",
+      "Tappeto football",
+      "Tappeto vinile rosso"
+    ]
+  },
+  "catalog_nleu.mp4": {
+    "expected_locale": "nl-eu",
+    "min_items": 42,
+    "max_unmatched": 0,
+    "required_items": [
+      "Achter het stuur",
+      "K⁠.⁠K⁠.-⁠fusion",
+      "⁠Agent K.K."
+    ]
+  },
+  "catalog_esus.mp4": {
+    "expected_locale": "es-us",
+    "min_items": 74,
+    "max_unmatched": 0,
+    "required_items": [
+      "Alfombra recepción",
+      "Suelo glaciar",
+      "Tatami cuadrado verde"
+    ]
+  },
+  "catalog_eneu.mp4": {
+    "expected_locale": "en-eu",
+    "min_items": 71,
+    "max_unmatched": 0,
+    "required_items": [
+      "Acanthostega",
+      "Mammoth skull",
+      "Trilobite"
+    ]
   }
 }

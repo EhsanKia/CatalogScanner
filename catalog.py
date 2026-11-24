@@ -321,20 +321,67 @@ class _NanoOcrEngine:
             ink_ws[i] = scaled_w
         return prepped, ink_ws
 
-    def decode_masked(self, logits: numpy.ndarray, allowed: numpy.ndarray) -> List[str]:
-        """Greedy CTC decode restricted to the allowed token subset for the target locale/language."""
-        pred_ids = allowed[logits[:, :, allowed].argmax(axis=-1)]
+    @staticmethod
+    def _is_exact_db_hit(name: str, recover_locs: Tuple[str, ...]) -> bool:
+        clean_key = name.replace('\u2060', '')
+        for loc in recover_locs:
+            db = _get_item_db(loc)
+            aliases = LEGACY_ALIASES.get(loc, {})
+            if aliases.get(name, name) in db or aliases.get(name, name).replace('\u2060', '') in _get_clean_db_map(loc):
+                return True
+            if clean_key in _get_clean_db_map(loc):
+                return True
+        return False
+
+    def decode_masked(
+        self,
+        logits: numpy.ndarray,
+        allowed: numpy.ndarray,
+        lang: str = 'eng',
+        recover_locs: Optional[Tuple[str, ...]] = None,
+    ) -> List[str]:
+        """Greedy CTC decode restricted to allowed tokens, with top-k logit recovery for 2-char DB misses."""
+        sub_logits = logits[:, :, allowed]
+        top1_pos = sub_logits.argmax(axis=-1)
+        pred_ids = allowed[top1_pos]
         out: List[str] = []
         vocab = self.vocab
-        for seq in pred_ids:
+        for row_i, seq in enumerate(pred_ids):
             chars: List[str] = []
+            char_steps: List[Tuple[int, int]] = []
             prev = 0
-            for tok in seq:
+            for t_idx, tok in enumerate(seq):
                 if tok != 0 and tok != prev:
                     chars.append(vocab[tok])
+                    char_steps.append((t_idx, int(top1_pos[row_i, t_idx])))
                 prev = tok
-            if chars:
-                out.append(''.join(chars))
+            if not chars:
+                continue
+            txt = ''.join(chars)
+            if recover_locs and len(chars) == 2 and not self._is_exact_db_hit(_cleanup_name(txt, lang), recover_locs):
+                row_l = sub_logits[row_i]
+                row_exp = numpy.exp(row_l - row_l.max(axis=-1, keepdims=True))
+                probs = row_exp / row_exp.sum(axis=-1, keepdims=True)
+                best_prob = 0.0
+                best_txt = txt
+                for char_pos, (t_idx, pos1) in enumerate(char_steps):
+                    top_k = numpy.argsort(-probs[t_idx])[:4]
+                    for pos2 in top_k:
+                        pos2_i = int(pos2)
+                        tok2 = int(allowed[pos2_i])
+                        if tok2 == 0 or pos2_i == pos1:
+                            continue
+                        p2 = float(probs[t_idx, pos2_i])
+                        if p2 < 0.01:
+                            break
+                        alt_chars = list(chars)
+                        alt_chars[char_pos] = vocab[tok2]
+                        alt_txt = ''.join(alt_chars)
+                        if p2 > best_prob and self._is_exact_db_hit(_cleanup_name(alt_txt, lang), recover_locs):
+                            best_prob = p2
+                            best_txt = alt_txt
+                txt = best_txt
+            out.append(txt)
         return out
 
     def detect_locale(self, item_rows: List[numpy.ndarray]) -> str:
@@ -399,6 +446,7 @@ class _NanoOcrEngine:
             if locale and locale in self.allowed_by_locale
             else self.allowed_by_lang[lang]
         )
+        recover_locs = (locale,) if locale and locale in LOCALE_MAP else _LANG_TO_LOCALES[lang]
         cached = getattr(_OCR_TLS, 'sample_cache', None)
         _OCR_TLS.sample_cache = None
 
@@ -410,7 +458,7 @@ class _NanoOcrEngine:
             and item_rows[-1] is cached[1]
         ):
             _, _, _, prepped, ink_ws, s_idx, s_logits = cached
-            for txt in self.decode_masked(s_logits, allowed):
+            for txt in self.decode_masked(s_logits, allowed, lang=lang, recover_locs=recover_locs):
                 cleaned = _cleanup_name(txt, lang)
                 if cleaned:
                     names.add(cleaned)
@@ -432,7 +480,7 @@ class _NanoOcrEngine:
 
             def _run_batch(xb: numpy.ndarray) -> List[str]:
                 logits = self.sess.run(None, {'images': xb})[0]
-                return self.decode_masked(logits, allowed)
+                return self.decode_masked(logits, allowed, lang=lang, recover_locs=recover_locs)
 
             if self.pool is not None and len(batches) > 1:
                 batch_outs = list(self.pool.map(_run_batch, batches))
