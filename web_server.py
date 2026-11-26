@@ -43,6 +43,7 @@ WEBSCAN_EVENT_MAX_PER_WINDOW = 10
 SCAN_TIMEOUT_SECONDS = 90.0
 JOB_TTL_SECONDS = 1800
 WEB_CACHE_MAX_AGE_SECONDS = 14 * 24 * 3600
+WEB_CACHE_MAX_BYTES = 2 * 1024 * 1024 * 1024
 FAILED_CACHE_MAX_AGE_SECONDS = 60 * 24 * 3600
 FAILED_CACHE_MAX_BYTES = 1024 * 1024 * 1024
 
@@ -524,7 +525,7 @@ def create_app(
                 job.mode = result.mode.name.lower()
                 job.locale = result.locale
                 job.status = 'done'
-                _prune_old_entries(web_cache_root, WEB_CACHE_MAX_AGE_SECONDS)
+                _prune_old_entries(web_cache_root, WEB_CACHE_MAX_AGE_SECONDS, WEB_CACHE_MAX_BYTES)
         finally:
             if job.status not in ('done', 'error'):
                 job.status = 'error'
@@ -712,6 +713,10 @@ def create_app(
                 {'error': 'Upload exceeds the 50 MB limit. Trim your video or split your catalog into subsections.'},
                 status=413,
             )
+        except ConnectionError:
+            shutil.rmtree(job_dir, ignore_errors=True)
+            logging.info('Client disconnected during multipart upload.')
+            return _json_response({'error': 'Upload interrupted.'}, status=400)
         except Exception:
             shutil.rmtree(job_dir, ignore_errors=True)
             logging.warning('Failed to read multipart upload.', exc_info=True)
