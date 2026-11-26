@@ -2,6 +2,7 @@ import asyncio
 import dataclasses
 import datetime
 import functools
+import gzip
 import json
 import os
 import pathlib
@@ -17,6 +18,7 @@ from aiohttp import web
 from PIL import Image, ImageOps
 
 import catalog
+from common import ScanMode, ScanResult
 
 LISTEN_HOST = '127.0.0.1'
 LISTEN_PORT = 8787
@@ -24,15 +26,20 @@ LISTEN_PORT = 8787
 ALLOWED_ORIGINS = frozenset({'https://nook.lol', 'https://www.nook.lol'})
 EXPECTED_TURNSTILE_HOSTNAMES = frozenset({'nook.lol', 'www.nook.lol'})
 EXPECTED_TURNSTILE_ACTION = 'web_scan'
+EXPECTED_WEBSCAN_TURNSTILE_ACTION = 'webscan_submit'
 TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 
 MAX_UPLOAD_BYTES = 50 * 1024 * 1024
+MAX_WEBSCAN_SUBMIT_BYTES = 256 * 1024
+MAX_WEBSCAN_EVENT_BYTES = 4 * 1024
 MAX_IMAGE_FILES = 10
 MAX_VIDEO_DURATION_SECONDS = 45.0
 MIN_FRAME_HEIGHT = 472
 MAX_QUEUE_DEPTH = 15
 RATE_LIMIT_WINDOW_SECONDS = 600
 RATE_LIMIT_MAX_UPLOADS = 10
+WEBSCAN_SUBMIT_MAX_PER_WINDOW = 15
+WEBSCAN_EVENT_MAX_PER_WINDOW = 10
 SCAN_TIMEOUT_SECONDS = 90.0
 JOB_TTL_SECONDS = 1800
 WEB_CACHE_MAX_AGE_SECONDS = 14 * 24 * 3600
@@ -43,7 +50,20 @@ VIDEO_EXTS = frozenset({'.mp4', '.mov'})
 IMAGE_EXTS = frozenset({'.jpg', '.jpeg', '.png', '.webp'})
 ALLOWED_EXTS = VIDEO_EXTS | IMAGE_EXTS
 VALID_LOCALES = frozenset(catalog.LOCALE_MAP)
+CONCRETE_LOCALES = frozenset(loc for loc in catalog.LOCALE_MAP if loc != 'auto')
+VALID_WEBSCAN_MODES = frozenset({'catalog', 'recipes', 'critters', 'reactions', 'music', 'storage'})
+MODE_MAX_ITEMS = {
+    'catalog': 6200,
+    'recipes': 1000,
+    'critters': 200,
+    'reactions': 88,
+    'music': 110,
+    'storage': 5000,
+}
 JOB_ID_RE = re.compile(r'^[a-f0-9]{16,32}$')
+_CONTROL_CHAR_RE = re.compile(r'[\x00-\x1f\x7f]')
+_UNSAFE_SUBSTR_RE = re.compile(r'(?:https?://|[<>])', re.IGNORECASE)
+_BASE_DIR = pathlib.Path(__file__).resolve().parent
 
 
 @dataclasses.dataclass
@@ -141,12 +161,18 @@ def _archive_failed_job(job_dir: pathlib.Path, failed_root: pathlib.Path, job_id
         logging.warning('Failed to archive failed upload %s', job_id, exc_info=True)
 
 
-async def verify_turnstile(token: str, remoteip: str, secret: str) -> bool:
+async def verify_turnstile(
+    token: str,
+    remoteip: str,
+    secret: str,
+    expected_actions: str | frozenset[str] = EXPECTED_TURNSTILE_ACTION,
+) -> bool:
     """Verify a Cloudflare Turnstile response token fail-closed."""
     if not secret:
         return True
     if not token or len(token) > 2048:
         return False
+    allowed_actions = {expected_actions} if isinstance(expected_actions, str) else set(expected_actions)
     body = urllib.parse.urlencode({
         'secret': secret,
         'response': token,
@@ -169,9 +195,137 @@ async def verify_turnstile(token: str, remoteip: str, secret: str) -> bool:
 
     return bool(
         data.get('success') is True
-        and data.get('action') == EXPECTED_TURNSTILE_ACTION
+        and data.get('action') in allowed_actions
         and data.get('hostname') in EXPECTED_TURNSTILE_HOSTNAMES
     )
+
+
+@functools.lru_cache(maxsize=None)
+def _get_canonical_items(mode: str, locale: str) -> frozenset[str]:
+    """Return the closed-vocabulary allowlist of valid item names for (mode, locale)."""
+    if mode == 'catalog':
+        return frozenset(catalog._get_item_db(locale))
+    if mode in ('recipes', 'critters', 'reactions', 'music'):
+        with open(_BASE_DIR / mode / 'names.json', encoding='utf-8') as fp:
+            names = [row[0] for row in json.load(fp)]
+        if locale == 'en-us':
+            return frozenset(names)
+        with open(_BASE_DIR / mode / 'translations.json', encoding='utf-8') as fp:
+            translations = json.load(fp)
+        return frozenset(translations.get(n, {}).get(locale, n) for n in names)
+    return frozenset()
+
+
+@functools.lru_cache(maxsize=1)
+def _load_storage_meta() -> dict:
+    with gzip.open(_BASE_DIR / 'models' / 'acnh_storage_meta.json.gz', 'rb') as fp:
+        return json.loads(fp.read().decode('utf-8'))
+
+
+@functools.lru_cache(maxsize=None)
+def _get_canonical_storage_triples(locale: str) -> frozenset[tuple[str, str, str]]:
+    """Return valid (translated_name, variant, pattern) triples for Home Storage."""
+    meta = _load_storage_meta()
+    names = meta['locales'].get(locale) or meta['names']
+    return frozenset((names[name_id], variant, pattern) for name_id, variant, pattern in meta['rows'])
+
+
+def _sanitize_unmatched(raw: object) -> list[str]:
+    if not isinstance(raw, list):
+        return []
+    cleaned: list[str] = []
+    for entry in raw[:100]:
+        if not isinstance(entry, str):
+            continue
+        s = _CONTROL_CHAR_RE.sub('', entry).strip()[:64]
+        if not s or _UNSAFE_SUBSTR_RE.search(s):
+            continue
+        cleaned.append(s)
+    return cleaned
+
+
+def _validate_webscan_submission(payload: dict) -> tuple[ScanResult, dict]:
+    """Validate a browser-native scan payload against canonical DB allowlists."""
+    if not isinstance(payload, dict):
+        raise ValueError('Invalid JSON payload.')
+
+    mode = str(payload.get('mode') or '').strip().lower()
+    if mode not in VALID_WEBSCAN_MODES:
+        raise ValueError(f'Unsupported scan mode: {mode!r}')
+
+    locale = str(payload.get('locale') or '').strip().lower()
+    if locale not in CONCRETE_LOCALES:
+        raise ValueError(f'Unsupported locale: {locale!r}')
+
+    requested_locale = str(payload.get('requested_locale') or 'auto').strip().lower()
+    if requested_locale not in VALID_LOCALES:
+        requested_locale = 'auto'
+
+    unmatched = _sanitize_unmatched(payload.get('unmatched'))
+    details: list[dict] | None = None
+
+    if mode == 'storage':
+        raw_details = payload.get('details')
+        if not isinstance(raw_details, list) or not raw_details:
+            raise ValueError('Storage submission requires non-empty details.')
+        if len(raw_details) > MODE_MAX_ITEMS['storage']:
+            raise ValueError('Too many storage detail entries.')
+        valid_triples = _get_canonical_storage_triples(locale)
+        merged: dict[tuple[str, str, str], int] = {}
+        total_count = 0
+        for row in raw_details:
+            if not isinstance(row, dict):
+                raise ValueError('Invalid storage detail entry.')
+            name = str(row.get('name') or '')
+            variant = str(row.get('variant') or '')
+            pattern = str(row.get('pattern') or '')
+            try:
+                cnt = int(row.get('count', 1))
+            except (TypeError, ValueError) as exc:
+                raise ValueError('Invalid storage item count.') from exc
+            if cnt < 1 or cnt > 5000:
+                raise ValueError('Storage item count out of range.')
+            triple = (name, variant, pattern)
+            if triple not in valid_triples:
+                raise ValueError(f'Unknown storage item: {name!r}')
+            total_count += cnt
+            if total_count > 5000:
+                raise ValueError('Total storage item count exceeds limit.')
+            merged[triple] = merged.get(triple, 0) + cnt
+        details = [
+            {'name': n, 'variant': v, 'pattern': p, 'count': c}
+            for (n, v, p), c in sorted(merged.items())
+        ]
+        items = sorted({d['name'] for d in details})
+    else:
+        raw_items = payload.get('items')
+        if not isinstance(raw_items, list) or not raw_items:
+            raise ValueError('Submission requires a non-empty items list.')
+        if len(raw_items) > MODE_MAX_ITEMS[mode]:
+            raise ValueError('Item count exceeds maximum for scan mode.')
+        allowlist = _get_canonical_items(mode, locale)
+        unique_items: set[str] = set()
+        for entry in raw_items:
+            if not isinstance(entry, str) or entry not in allowlist:
+                raise ValueError(f'Unknown {mode} item: {entry!r}')
+            unique_items.add(entry)
+        items = sorted(unique_items)
+
+    scan_result = ScanResult(
+        mode=ScanMode[mode.upper()],
+        items=items,
+        locale=locale,
+        unmatched=unmatched,
+        details=details,
+    )
+    meta = {
+        'requested_locale': requested_locale,
+        'for_sale': bool(payload.get('for_sale', False)),
+        'media_kind': 'image' if payload.get('media_kind') == 'image' else 'video',
+        'file_bytes': max(0, min(100_000_000, int(payload.get('file_bytes') or 0))),
+        'duration_ms': max(0, min(600_000, int(payload.get('duration_ms') or 0))),
+    }
+    return scan_result, meta
 
 
 async def _probe_video(video_path: pathlib.Path) -> tuple[int, int, float]:
@@ -256,6 +410,7 @@ def create_app(
     error_fn,
     turnstile_secret: str = '',
     cache_dir: pathlib.Path | str = 'cache',
+    on_webscan_event=None,
 ) -> web.Application:
     cache_root = pathlib.Path(cache_dir)
     web_cache_root = cache_root / 'web'
@@ -263,6 +418,28 @@ def create_app(
 
     jobs: dict[str, ScanJob] = {}
     ip_timestamps: dict[str, list[float]] = {}
+    webscan_submit_timestamps: dict[str, list[float]] = {}
+    webscan_event_timestamps: dict[str, list[float]] = {}
+
+    def _check_rate_limit(bucket: dict[str, list[float]], client_ip: str, max_count: int) -> bool:
+        now = time.time()
+        # Periodically prune idle IP keys so memory stays bounded.
+        if len(bucket) > 512:
+            stale_ips = [
+                ip for ip, ts_list in bucket.items()
+                if not ts_list or (now - ts_list[-1]) >= RATE_LIMIT_WINDOW_SECONDS
+            ]
+            for ip in stale_ips:
+                bucket.pop(ip, None)
+        recent = [ts for ts in bucket.get(client_ip, []) if (now - ts) < RATE_LIMIT_WINDOW_SECONDS]
+        if recent:
+            bucket[client_ip] = recent
+        else:
+            bucket.pop(client_ip, None)
+        return len(recent) < max_count
+
+    def _record_rate_limit(bucket: dict[str, list[float]], client_ip: str) -> None:
+        bucket.setdefault(client_ip, []).append(time.time())
 
     def _prune_jobs() -> None:
         cutoff = time.time() - JOB_TTL_SECONDS
@@ -323,7 +500,7 @@ def create_app(
                     return
 
                 try:
-                    entity = upload_fn(result, None, job.cache_rel, source='web')
+                    entity = await asyncio.to_thread(upload_fn, result, None, job.cache_rel, source='web')
                 except Exception:
                     logging.exception('Failed to upload web scan results to Datastore for %s', job.job_id)
                     _archive_failed_job(job.job_dir, failed_cache_root, job.job_id, 'Failed to upload results to Datastore.')
@@ -583,10 +760,155 @@ def create_app(
         asyncio.create_task(_run_job(job))
         return _json_response({'job_id': job_id, 'status': 'queued', 'position': pos}, status=202)
 
+    async def handle_webscan_submit(request: web.Request) -> web.Response:
+        origin = request.headers.get('Origin')
+        if origin not in ALLOWED_ORIGINS:
+            return _json_response({'error': 'Origin not allowed.'}, status=403)
+
+        client_ip = _get_client_ip(request)
+        if not _check_rate_limit(webscan_submit_timestamps, client_ip, WEBSCAN_SUBMIT_MAX_PER_WINDOW):
+            return _json_response(
+                {'error': f'Rate limit reached (max {WEBSCAN_SUBMIT_MAX_PER_WINDOW} saves per 10 minutes).'},
+                status=429,
+            )
+
+        if request.content_length is not None and request.content_length > MAX_WEBSCAN_SUBMIT_BYTES:
+            return _json_response({'error': 'Payload too large.'}, status=413)
+
+        raw_body = await request.read()
+        if len(raw_body) > MAX_WEBSCAN_SUBMIT_BYTES:
+            return _json_response({'error': 'Payload too large.'}, status=413)
+
+        try:
+            payload = json.loads(raw_body.decode('utf-8'))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            return _json_response({'error': 'Invalid JSON body.'}, status=400)
+
+        if turnstile_secret:
+            token = str((payload or {}).get('turnstile_token') or '').strip()
+            ok = await verify_turnstile(
+                token, client_ip, turnstile_secret,
+                expected_actions=frozenset({EXPECTED_TURNSTILE_ACTION, EXPECTED_WEBSCAN_TURNSTILE_ACTION}),
+            )
+            if not ok:
+                return _json_response({'error': 'Bot verification failed. Please refresh and try again.'}, status=403)
+
+        try:
+            scan_result, meta = _validate_webscan_submission(payload)
+        except ValueError as exc:
+            return _json_response({'error': str(exc)}, status=400)
+
+        _record_rate_limit(webscan_submit_timestamps, client_ip)
+        try:
+            entity = await asyncio.to_thread(upload_fn, scan_result, None, 'web-native', source='webscan')
+        except Exception:
+            logging.exception('Failed to save browser-native scan to Datastore.')
+            return _json_response({'error': 'Failed to save results. Please try again.'}, status=500)
+
+        key_hash = str(entity['hash'])
+        url = f'https://nook.lol/{key_hash}'
+        mode_str = scan_result.mode.name.lower()
+        unmatched = scan_result.unmatched or []
+        logging.info(
+            'WEB_NATIVE_SCAN hash=%s mode=%s locale=%s items=%d unmatched=%d duration_ms=%d',
+            key_hash, mode_str, scan_result.locale, len(scan_result.items), len(unmatched), meta['duration_ms'],
+        )
+        if on_webscan_event is not None:
+            try:
+                on_webscan_event({
+                    'source': 'webscan',
+                    'status': 'ok',
+                    'scan_type': mode_str,
+                    'locale': scan_result.locale,
+                    'requested_locale': meta['requested_locale'],
+                    'for_sale': meta['for_sale'],
+                    'media_kind': meta['media_kind'],
+                    'file_bytes': meta['file_bytes'],
+                    'duration_ms': meta['duration_ms'],
+                    'item_count': len(scan_result.items),
+                    'unmatched_count': len(unmatched),
+                    'unmatched_text': '\n'.join(unmatched),
+                    'result_hash': key_hash,
+                    'client_ip': client_ip,
+                })
+            except Exception:
+                logging.warning('on_webscan_event failed on submit.', exc_info=True)
+
+        return _json_response({
+            'hash': key_hash,
+            'url': url,
+            'count': len(scan_result.items),
+            'mode': mode_str,
+            'locale': scan_result.locale,
+        })
+
+    async def handle_webscan_event(request: web.Request) -> web.Response:
+        origin = request.headers.get('Origin')
+        if origin not in ALLOWED_ORIGINS:
+            return _json_response({'error': 'Origin not allowed.'}, status=403)
+
+        client_ip = _get_client_ip(request)
+        if not _check_rate_limit(webscan_event_timestamps, client_ip, WEBSCAN_EVENT_MAX_PER_WINDOW):
+            return _json_response({'error': 'Rate limit reached.'}, status=429)
+
+        raw_body = await request.read()
+        if len(raw_body) > MAX_WEBSCAN_EVENT_BYTES:
+            return _json_response({'error': 'Payload too large.'}, status=413)
+        try:
+            payload = json.loads(raw_body.decode('utf-8'))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            return _json_response({'error': 'Invalid JSON body.'}, status=400)
+        if not isinstance(payload, dict):
+            return _json_response({'error': 'Invalid JSON body.'}, status=400)
+
+        status = str(payload.get('status') or 'error').strip().lower()
+        if status not in ('rejected', 'error'):
+            status = 'error'
+        mode = str(payload.get('mode') or '').strip().lower()
+        if mode not in VALID_WEBSCAN_MODES:
+            mode = ''
+        req_locale = str(payload.get('requested_locale') or 'auto').strip().lower()
+        if req_locale not in VALID_LOCALES:
+            req_locale = 'auto'
+        raw_err = _CONTROL_CHAR_RE.sub(' ', str(payload.get('error_message') or '')).strip()[:200]
+        if _UNSAFE_SUBSTR_RE.search(raw_err):
+            raw_err = 'Browser scan error'
+        duration_ms = max(0, min(600_000, int(payload.get('duration_ms') or 0)))
+        file_bytes = max(0, min(100_000_000, int(payload.get('file_bytes') or 0)))
+        media_kind = 'image' if payload.get('media_kind') == 'image' else 'video'
+
+        _record_rate_limit(webscan_event_timestamps, client_ip)
+        logging.info(
+            'WEB_NATIVE_EVENT status=%s mode=%s duration_ms=%d error=%r',
+            status, mode or '-', duration_ms, raw_err,
+        )
+        if on_webscan_event is not None:
+            try:
+                on_webscan_event({
+                    'source': 'webscan',
+                    'status': status,
+                    'scan_type': mode,
+                    'locale': '',
+                    'requested_locale': req_locale,
+                    'for_sale': False,
+                    'media_kind': media_kind,
+                    'file_bytes': file_bytes,
+                    'duration_ms': duration_ms,
+                    'item_count': 0,
+                    'unmatched_count': 0,
+                    'error_message': raw_err,
+                    'client_ip': client_ip,
+                })
+            except Exception:
+                logging.warning('on_webscan_event failed on event.', exc_info=True)
+        return _json_response({'ok': True})
+
     app = web.Application(middlewares=[cors_middleware], client_max_size=MAX_UPLOAD_BYTES + 2 * 1024 * 1024)
     app.router.add_get('/api/health', handle_health)
     app.router.add_get('/api/status/{job_id}', handle_status)
     app.router.add_post('/api/scan', handle_scan)
+    app.router.add_post('/api/webscan/submit', handle_webscan_submit)
+    app.router.add_post('/api/webscan/event', handle_webscan_event)
     return app
 
 
@@ -600,6 +922,7 @@ async def start_server(
     host: str = LISTEN_HOST,
     port: int = LISTEN_PORT,
     cache_dir: pathlib.Path | str = 'cache',
+    on_webscan_event=None,
 ) -> web.AppRunner:
     """Start the embedded aiohttp server on the running asyncio loop."""
     app = create_app(
@@ -609,6 +932,7 @@ async def start_server(
         error_fn=error_fn,
         turnstile_secret=turnstile_secret,
         cache_dir=cache_dir,
+        on_webscan_event=on_webscan_event,
     )
     runner = web.AppRunner(app, access_log=None)
     await runner.setup()

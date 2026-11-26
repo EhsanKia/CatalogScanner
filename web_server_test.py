@@ -51,6 +51,7 @@ class WebServerTest(AioHTTPTestCase):
                 'source': source,
                 'cache_filename': cache_filename,
                 'discord_user': discord_user,
+                'result': result,
             }
             self.uploaded_entities.append(entity)
             return entity
@@ -327,6 +328,101 @@ class WebServerTest(AioHTTPTestCase):
         self.assertEqual(st['status'], 'done', st)
         self.assertEqual(st['locale'], 'ja-jp')
         self.assertEqual(self.scan_calls[-1]['locale'], 'ja-jp')
+
+    async def test_webscan_submit_validation_and_storage_details(self):
+        hdrs = {'Origin': 'https://nook.lol', 'CF-Connecting-IP': '203.0.113.50'}
+        with mock.patch.object(web_server, 'verify_turnstile', new=mock.AsyncMock(return_value=True)):
+            # 1) Valid catalog submission.
+            r_cat = await self.client.post(
+                '/api/webscan/submit',
+                json={
+                    'mode': 'catalog',
+                    'locale': 'en-us',
+                    'items': ['Acorn pochette', 'Striped shirt'],
+                    'unmatched': ['bad_ocr', 'https://evil.example/spam', '<script>x</script>'],
+                    'duration_ms': 3200,
+                    'turnstile_token': 'ok',
+                },
+                headers=hdrs,
+            )
+            self.assertEqual(r_cat.status, 200, await r_cat.text())
+            data_cat = await r_cat.json()
+            self.assertEqual(data_cat['count'], 2)
+            self.assertTrue(data_cat['url'].startswith('https://nook.lol/'))
+            self.assertEqual(self.uploaded_entities[-1]['source'], 'webscan')
+            # Unsafe URL/HTML entries stripped from unmatched.
+            self.assertEqual(self.uploaded_entities[-1]['result'].unmatched, ['bad_ocr'])
+
+            # 2) Valid Home Storage submission (items derived server-side from details).
+            r_st = await self.client.post(
+                '/api/webscan/submit',
+                json={
+                    'mode': 'storage',
+                    'locale': 'en-us',
+                    'items': ['ignored'],
+                    'details': [
+                        {'name': 'Cardboard box', 'variant': 'Plain', 'pattern': '', 'count': 3},
+                        {'name': 'Baby chair', 'variant': 'Pink', 'pattern': 'Bear', 'count': 1},
+                    ],
+                    'duration_ms': 2800,
+                    'turnstile_token': 'ok',
+                },
+                headers=hdrs,
+            )
+            self.assertEqual(r_st.status, 200, await r_st.text())
+            data_st = await r_st.json()
+            self.assertEqual(data_st['count'], 2)
+            self.assertEqual(self.uploaded_entities[-1]['result'].items, ['Baby chair', 'Cardboard box'])
+
+            # 3) Forged/unknown item rejected (anti-pastebin allowlist).
+            r_forged = await self.client.post(
+                '/api/webscan/submit',
+                json={
+                    'mode': 'catalog',
+                    'locale': 'en-us',
+                    'items': ['Definitely not a real ACNH item'],
+                    'turnstile_token': 'ok',
+                },
+                headers=hdrs,
+            )
+            self.assertEqual(r_forged.status, 400)
+            self.assertIn('Unknown catalog item', (await r_forged.json())['error'])
+
+            # 4) Invalid storage variant triple rejected.
+            r_bad_var = await self.client.post(
+                '/api/webscan/submit',
+                json={
+                    'mode': 'storage',
+                    'locale': 'en-us',
+                    'details': [{'name': 'Cardboard box', 'variant': 'FakeColor', 'pattern': '', 'count': 1}],
+                    'turnstile_token': 'ok',
+                },
+                headers=hdrs,
+            )
+            self.assertEqual(r_bad_var.status, 400)
+
+    async def test_webscan_event_endpoint(self):
+        hdrs = {'Origin': 'https://nook.lol', 'CF-Connecting-IP': '203.0.113.51'}
+        r = await self.client.post(
+            '/api/webscan/event',
+            json={
+                'status': 'error',
+                'mode': 'catalog',
+                'error_message': 'Video frame decode timed out.',
+                'duration_ms': 6000,
+            },
+            headers=hdrs,
+        )
+        self.assertEqual(r.status, 200)
+        self.assertTrue((await r.json())['ok'])
+
+        # Disallowed origin rejected.
+        r_bad = await self.client.post(
+            '/api/webscan/event',
+            json={'status': 'error', 'error_message': 'nope'},
+            headers={'Origin': 'https://evil.example'},
+        )
+        self.assertEqual(r_bad.status, 403)
 
 
 if __name__ == '__main__':
