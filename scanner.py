@@ -1,4 +1,4 @@
-from common import ScanResult, is_image_file, to_720p
+from common import ScanResult, crop_black_bars, is_image_file, to_720p
 from typing import Any, Dict, Optional
 
 import catalog
@@ -77,6 +77,8 @@ def _detect_media_type(filename: str) -> str:
             if not success or frame is None:
                 break
 
+            frame = crop_black_bars(frame)
+
             # Resolution must be at least 480p (allowing 478p mobile/WhatsApp aspect rounding).
             assert frame.shape[0] >= MIN_FRAME_HEIGHT, \
                 'Invalid resolution: {1}x{0}'.format(*frame.shape)
@@ -95,7 +97,10 @@ def _detect_media_type(filename: str) -> str:
 
         if unsupported_error is not None:
             raise unsupported_error
-        raise AssertionError('Media is not showing a known scan type.')
+        raise AssertionError(
+            'Media is not showing a known scan type. Please upload videos or screenshots '
+            'exported directly from your Switch Album (not photos of your screen).'
+        )
     finally:
         video_capture.release()
 

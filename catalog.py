@@ -1,4 +1,4 @@
-from common import ScanMode, ScanResult, crop_720p_roi, slice_720p
+from common import ScanMode, ScanResult, circular_phase, color_match, crop_720p_roi, slice_720p
 
 import collections
 import concurrent.futures
@@ -195,14 +195,14 @@ _BAIL_RE = re.compile(r'\b([Bb])ail\b')
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing Nook Shopping catalog."""
     side_color = slice_720p(frame, 150, 160, -20, None).mean(axis=(0, 1))
-    if numpy.linalg.norm(side_color - WARDELL_COLOR) < 20:
+    if color_match(side_color, WARDELL_COLOR, 20):
         raise AssertionError('Wardell catalog is not supported.')
-    if numpy.linalg.norm(side_color - NOOK_MILES_COLOR) < 20:
+    if color_match(side_color, NOOK_MILES_COLOR, 20):
         raise AssertionError('Nook Miles catalog is not supported.')
-    if numpy.linalg.norm(side_color - SIDE_COLOR) >= 22:
+    if not color_match(side_color, SIDE_COLOR, 22):
         return False
     top_color = slice_720p(frame, None, 20, -20, None).mean(axis=(0, 1))
-    return bool(numpy.linalg.norm(top_color - TOP_COLOR) < 45)
+    return color_match(top_color, TOP_COLOR, 45)
 
 
 def scan(video_file: str, locale: str = 'en-us', for_sale: bool = False) -> ScanResult:
@@ -906,13 +906,27 @@ def _read_frames(
 
 def _parse_frame(frame: numpy.ndarray, for_sale: bool) -> Iterator[numpy.ndarray]:
     """Parses an individual frame and extracts item rows from the list."""
-    y_lines = list((frame[:, 0] < 200).nonzero()[0])
+    col0 = frame[:, 0] < 200
+    y_lines = list(col0.nonzero()[0])
     if not y_lines:
         return
 
-    # Normalize row lines by taking the median offset modulo row height (53.45px).
-    centers = [numpy.fmod(y, 53.45) for y in y_lines]
-    centroid = round(numpy.median(centers))
+    # Dashed divider lines are thin (1-3px) dark runs; ignore tall (~30px) hovered-row highlight blocks.
+    thin_runs: List[float] = []
+    run_start: Optional[int] = None
+    for y in range(len(col0)):
+        if col0[y] and run_start is None:
+            run_start = y
+        elif not col0[y] and run_start is not None:
+            if y - run_start <= 5:
+                thin_runs.append(0.5 * (run_start + y - 1))
+            run_start = None
+    if run_start is not None and len(col0) - run_start <= 5:
+        thin_runs.append(0.5 * (run_start + len(col0) - 1))
+
+    # Normalize row lines using circular mean modulo row height (53.45px) to avoid wrap-around jumps.
+    pts = thin_runs if len(thin_runs) >= 3 else y_lines
+    centroid = round(circular_phase(pts, 53.45))
     y_positions = numpy.arange(centroid, 480, 53.45).astype(int)
 
     for y in y_positions:

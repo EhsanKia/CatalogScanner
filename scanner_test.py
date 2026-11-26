@@ -555,6 +555,60 @@ class ScannerTest(absltest.TestCase):
         self.assertEqual(len(unmatched), 1)
         self.assertIn('?s=', unmatched[0])
 
+    def test_catalog_parse_frame_ignores_hover_bleed_and_wraparound(self):
+        # Divider lines placed near the 0 / 53.45 wrap-around boundary + a 30px hover bar in col 0.
+        frame = numpy.full((480, 585), 245, dtype=numpy.uint8)
+        for y in (53, 107, 160, 214, 267, 321, 374, 428):
+            frame[y:y + 2, 0] = 100
+        # Simulated dark hovered-row block in column 0 between dividers (y=115..145).
+        frame[115:145, 0] = 160
+        # Place distinct ink at y=160-25=135 (centered in row 160 -> 120:155)
+        frame[130:142, 20:120] = 30
+        rows = list(catalog._parse_frame(frame, for_sale=False))
+        self.assertEqual(len(rows), 8)
+        # Row corresponding to y=160 (index 2: 53, 107, 160) should contain the ink cleanly centered.
+        self.assertLess(int(rows[2][10:22, 20:120].mean()), 60)
+
+    def test_crop_black_bars_and_dimmed_color_match(self):
+        import common
+        # 1) Normal 1280x720 is untouched.
+        img_720 = numpy.full((720, 1280, 3), 180, dtype=numpy.uint8)
+        self.assertEqual(common.crop_black_bars(img_720).shape, (720, 1280, 3))
+
+        # 2) Pillarboxed 2796x1290 (iPhone landscape) crops to 16:9 (~2293x1290).
+        pillar = numpy.zeros((1290, 2796, 3), dtype=numpy.uint8)
+        pillar[:, 252:2545] = (180, 253, 254)
+        pillar[:36, 252:2545] = (110, 233, 238)
+        cropped = common.crop_black_bars(pillar)
+        self.assertEqual(cropped.shape[:2], (1290, 2293))
+        self.assertTrue(catalog.detect(pillar))
+
+        # 3) Letterboxed 1179x2556 (iPhone portrait) crops to 16:9 (1179x663).
+        letter = numpy.zeros((2556, 1179, 3), dtype=numpy.uint8)
+        letter[946:1609, :] = (254, 221, 244)
+        cropped_l = common.crop_black_bars(letter)
+        self.assertEqual(cropped_l.shape[:2], (663, 1179))
+        self.assertTrue(reactions.detect(letter))
+
+        # 4) Uniformly dimmed (0.90x) catalog & recipes backgrounds still detect, off-hue rejects.
+        dim_cat = numpy.full((720, 1280, 3), (162, 230, 236), dtype=numpy.uint8)
+        dim_cat[:20, -20:] = (96, 206, 219)
+        self.assertTrue(catalog.detect(dim_cat))
+        dim_rec = numpy.full((720, 1280, 3), (174, 201, 209), dtype=numpy.uint8)
+        self.assertTrue(recipes.detect(dim_rec))
+        self.assertFalse(common.color_match((180, 180, 250), catalog.SIDE_COLOR, 22))
+
+    def test_storage_skips_compressed_teal_tooltip(self):
+        # Build a clean 525x1056 storage ROI with 4 rows separated every 127px.
+        frame = numpy.full((525, 1056, 3), 245, dtype=numpy.uint8)
+        for y in (0, 127, 254, 381):
+            frame[y:y + 3, :] = (210, 225, 230)
+        # Put a compressed teal tooltip pill (BGR 159, 176, 61) in the gap below row 1 (y=127..254 -> gap 243..254).
+        frame[243:254, 200:460] = (159, 176, 61)
+        rows = list(storage._parse_frame(frame))
+        # Row 1 (y=127) must be skipped; the other 3 rows remain.
+        self.assertEqual(len(rows), 3)
+
 
 class ScannerExtraTest(parameterized.TestCase):
 

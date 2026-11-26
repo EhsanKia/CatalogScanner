@@ -1,4 +1,4 @@
-from common import ScanMode, ScanResult, crop_720p_roi, slice_720p
+from common import ScanMode, ScanResult, circular_phase, color_match, crop_720p_roi, slice_720p
 
 import collections
 import functools
@@ -125,7 +125,7 @@ def _get_storage_engine() -> _StorageEmbedEngine:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing the storage items."""
     color = slice_720p(frame, 0, 20, 1100, 1150).mean(axis=(0, 1))
-    return bool(numpy.linalg.norm(color - BG_COLOR) < 22)
+    return color_match(color, BG_COLOR, 22)
 
 
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
@@ -228,16 +228,16 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[List[numpy.ndarray]]:
     if not separators:
         return
 
-    # Normalize row lines by taking the median offset modulo row height (127px).
-    centroid = int(numpy.median([s % 127 for s in separators]))
+    # Normalize row lines using circular mean modulo row height (127px).
+    centroid = round(circular_phase(separators, 127.0))
     y_positions = list(range(centroid, 525, 127))
 
     for y in y_positions:
         if y + 127 > frame.shape[0]:
             continue  # Past the bottom of the frame.
-        # Skip row when teal tooltip is overlapping the item.
-        tooltip = cv2.inRange(frame[y + 122:y + 127, :], (145, 180, 65), (195, 225, 115))
-        if tooltip.mean() > 10:
+        # Skip row when teal tooltip overlaps the inter-row gap below the tile crop.
+        tooltip = cv2.inRange(frame[y + 116:y + 127, :], (135, 160, 45), (205, 235, 120))
+        if tooltip.mean() > 6:
             continue
 
         yield [frame[y + 13:y + 113, x + 16:x + 116] for x in x_positions]

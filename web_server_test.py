@@ -424,6 +424,33 @@ class WebServerTest(AioHTTPTestCase):
         )
         self.assertEqual(r_bad.status, 403)
 
+    async def test_verify_turnstile_logs_error_codes(self):
+        class _FakeResp:
+            status = 200
+            async def json(self):
+                return {'success': False, 'error-codes': ['timeout-or-duplicate'], 'action': 'web_scan', 'hostname': 'nook.lol'}
+            async def __aenter__(self):
+                return self
+            async def __aexit__(self, *args):
+                return False
+
+        class _FakeSession:
+            def __init__(self, *args, **kwargs):
+                pass
+            def post(self, *args, **kwargs):
+                return _FakeResp()
+            async def __aenter__(self):
+                return self
+            async def __aexit__(self, *args):
+                return False
+
+        with mock.patch.object(web_server.aiohttp, 'ClientSession', _FakeSession):
+            with mock.patch.object(web_server.logging, 'warning') as mock_warn:
+                ok = await web_server.verify_turnstile('tok123', '203.0.113.1', 'secret')
+        self.assertFalse(ok)
+        mock_warn.assert_called_once()
+        self.assertIn('timeout-or-duplicate', str(mock_warn.call_args))
+
 
 if __name__ == '__main__':
     unittest.main()

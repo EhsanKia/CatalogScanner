@@ -171,6 +171,7 @@ async def verify_turnstile(
     if not secret:
         return True
     if not token or len(token) > 2048:
+        logging.warning('Turnstile verification rejected: missing or oversized token (len=%d).', len(token or ''))
         return False
     allowed_actions = {expected_actions} if isinstance(expected_actions, str) else set(expected_actions)
     body = urllib.parse.urlencode({
@@ -187,17 +188,27 @@ async def verify_turnstile(
                 headers={'Content-Type': 'application/x-www-form-urlencoded'},
             ) as resp:
                 if resp.status != 200:
+                    logging.warning('Turnstile siteverify returned HTTP %d.', resp.status)
                     return False
                 data = await resp.json()
     except Exception:
         logging.warning('Turnstile siteverify request failed.', exc_info=True)
         return False
 
-    return bool(
+    ok = bool(
         data.get('success') is True
         and data.get('action') in allowed_actions
         and data.get('hostname') in EXPECTED_TURNSTILE_HOSTNAMES
     )
+    if not ok:
+        logging.warning(
+            'Turnstile verification failed: success=%r error_codes=%r action=%r hostname=%r',
+            data.get('success'),
+            data.get('error-codes'),
+            data.get('action'),
+            data.get('hostname'),
+        )
+    return ok
 
 
 @functools.lru_cache(maxsize=None)

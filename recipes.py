@@ -1,4 +1,4 @@
-from common import ScanMode, ScanResult, crop_720p_roi, slice_720p
+from common import ScanMode, ScanResult, brightness_scale, color_match, crop_720p_roi, slice_720p
 
 import collections
 import cv2
@@ -41,11 +41,11 @@ class RecipeCard:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing DIY recipes."""
     color = slice_720p(frame, None, 20, 1200, 1240).mean(axis=(0, 1))
-    if numpy.linalg.norm(color - WOOD_COLOR) < 15:
+    if color_match(color, WOOD_COLOR, 15):
         raise AssertionError('Workbench scanning is not supported.')
-    if numpy.linalg.norm(color - KITCHEN_COLOR) < 15:
+    if color_match(color, KITCHEN_COLOR, 15):
         raise AssertionError('Kitchen scanning is not supported.')
-    return bool(numpy.linalg.norm(color - BG_COLOR) < 15)
+    return color_match(color, BG_COLOR, 15)
 
 
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:
@@ -160,7 +160,12 @@ def _read_frames(filename: str, step: Optional[int] = None) -> Iterable[numpy.nd
                 pending_gap = 0
             seen_valid = True
             can_skip = True
-            yield crop_720p_roi(frame, 110, 720, 45, 730)
+            roi = crop_720p_roi(frame, 110, 720, 45, 730)
+            bg = slice_720p(frame, None, 20, 1200, 1240).mean(axis=(0, 1))
+            scale = brightness_scale(bg, BG_COLOR)
+            if 0.80 <= scale < 0.96:
+                roi = cv2.convertScaleAbs(roi, alpha=1.0 / scale)
+            yield roi
     finally:
         cap.release()
         if total_gap_frames:

@@ -1,5 +1,5 @@
 import itertools
-from common import ScanMode, ScanResult, crop_720p_roi, is_image_file, slice_720p
+from common import ScanMode, ScanResult, color_match, crop_720p_roi, is_image_file, slice_720p
 
 import collections
 import cv2
@@ -52,7 +52,7 @@ class CritterIcon(numpy.ndarray):
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing Critterpedia."""
     color = slice_720p(frame, None, 20, 1100, 1150).mean(axis=(0, 1))
-    return bool(numpy.linalg.norm(color - BG_COLOR) < 12)
+    return color_match(color, BG_COLOR, 12)
 
 
 def scan(video_file: str, locale: str = 'en-us') -> ScanResult:

@@ -1,4 +1,4 @@
-from common import ScanMode, ScanResult, iter_frames
+from common import ScanMode, ScanResult, color_match, iter_frames, slice_720p
 from PIL import Image
 
 import cv2
@@ -36,7 +36,7 @@ class SongCover:
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing the music list."""
-    color = frame[:20, 1220:1250].mean(axis=(0, 1))
+    color = slice_720p(frame, None, 20, 1220, 1250).mean(axis=(0, 1))
     if _is_background(color):
         return True
     return False
@@ -174,15 +174,12 @@ def _remove_blanks(all_icons: List[numpy.ndarray]) -> List[numpy.ndarray]:
 
 
 def _is_background(color: numpy.ndarray) -> bool:
-    if numpy.linalg.norm(color - BG_COLOR1) < 20:
-        return True
-    if numpy.linalg.norm(color - BG_COLOR2) < 20:
-        return True
-    if numpy.linalg.norm(color - BG_COLOR3) < 20:
-        return True
-    if numpy.linalg.norm(color - BG_COLOR4) < 20:
-        return True
-    return False
+    return (
+        color_match(color, BG_COLOR1, 20)
+        or color_match(color, BG_COLOR2, 20)
+        or color_match(color, BG_COLOR3, 20)
+        or color_match(color, BG_COLOR4, 20)
+    )
 
 
 @functools.lru_cache()

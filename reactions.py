@@ -1,4 +1,4 @@
-from common import ScanMode, ScanResult, is_image_file, slice_720p, to_720p
+from common import ScanMode, ScanResult, color_match, is_image_file, slice_720p, to_720p
 
 import cv2
 import itertools
@@ -48,7 +48,7 @@ class ReactionImage:
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing reactions list."""
     color = slice_720p(frame, 370, 380, 290, 300).mean(axis=(0, 1))
-    return bool(numpy.linalg.norm(color - BG_COLOR) < 14)
+    return color_match(color, BG_COLOR, 14)
 
 
 def scan(image_file: str, locale: str = 'en-us') -> ScanResult:

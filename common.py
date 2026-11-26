@@ -1,12 +1,13 @@
 import dataclasses
 import enum
 import logging
+import math
 import os
 
 import cv2
 import numpy
 
-from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Iterator, List, Optional, Sequence, Tuple, Union
 
 IMAGE_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.webp', '.bmp')
 
@@ -17,8 +18,72 @@ def is_image_file(filename: str) -> bool:
     return ext.lower() in IMAGE_EXTENSIONS
 
 
+def circular_phase(values: Sequence[float], period: float) -> float:
+    """Computes the circular mean of values modulo `period`, returning a value in [0, period)."""
+    arr = numpy.asarray(values, dtype=numpy.float64)
+    angles = (2.0 * math.pi / period) * numpy.fmod(arr, period)
+    ang = math.atan2(float(numpy.sin(angles).mean()), float(numpy.cos(angles).mean()))
+    if ang < 0.0:
+        ang += 2.0 * math.pi
+    return ang * period / (2.0 * math.pi)
+
+
+def brightness_scale(color: Any, ref: Any) -> float:
+    """Computes optimal uniform luminance scale s such that color ~= s * ref."""
+    c = numpy.asarray(color, dtype=numpy.float64)
+    r = numpy.asarray(ref, dtype=numpy.float64)
+    denom = float(numpy.dot(r, r))
+    if denom <= 1e-6:
+        return 1.0
+    return float(numpy.dot(c, r) / denom)
+
+
+def color_match(
+    color: Any,
+    ref: Any,
+    max_dist: float,
+    min_scale: float = 0.82,
+    max_scale: float = 1.0,
+) -> bool:
+    """Matches a BGR color against `ref`, tolerating uniform dimming (e.g. dimmed iOS captures)."""
+    c = numpy.asarray(color, dtype=numpy.float64)
+    r = numpy.asarray(ref, dtype=numpy.float64)
+    if float(numpy.linalg.norm(c - r)) < max_dist:
+        return True
+    s = brightness_scale(c, r)
+    if min_scale <= s <= max_scale:
+        return float(numpy.linalg.norm(c / s - r)) < max_dist * 0.55
+    return False
+
+
+def crop_black_bars(
+    frame: numpy.ndarray,
+    thresh: int = 16,
+    min_height: int = 472,
+) -> numpy.ndarray:
+    """Trims solid near-black pillarbox/letterbox bars from non-16:9 frames (e.g. phone screen recordings)."""
+    h, w = frame.shape[:2]
+    if h <= 0 or w <= 0 or abs((w / float(h)) - (16.0 / 9.0)) <= 0.04:
+        return frame
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if frame.ndim == 3 else frame
+    ys = numpy.nonzero(gray.mean(axis=1) > thresh)[0]
+    xs = numpy.nonzero(gray.mean(axis=0) > thresh)[0]
+    if len(ys) == 0 or len(xs) == 0:
+        return frame
+    y1, y2 = int(ys[0]), int(ys[-1]) + 1
+    x1, x2 = int(xs[0]), int(xs[-1]) + 1
+    cw, ch = x2 - x1, y2 - y1
+    if (cw >= 0.96 * w and ch >= 0.96 * h) or ch < min_height:
+        return frame
+    ar = cw / float(ch)
+    if not (1.70 <= ar <= 1.86):
+        return frame
+    return frame[y1:y2, x1:x2]
+
+
 def to_720p(frame: numpy.ndarray) -> numpy.ndarray:
-    """Resizes frame to 720p (1280x720) if needed."""
+    """Crops outer black bars if present and resizes frame to 720p (1280x720) if needed."""
+    frame = crop_black_bars(frame)
     if frame.shape[:2] != (720, 1280):
         return cv2.resize(frame, (1280, 720))
     return frame
@@ -54,6 +119,7 @@ def slice_720p(
     x2: Optional[int],
 ) -> numpy.ndarray:
     """Slices a 720p-defined ROI from a frame at its native resolution without full-frame resize."""
+    frame = crop_black_bars(frame)
     if frame.shape[:2] == (720, 1280):
         return frame[y1:y2, x1:x2]
     h, w = frame.shape[:2]
@@ -70,6 +136,7 @@ def crop_720p_roi(
     x2: Optional[int],
 ) -> numpy.ndarray:
     """Extracts a 720p-defined ROI, resizing only the cropped region when frame is not 720p."""
+    frame = crop_black_bars(frame)
     if frame.shape[:2] == (720, 1280):
         return frame[y1:y2, x1:x2]
     h, w = frame.shape[:2]
