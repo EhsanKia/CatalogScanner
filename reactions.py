@@ -47,8 +47,11 @@ class ReactionImage:
 
 def detect(frame: numpy.ndarray) -> bool:
     """Detects if a given frame is showing reactions list."""
-    color = slice_720p(frame, 370, 380, 290, 300).mean(axis=(0, 1))
-    return color_match(color, BG_COLOR, 14)
+    left_color = slice_720p(frame, 370, 380, 290, 300).mean(axis=(0, 1))
+    if not color_match(left_color, BG_COLOR, 14):
+        return False
+    top_color = slice_720p(frame, 78, 88, 635, 645).mean(axis=(0, 1))
+    return color_match(top_color, BG_COLOR, 14)
 
 
 def scan(image_file: str, locale: str = 'en-us') -> ScanResult:
