@@ -214,7 +214,8 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     for y_pos, offset in itertools.product(y_positions, y_offsets):
         line = gray[y_pos + offset - 3:y_pos + offset + 3, :]
-        if line.min() < 170 or line.max() > 240:
+        inner = line[:, 15:-15]
+        if inner.min() < 170 or inner.max() > 240:
             continue
         rows.append(line)
 
@@ -223,7 +224,9 @@ def _parse_frame(frame: numpy.ndarray) -> Iterator[numpy.ndarray]:
 
     thresh = cv2.threshold(cv2.vconcat(rows), 210, 255, 0)[1]
     separators = thresh.mean(axis=0) < 240
-    x_lines = list(separators.nonzero()[0])
+    x_lines = [x for x in separators.nonzero()[0] if 15 <= x < 1265]
+    if not x_lines:
+        return
 
     # Normalize column lines by taking the average of all of them.
     # We know they are 112.7px apart, so we find the best offset from given lines.
