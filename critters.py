@@ -181,9 +181,10 @@ def _read_frames(filename: str) -> Iterator[Tuple[CritterType, numpy.ndarray]]:
                 continue
 
             # Grab the last frame for each side and section combination.
-            if slice_720p(last_frame, 570, 600, None, 70)[:, :, 2].min() > 230:
+            # Inset 10px from outer edges to ignore 1-3px dark padding on 480p (854x480) mobile clips.
+            if slice_720p(last_frame, 570, 600, 10, 70)[:, :, 2].min() > 230:
                 good_frames[critter_section, 0] = last_frame
-            elif slice_720p(last_frame, 570, 600, -70, None)[:, :, 2].min() > 230:
+            elif slice_720p(last_frame, 570, 600, -70, -10)[:, :, 2].min() > 230:
                 good_frames[critter_section, 1] = last_frame
 
             last_frame = frame

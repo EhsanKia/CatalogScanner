@@ -883,7 +883,11 @@ def _read_frames(
             ).mean(axis=1)
             dark = scrollbar < 150
             if dark.any():
-                scroll_positions.append(int(numpy.argmax(dark)))
+                pos = int(numpy.argmax(dark))
+                # Large single-step jump indicates switching subsections with L/R, not scroll wiggling.
+                if scroll_positions and abs(pos - scroll_positions[-1]) > 100:
+                    scroll_positions = []
+                scroll_positions.append(pos)
                 min_flips = max(5, 10 // max(1, step_state[0])) if step_state is not None else 10
                 if _is_inconsistent_scroll(scroll_positions, min_flips=min_flips):
                     raise AssertionError('Video is scrolling inconsistently.')
