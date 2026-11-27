@@ -194,6 +194,7 @@ class ScanMode(enum.Enum):
     CRITTERS = 4
     REACTIONS = 5
     MUSIC = 6
+    ACHIEVEMENTS = 7
 
 
 @dataclasses.dataclass

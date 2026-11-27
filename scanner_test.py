@@ -609,6 +609,34 @@ class ScannerTest(absltest.TestCase):
         # Row 1 (y=127) must be skipped; the other 3 rows remain.
         self.assertEqual(len(rows), 3)
 
+    def test_achievements_scan_and_details(self):
+        import achievements
+        results = scanner.scan_media('examples/extra/achievements_sample.mp4')
+        self.assertEqual(results.mode, ScanMode.ACHIEVEMENTS)
+        self.assertEqual(results.locale, 'en-us')
+        self.assertEqual(results.unmatched, [])
+        self.assertGreaterEqual(len(results.items), 40)
+        self.assertIsNotNone(results.details)
+        by_name = {d['name']: d for d in results.details}
+        self.assertIn('Wispy Island Secrets', by_name)
+        self.assertIn('Active Island Resident', by_name)
+        self.assertEqual(by_name['Active Island Resident']['max_tier'], 5)
+        self.assertGreaterEqual(by_name['Active Island Resident']['tier'], 1)
+        self.assertLessEqual(by_name['Active Island Resident']['tier'], 5)
+        # Ensure Nook Miles Redemption ATM (non-cream top header) is NOT detected as achievements.
+        nm_atm = numpy.full((720, 1280, 3), (243, 207, 200), dtype=numpy.uint8)
+        nm_atm[:40, :] = (160, 120, 40)
+        self.assertFalse(achievements.detect(nm_atm))
+        with self.assertRaisesRegex(AssertionError, 'Nook Miles catalog is not supported'):
+            catalog.detect(nm_atm)
+
+    def test_achievements_rejects_noise(self):
+        import achievements
+        rng = numpy.random.default_rng(7)
+        noise_card = rng.integers(0, 256, size=(214, 364, 3), dtype=numpy.uint8)
+        with self.assertRaisesRegex(AssertionError, 'Failed to match achievements'):
+            achievements.match_achievements([noise_card])
+
 
 class ScannerExtraTest(parameterized.TestCase):
 

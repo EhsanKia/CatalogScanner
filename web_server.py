@@ -52,8 +52,9 @@ IMAGE_EXTS = frozenset({'.jpg', '.jpeg', '.png', '.webp'})
 ALLOWED_EXTS = VIDEO_EXTS | IMAGE_EXTS
 VALID_LOCALES = frozenset(catalog.LOCALE_MAP)
 CONCRETE_LOCALES = frozenset(loc for loc in catalog.LOCALE_MAP if loc != 'auto')
-VALID_WEBSCAN_MODES = frozenset({'catalog', 'recipes', 'critters', 'reactions', 'music', 'storage'})
+VALID_WEBSCAN_MODES = frozenset({'achievements', 'catalog', 'recipes', 'critters', 'reactions', 'music', 'storage'})
 MODE_MAX_ITEMS = {
+    'achievements': 120,
     'catalog': 6200,
     'recipes': 1000,
     'critters': 200,
@@ -242,6 +243,12 @@ def _get_canonical_storage_triples(locale: str) -> frozenset[tuple[str, str, str
     return frozenset((names[name_id], variant, pattern) for name_id, variant, pattern in meta['rows'])
 
 
+@functools.lru_cache(maxsize=1)
+def _load_achievements_tiers() -> dict[str, int]:
+    with open(_BASE_DIR / 'achievements' / 'names.json', encoding='utf-8') as fp:
+        return {row['name']: int(row['tiers']) for row in json.load(fp)}
+
+
 def _sanitize_unmatched(raw: object) -> list[str]:
     if not isinstance(raw, list):
         return []
@@ -309,6 +316,33 @@ def _validate_webscan_submission(payload: dict) -> tuple[ScanResult, dict]:
             for (n, v, p), c in sorted(merged.items())
         ]
         items = sorted({d['name'] for d in details})
+    elif mode == 'achievements':
+        raw_details = payload.get('details')
+        if not isinstance(raw_details, list) or not raw_details:
+            raise ValueError('Achievements submission requires non-empty details.')
+        if len(raw_details) > MODE_MAX_ITEMS['achievements']:
+            raise ValueError('Too many achievement entries.')
+        tier_map = _load_achievements_tiers()
+        merged_ach: dict[str, int] = {}
+        for row in raw_details:
+            if not isinstance(row, dict):
+                raise ValueError('Invalid achievement entry.')
+            name = str(row.get('name') or '')
+            if name not in tier_map:
+                raise ValueError(f'Unknown achievement: {name!r}')
+            max_t = tier_map[name]
+            try:
+                tier = int(row.get('tier', 1))
+            except (TypeError, ValueError) as exc:
+                raise ValueError('Invalid achievement tier.') from exc
+            if tier < 1 or tier > max_t:
+                raise ValueError(f'Achievement tier out of range for {name!r}.')
+            merged_ach[name] = max(merged_ach.get(name, 0), tier)
+        details = [
+            {'name': n, 'tier': t, 'max_tier': tier_map[n]}
+            for n, t in sorted(merged_ach.items())
+        ]
+        items = [d['name'] for d in details]
     else:
         raw_items = payload.get('items')
         if not isinstance(raw_items, list) or not raw_items:

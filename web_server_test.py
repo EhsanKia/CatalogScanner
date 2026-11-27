@@ -401,6 +401,36 @@ class WebServerTest(AioHTTPTestCase):
             )
             self.assertEqual(r_bad_var.status, 400)
 
+            # 5) Valid Nook Miles achievements submission & out-of-range tier rejection.
+            r_ach = await self.client.post(
+                '/api/webscan/submit',
+                json={
+                    'mode': 'achievements',
+                    'locale': 'en-us',
+                    'details': [
+                        {'name': 'Rough-hewn', 'tier': 5, 'max_tier': 5},
+                        {'name': 'Writing a Cookbook?', 'tier': 2, 'max_tier': 3},
+                    ],
+                    'duration_ms': 900,
+                    'turnstile_token': 'ok',
+                },
+                headers=hdrs,
+            )
+            self.assertEqual(r_ach.status, 200, await r_ach.text())
+            self.assertEqual(self.uploaded_entities[-1]['result'].items, ['Rough-hewn', 'Writing a Cookbook?'])
+
+            r_ach_bad = await self.client.post(
+                '/api/webscan/submit',
+                json={
+                    'mode': 'achievements',
+                    'locale': 'en-us',
+                    'details': [{'name': 'Rough-hewn', 'tier': 9, 'max_tier': 5}],
+                    'turnstile_token': 'ok',
+                },
+                headers=hdrs,
+            )
+            self.assertEqual(r_ach_bad.status, 400)
+
     async def test_webscan_event_endpoint(self):
         hdrs = {'Origin': 'https://nook.lol', 'CF-Connecting-IP': '203.0.113.51'}
         r = await self.client.post(

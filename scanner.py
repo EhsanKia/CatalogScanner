@@ -1,6 +1,7 @@
 from common import ScanResult, crop_black_bars, is_image_file, to_720p
 from typing import Any, Dict, Optional
 
+import achievements
 import catalog
 import critters
 import music
@@ -18,6 +19,7 @@ MAX_VIDEO_DURATION_SECONDS = 180
 MIN_FRAME_HEIGHT = 472
 
 SCANNERS: Dict[str, Any] = {
+    'achievements': achievements,
     'catalog': catalog,
     'recipes': recipes,
     'critters': critters,
