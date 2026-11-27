@@ -50,6 +50,7 @@ SIDE_COLOR = (180, 253, 254)
 # Bad background colors (BGR).
 WARDELL_COLOR = (211, 214, 248)
 NOOK_MILES_COLOR = (243, 207, 200)
+NOOK_MILES_ACHIEVEMENTS_TOP_COLOR = (220, 243, 251)
 
 # Mapping supported AC:NH locales to tesseract languages.
 LOCALE_MAP: Dict[str, str] = {
@@ -198,6 +199,9 @@ def detect(frame: numpy.ndarray) -> bool:
     if color_match(side_color, WARDELL_COLOR, 20):
         raise AssertionError('Wardell catalog is not supported.')
     if color_match(side_color, NOOK_MILES_COLOR, 20):
+        top_color = slice_720p(frame, None, 20, -20, None).mean(axis=(0, 1))
+        if color_match(top_color, NOOK_MILES_ACHIEVEMENTS_TOP_COLOR, 20):
+            raise AssertionError('Nook Miles achievements are not supported.')
         raise AssertionError('Nook Miles catalog is not supported.')
     if not color_match(side_color, SIDE_COLOR, 22):
         return False
